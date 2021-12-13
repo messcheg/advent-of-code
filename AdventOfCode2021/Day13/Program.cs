@@ -2,21 +2,76 @@
 
 void Run()
 {
-    string inputfile = @"..\..\..\example_input.txt";
-    //string inputfile = @"..\..\..\real_input.txt";
-    long supposedanswer1 = 0000;
+    //string inputfile = @"..\..\..\example_input.txt";
+    string inputfile = @"..\..\..\real_input.txt";
+    long supposedanswer1 = 17;
     long supposedanswer2 = 0000;
 
     var S = File.ReadAllLines(inputfile).ToList();
     long answer1 = 0;
     long answer2 = 0;
 
+    var dots = new List<(int x, int y)>();
     int i = 0;
     foreach(string s in S)
     {
-
+        if (s.Trim() == "") break;
+        var s1 = s.Split(',');
+        dots.Add((int.Parse(s1[0]), int.Parse(s1[1])));
         i++;
     }
+    bool first = true;
+    while (i < S.Count)
+    {
+        var newdots = new List<(int x, int y)>();
+        var s1 = S[i].Split(' ');
+        if (s1.Length == 3)
+        {
+            var s2 = s1[2].Split('=');
+            int fold = int.Parse(s2[1]);
+            if (s2[0] == "x")
+            {
+                foreach ((int x, int y) in dots)
+                {
+                    int newx = x;
+                    if (x > fold)
+                    {
+                        newx = fold - (x - fold);
+                    }
+                    else if (x == fold) continue;
+                    if (!newdots.Contains((newx, y))) newdots.Add((newx, y));
+                }
+            }
+            else
+            {
+                foreach ((int x, int y) in dots)
+                {
+                    int newy = y;
+                    if (y > fold)
+                    {
+                        newy = fold - (y - fold);
+                    }
+                    else if (y == fold) continue;
+                    if (!newdots.Contains((x, newy))) newdots.Add((x, newy));
+                }
+            }
+            dots = newdots;
+            if (first) answer1 = dots.Count;
+            first = false;
+
+        }
+        i++;
+    }
+    
+    Console.Clear();
+    foreach((int x, int y) in dots)
+    {
+        Console.CursorLeft = x;
+        Console.CursorTop = y;
+        Console.Write("#");
+    }
+    Console.CursorTop = dots.Max(D => D.y) + 1;
+    Console.CursorLeft = 0;
 
     w(1, answer1, supposedanswer1);
     w(2, answer2, supposedanswer2);
