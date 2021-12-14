@@ -11,7 +11,7 @@ void Run()
     long answer1 = 0;
     long answer2 = 0;
 
-    var dots = new List<(int x, int y)>();
+    IList<(int x,int y)> dots = new List<(int x, int y)>();
     int i = 0;
     foreach(string s in S)
     {
@@ -23,7 +23,7 @@ void Run()
     bool first = true;
     while (i < S.Count)
     {
-        var newdots = new List<(int x, int y)>();
+        var newdots = new HashSet<(int x, int y)>(dots.Count);
         var s1 = S[i].Split(' ');
         if (s1.Length == 3)
         {
@@ -31,34 +31,15 @@ void Run()
             int fold = int.Parse(s2[1]);
             if (s2[0] == "x")
             {
-                foreach ((int x, int y) in dots)
-                {
-                    int newx = x;
-                    if (x > fold)
-                    {
-                        newx = fold - (x - fold);
-                    }
-                    else if (x == fold) continue;
-                    if (!newdots.Contains((newx, y))) newdots.Add((newx, y));
-                }
+                foreach ((int x, int y) in dots) newdots.Add((Fold(x,fold), y));
             }
             else
             {
-                foreach ((int x, int y) in dots)
-                {
-                    int newy = y;
-                    if (y > fold)
-                    {
-                        newy = fold - (y - fold);
-                    }
-                    else if (y == fold) continue;
-                    if (!newdots.Contains((x, newy))) newdots.Add((x, newy));
-                }
+                foreach ((int x, int y) in dots) newdots.Add((x, Fold(y, fold)));
             }
-            dots = newdots;
+            dots = newdots.ToArray();
             if (first) answer1 = dots.Count;
             first = false;
-
         }
         i++;
     }
@@ -92,3 +73,5 @@ static void w<T>(int number, T val, T supposedval)
     Console.WriteLine(sv);
     Console.ForegroundColor = previouscolour;
 }
+
+static int Fold(int number, int fold) { return number > fold ? fold - (number - fold) : number; };
