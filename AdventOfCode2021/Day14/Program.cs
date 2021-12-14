@@ -1,4 +1,5 @@
-﻿Run();
+﻿//Run();
+RunShortAndFast();
 
 void Run()
 {
@@ -76,16 +77,62 @@ void Run()
     w(2, answer2, supposedanswer2);
 }
 
+void RunShortAndFast()
+{
+    string inputfile = @"..\..\..\example_input.txt";
+    //string inputfile = @"..\..\..\real_input.txt";
+    long supposedanswer1 = 1588;
+    long supposedanswer2 = 2188189693529;
+
+    var S = File.ReadAllLines(inputfile).ToList();
+    long answer1 = 0;
+    long answer2 = 0;
+
+    string poly = S[0];
+    var rulesandcount = new Dictionary<(char left, char right),( char insert, long[] count)>();
+    for (int i = 2; i < S.Count; i++)
+    {
+        var s1 = S[i].Split(" -> ");
+        rulesandcount.Add((s1[0][0], s1[0][1]), (s1[1][0], new long[] { 0, 0 }));
+    }
+    for (int i = 1;i < poly.Length; i++) rulesandcount[(poly[i-1], poly[i])].count[0]++;
+
+    int c0 = 0;
+    
+    for (int i = 0; i < 40; i++)
+    {
+        if (i == 10)
+        {
+            var values = rulesandcount.Select(C => new { n = C.Key.left, c = C.Value.count[c0] }).Append(new { n = poly[^1], c = 1L }).GroupBy(B => B.n, B => B.c, (n, c) => new { name = n, count = c.Sum() }).ToList();
+            answer1 = values.Max(a => a.count) - values.Min(a => a.count);
+        }
+        int c1 = 1 - c0;
+        foreach(var rule in rulesandcount)
+        {
+            if (rule.Value.count[c0] > 0)
+            {
+                rulesandcount[(rule.Key.left, rule.Value.insert)].count[c1] += rule.Value.count[c0];
+                rulesandcount[(rule.Value.insert, rule.Key.right)].count[c1] += rule.Value.count[c0];
+                rule.Value.count[c0] = 0;
+            }
+        }
+        c0 = c1;
+    }
+    var values2 = rulesandcount.Select(C => new { n = C.Key.left, c = C.Value.count[c0] }).Append(new { n = poly[^1], c = 1L }).GroupBy(B => B.n, B => B.c, (n, c) => new { name = n, count = c.Sum() }).ToList();
+    answer2 = values2.Max(a => a.count) - values2.Min(a => a.count);
+
+    w(1, answer1, supposedanswer1);
+    w(2, answer2, supposedanswer2);
+}
+
 void CountBetween(char left, char right, Dictionary<(char left, char right), string> rules, Dictionary<char, long> counters2, int depth, 
     Dictionary<(char left, char right, int depth), Dictionary<char, long>> cached )
 {
     if (depth == 0) return;
-    Dictionary<char, long> cachedCalc;
-    if (!cached.TryGetValue((left, right, depth), out cachedCalc))
+    if (!cached.TryGetValue((left, right, depth), out Dictionary<char, long> cachedCalc))
     {
         cachedCalc = new Dictionary<char, long>();
         cached.Add((left, right, depth), cachedCalc);
-
 
         char insert = rules[(left, right)][0];
         CountBetween(left, insert, rules, cachedCalc, depth - 1, cached);
@@ -98,8 +145,7 @@ void CountBetween(char left, char right, Dictionary<(char left, char right), str
     }
     foreach (var cachedCounter in cachedCalc)
     {
-        long count;
-        if(counters2.TryGetValue(cachedCounter.Key, out count))
+        if(counters2.TryGetValue(cachedCounter.Key, out long count))
         {
             counters2[cachedCounter.Key] = count + cachedCounter.Value;
         }
