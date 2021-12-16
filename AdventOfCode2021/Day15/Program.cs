@@ -39,7 +39,6 @@ long CalculatePath(string[] S)
 
         var newpaths = new List<(int weight, List<(int x, int y)> path)>();
 
-
         if (x > 0 && !visited[x - 1, y]) AddNode(x - 1, y, S, newpaths, currentnode);
         if (x < maxX - 1 && !visited[x + 1, y]) AddNode(x + 1, y, S, newpaths, currentnode);
         if (y > 0 && !visited[x, y - 1]) AddNode(x, y - 1, S, newpaths, currentnode);
