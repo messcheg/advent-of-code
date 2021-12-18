@@ -12,3 +12,4 @@ E:\develop\advent-of-code-2021\AdventOfCode2021\Day17\obj\Debug\net6.0\Day17.dll
 E:\develop\advent-of-code-2021\AdventOfCode2021\Day17\obj\Debug\net6.0\ref\Day17.dll
 E:\develop\advent-of-code-2021\AdventOfCode2021\Day17\obj\Debug\net6.0\Day17.pdb
 E:\develop\advent-of-code-2021\AdventOfCode2021\Day17\obj\Debug\net6.0\Day17.genruntimeconfig.cache
+E:\develop\advent-of-code-2021\AdventOfCode2021\Day17\obj\Debug\net6.0\Day17.csproj.AssemblyReference.cache

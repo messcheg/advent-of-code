@@ -17,7 +17,10 @@ void Run()
 
     answer1 = P.SumVersions();
     answer2 = P.value();
-   
+
+    //P.DisplayPackege();
+    P.DisplaySum();
+
     w(1, answer1, supposedanswer1);
     //w(2, answer2, supposedanswer2);
     Console.WriteLine("{0:X}", answer2);
@@ -85,6 +88,46 @@ public class Pack
             case 7: return (ulong)(Subpackets[0].value() == Subpackets[1].value() ? 1 : 0);
             default: return 0;
         };
+    }
+
+    public void DisplayPackege(int pad = 10)
+    {
+        Console.WriteLine("{          ".PadLeft(pad));
+        Console.WriteLine("version: ".PadLeft(pad) + version);
+        Console.WriteLine("type: ".PadLeft(pad) + typeid);
+        Console.WriteLine("value: ".PadLeft(pad) + value());
+        Console.WriteLine( new string[] { "sum", "product", "min", "max", "litteral", "greater than", "less than", "equal" }[typeid].PadLeft(pad));
+        int pad1 = pad + 3;
+        if (!isOperator())
+        {
+            Console.Write("".PadLeft(pad1));
+            foreach (var l in litterals) Console.Write("0123456789ABCDEF"[l]);
+            Console.WriteLine();
+        }
+        else
+        {
+            foreach (Pack P in Subpackets) P.DisplayPackege(pad1);   
+        }
+        Console.WriteLine("}          ".PadLeft(pad));
+    }
+    public void DisplaySum()
+    {
+        if (!isOperator())
+        {
+            Console.Write(value());
+        }
+        else
+        {
+            Console.Write(new string[] { "sum", "product", "min", "max", "litteral", "gt", "lt", "equal" }[typeid]);
+            Console.Write("(");
+            Subpackets[0].DisplaySum();
+            foreach (Pack P in Subpackets.Skip(1))
+            {
+                Console.Write(", ");
+                P.DisplaySum();
+            }
+            Console.Write(")");
+        }
     }
 }
 
