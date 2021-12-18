@@ -96,11 +96,8 @@ bool Explode (int[] sn)
                 j = i + 3;
                 while (j < sn.Length && sn[j] < 0) j++;
                 if (j < sn.Length && sn[j] >= 0) sn[j] += sn[i + 2];
-                sn[i - 1] = skip; // '['
-                sn[i] = skip ;    // number
-                sn[i + 1] = skip; // ','
-                sn[i + 2] = skip; // 2nd number
-                sn[i + 3] = 0;    // ']'
+                sn[i - 1] = sn[i] = sn[i + 1] = sn[i + 2] = skip; // "[a,b]" -> "0"
+                sn[i + 3] = 0;  
                 level = 4;
                 i += 3;
             }
