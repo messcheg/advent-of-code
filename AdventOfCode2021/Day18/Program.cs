@@ -1,4 +1,9 @@
-﻿Run();
+﻿const int open = -1;
+const int close = -2;
+const int comma = -3;
+const int skip = -4;
+
+Run();
 
 void Run()
 {
@@ -7,10 +12,9 @@ void Run()
     long supposedanswer1 = 4140;
     long supposedanswer2 = 3993;
 
+    int[] ToSnailNumber(string S) { return S.Select(s => s == ',' ? comma : s == '[' ? open : s == ']' ? close : s - '0').ToArray(); }
     var S = File.ReadAllLines(inputfile).Select(s => ToSnailNumber(s)).ToList();
-    long answer1 = 0;
-    long answer2 = 0;
-   
+    
     var sn = S[0];
     for (int i=1; i < S.Count; i++)
     {
@@ -18,9 +22,9 @@ void Run()
         displaynumber(sn,"Subtotl");
     }
 
-   answer1 = Magnitude(sn);
+    long answer1 = Magnitude(sn);
 
-    answer2 = 0;
+    long answer2 = 0;
     for (int i = 0; i < S.Count; i++)
         for (int j = i + 1; j < S.Count; j++)
         {
@@ -48,38 +52,19 @@ static void w<T>(int number, T val, T supposedval)
     Console.ForegroundColor = previouscolour;
 }
 
-const int open = -1;
-const int close = -2;
-const int comma = -3;
-const int skip = -4;
-
 void displaynumber(int[] sn, string label = "")
 {
     Console.Write(label + ": ");
     foreach (int n in sn)
     {
-        if (n == open) Console.Write("[");
-        if (n == close) Console.Write("]");
-        if (n == comma) Console.Write(",");
         if (n >= 0) Console.Write(n);
+        else if (n == open) Console.Write("[");
+        else if (n == close) Console.Write("]");
+        else if (n == comma) Console.Write(",");
     }
     Console.WriteLine();
 }
 
-int[] ToSnailNumber (string S1, int[] res = null, int start = 0) 
-{
-    res = res ?? new int[S1.Length];
-    int i = start;
-    foreach(var s in S1)
-    {
-        if (s >= '0' && s <= '9') res[i] = s - '0';
-        else if (s == ',') res[i] = comma;
-        else if (s == '[') res[i] = open;
-        else if (s == ']') res[i] = close;
-        i++;
-    }
-    return res;
-} 
 int[] Add(int[] N1, int[] N2)
 {
     int[] newNumber = new int[3 + N1.Length + N2.Length];
@@ -165,21 +150,21 @@ int[] Split(int[] input)
 long Magnitude(int[] input)
 {
     var sl = input.Where(n => n != skip).Select(n => (long)n).ToList();
-    while (sl.Count > 1)
+    int len = sl.Count;
+    while (len > 1)
     {
-        var sn = sl;
-        int i = 0;
-        sl = new List<long>(sn.Count);
-        while (i < sn.Count)
+        (int i, int j) = (0,0);
+        while (i < len)
         {
-            if (sn[i] == open && sn[i + 2] == comma && sn[i + 4] ==close)
+            if (sl[i] == open && sl[i + 2] == comma && sl[i + 4] == close)
             {
-                sl.Add(3 * sn[i + 1] + 2 * sn[i + 3]);
+                sl[j] =3 * sl[i + 1] + 2 * sl[i + 3];
                 i += 4;
             }
-            else sl.Add(sn[i]);
-            i++;
+            else sl[j] = sl[i];
+            i++; j++;
         }
+        len = j;
     }
     return sl[0];
 }
