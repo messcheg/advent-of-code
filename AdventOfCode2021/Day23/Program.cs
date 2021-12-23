@@ -28,7 +28,7 @@ void Run()
     w(1, answer1, supposedanswer1);
     w(2, answer2, supposedanswer2);
 }
-enum pod { a = 0, b=1, c = 2, d = 3}
+
 static void w<T>(int number, T val, T supposedval)
 {
     string? v = (val == null) ? "(null)" : val.ToString();
@@ -44,3 +44,5 @@ static void w<T>(int number, T val, T supposedval)
     Console.WriteLine(sv);
     Console.ForegroundColor = previouscolour;
 }
+
+//enum pod { a = 0, b = 1, c = 2, d = 3 };
