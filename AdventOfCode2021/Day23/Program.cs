@@ -5,48 +5,62 @@ Run();
 void Run()
 {
     long supposedanswer1 = 12521;
-    long supposedanswer2 = 0000;
-    string start = "bacdbcda"; //example
-    //string start = "ddccabba"; //real
+    long supposedanswer2 = 44169;
+    string start1 = "bacdbcda"; //example
+    //string start1 = "ddccabba"; //real
+    //string start2 = "bddaccbdbbacdaca"; //example
+    string start2 = "ddddccbcababbaca"; //real
+
     long answer1 = 0;
     long answer2 = 0;
 
-    string defaulthall = "...........";
-    start = start + "|" + defaulthall;
-    string end =  "aabbccdd|" + defaulthall;
+    var a1 = CalculateCheapest(start1);
+    answer1 = a1.costs;
+    foreach (var s in a1.history) Console.WriteLine(s);
+
+    var a2 = CalculateCheapest(start2);
+    answer2 = a2.costs;
+    foreach (var s in a2.history) Console.WriteLine(s);
+
+
+    w(1, answer1, supposedanswer1);
+    w(2, answer2, supposedanswer2);
+}
+
+(long costs, string stand, string[] history) CalculateCheapest(string input)
+{
+    var podsize = input.Length / 4;
+    string defaulthallway = "|...........";
+    var start = input + defaulthallway;
+    var end = new string(input.OrderBy(c => c).ToArray()) + defaulthallway;
 
     var hit = new HashSet<string>();
-    var evaluate = DeterminePossibleMoves(start, 2);
+    var evaluate = DeterminePossibleMoves(start, podsize);
     var nextbest = new List<(long costs, string stand, string[] history)>();
-    foreach(var move in evaluate)
+    foreach (var move in evaluate)
     {
         nextbest.Add((move.costs, move.stand, new string[] { start, move.stand + " (" + move.costs + ")" }));
     }
     nextbest = nextbest.OrderByDescending(c => c.costs).ToList();
 
-    while ( nextbest[^1].stand != end)
+    while (nextbest[^1].stand != end)
     {
         var next = nextbest[^1];
         nextbest.RemoveAt(nextbest.Count - 1);
         if (!hit.Contains(next.stand))
         {
-            evaluate = DeterminePossibleMoves(next.stand, 2);
+            evaluate = DeterminePossibleMoves(next.stand, podsize);
             foreach (var move in evaluate)
             {
                 if (!hit.Contains(move.stand))
                     nextbest.Add((next.costs + move.costs, move.stand,
-                        next.history.Append(move.stand + " (" + move.costs + ")" ).ToArray()));
+                        next.history.Append(move.stand + " (" + move.costs + ")").ToArray()));
             }
             nextbest = nextbest.OrderByDescending(c => c.costs).ToList();
         }
         hit.Add(next.stand);
     }
-
-    answer1 = nextbest[^1].costs;
-    foreach (var s in nextbest[^1].history) Console.WriteLine(s);
-
-    w(1, answer1, supposedanswer1);
-    w(2, answer2, supposedanswer2);
+    return nextbest[^1];
 }
 
 (int costs, string stand)[] DeterminePossibleMoves(string stand, int podSize)
@@ -133,7 +147,7 @@ void Run()
             if (isfree)
             {
 
-                int mountingpoint = home + 4 * podSize + 3;
+                int mountingpoint = Mountingpoint(stand[i], podSize);
                 if (PathIsClear(i, mountingpoint, stand))
                 {
                     int pathlength = Math.Abs(mountingpoint - i) + 1 + c % podSize;
