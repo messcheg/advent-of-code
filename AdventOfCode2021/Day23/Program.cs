@@ -1,4 +1,6 @@
-﻿Run();
+﻿using System.Collections.Generic;
+
+Run();
 
 void Run()
 {
@@ -10,141 +12,133 @@ void Run()
     long answer2 = 0;
 
     string defaulthall = "...........";
-    var stand = (defaulthall, start);
-    var endstand = defaulthall + "aabbccdd";
-    var solutioncosts = new Dictionary<string, (long costs, string[] path) >();
-    solutioncosts.Add(stand.defaulthall + stand.start, (0, new string[] { defaulthall + "|" + stand.start }));
-    var evaluate = new List<((string hall, string rooms) stand, long costs, (string hall, string rooms) previous)>();
-    evaluate.Add((stand , 0, stand));
-    var next = stand;
-    bool deadend = true;
-    while (evaluate.Count > 0 && !solutioncosts.ContainsKey(endstand))
+    start = start + "|" + defaulthall;
+    string end =  "aabbccdd|" + defaulthall;
+
+    var hit = new HashSet<string>();
+    var evaluate = DeterminePossibleMoves(start, 2);
+    var nextbest = new List<(long costs, string stand, string[] history)>();
+    foreach(var move in evaluate)
     {
-        if (deadend)
-        {
-            var n = evaluate.OrderBy(c => c.costs).First();
-            next = n.stand;
-            if (!solutioncosts.TryGetValue(next.defaulthall+next.start, out var costs))
-            {
-                var key = next.defaulthall + next.start;
-                var nextkey = n.previous.hall + n.previous.rooms;
-                solutioncosts.Add(key, (solutioncosts[nextkey].costs + n.costs,
-                                      solutioncosts[nextkey].path.Append(next.defaulthall + "|" + next.start).ToArray()));
-            }
-            evaluate.Remove(n);
-        }
-        var moves = DeterminePossibleMoves(next).OrderBy(c => c.costs);
-        deadend = true;
-
-        foreach (var move in moves)
-        {
-            string key = move.stand.hall + move.stand.rooms;
-            string nextkey = next.defaulthall + next.start;
-            bool found = solutioncosts.TryGetValue(key, out var costs);
-            bool cheaper = found ? costs.costs > solutioncosts[nextkey].costs + move.costs : false;
-            if (!found || cheaper)
-            {
-                evaluate.Add((move.stand, solutioncosts[nextkey].costs + move.costs, next));
-                
-                if (deadend)
-                {
-                    if (cheaper)
-                     solutioncosts[key] = (solutioncosts[nextkey].costs + move.costs,
-                      solutioncosts[nextkey].path.Append(move.stand.hall + "|" + move.stand.rooms).ToArray());
-                    else
-                        solutioncosts.Add(key, (solutioncosts[nextkey].costs + move.costs,
-                         solutioncosts[nextkey].path.Append(move.stand.hall + "|" + move.stand.rooms).ToArray()));
-
-                    next = move.stand;
-                    deadend = false;  
-                }        
-            }
-            
-        }
+        nextbest.Add((move.costs, move.stand, new string[] { start, move.stand + " (" + move.costs + ")" }));
     }
-    foreach (var s in solutioncosts[endstand].path)
+    nextbest = nextbest.OrderByDescending(c => c.costs).ToList();
+
+    while ( nextbest[^1].stand != end)
     {
-        Console.WriteLine(s);
+        var next = nextbest[^1];
+        nextbest.RemoveAt(nextbest.Count - 1);
+        if (!hit.Contains(next.stand))
+        {
+            evaluate = DeterminePossibleMoves(next.stand, 2);
+            foreach (var move in evaluate)
+            {
+                if (!hit.Contains(move.stand))
+                    nextbest.Add((next.costs + move.costs, move.stand,
+                        next.history.Append(move.stand + " (" + move.costs + ")" ).ToArray()));
+            }
+            nextbest = nextbest.OrderByDescending(c => c.costs).ToList();
+        }
+        hit.Add(next.stand);
     }
 
-    answer1 = solutioncosts[endstand].costs;
+    answer1 = nextbest[^1].costs;
+    foreach (var s in nextbest[^1].history) Console.WriteLine(s);
+
     w(1, answer1, supposedanswer1);
     w(2, answer2, supposedanswer2);
 }
 
-(int from, int to, int costs, (string hall, string rooms) stand)[] DeterminePossibleMoves((string hall, string rooms) stand)
+(int costs, string stand)[] DeterminePossibleMoves(string stand, int podSize)
 {
+    var ports = new int[] { podSize * 4 + 3, podSize * 4 + 5, podSize * 4 + 7, podSize * 4 + 9 };
+    var result = new List<(int costs, string stand)>();
     // search for candidates to get out of the pods
-    var result = new List<(int from, int to, int costs, (string hall, string rooms) stand)>(); 
     List<int> candidates = new List<int>();
-    for (int i = 0; i<stand.rooms.Length;i += 2)
+    for (int i = 0; i < podSize * 4;i += podSize)
     {
-        if (stand.rooms[i] == '.')
+        int k = i; 
+        bool clear = true;
+        while (k < i+podSize && clear)
         {
-            if (stand.rooms[i+1] != '.')
+            if (stand[k] != '.')
             {
-                if (i != Home(stand.rooms[i + 1]))
-                    candidates.Add(i + 1);
+                bool change = false;
+                for (int l = k; l < i + podSize; l++)
+                    if (Home(stand[l],podSize) != i) change = true;
+                if (change) candidates.Add(k);
+                clear = false;
             }
-        }
-        else 
-        {
-            if (i != Home(stand.rooms[i]) || i != Home(stand.rooms[i+1]))
-                candidates.Add(i);
+            k++;
         }
     }
     //Determine posibilities to go to
     foreach (var c in candidates)
     {
-        int mountingpoint = (c / 2) * 2 + 2;
-
-        //check if a pod is free
-        int home = Home(stand.rooms[c]);
-        if (stand.rooms[home] == '.' &&
-            (stand.rooms[home + 1] == '.' ||
-                stand.rooms[home + 1] == stand.rooms[c]))
+        int mountingfrom = 2 * (c / podSize) + 3 + 4 * podSize;
+        //check if the homepod is free to go to.
+        int home = Home(stand[c],podSize);
+        bool isfree = true;
+        int k = home;
+        int c1 = k;
+        while (k < home + podSize && isfree)
         {
-            int mountinto = home + 2;
-            if (PathIsClear(mountinto, mountingpoint, stand.hall))
+            if (stand[k] == '.') c1 = k;
+            else
+                for (int l = k; l < home + podSize; l++)
+                    if (Home(stand[l], podSize) != home) isfree = false;
+            k++;
+        }
+        if(isfree)
+        {
+            int mountinto = 2 * (c1/podSize) + 3 + 4 * podSize;
+            if (PathIsClear(mountinto, mountingfrom, stand))
             {
-                int c1 = stand.rooms[home + 1] == '.' ? home + 1 : home;
-                int pathlength = Math.Abs(mountingpoint - mountinto) + 2 + c % 2 + c1 % 2;
-                int costs = pathlength * CostsOf(stand.rooms[c]);
-                result.Add((c, c1, costs, ApplyMovePod(stand, c, c1)));
+                int pathlength = Math.Abs(mountingfrom - mountinto) + 2 + c % podSize + c1 % podSize;
+                int costs = pathlength * CostsOf(stand[c]);
+                result.Add((costs, ApplyMove(stand, c, c1)));
             }
         }
 
-        for (int i = 0; i < stand.hall.Length;i++)
+        for (int i = podSize * 4 + 1; i < stand.Length;i++)
         {
-            if (stand.hall[i] == '.' && !new int[] { 2, 4, 6, 8 }.Contains(i))
+            if (stand[i] == '.' && !ports.Contains(i))
             {
-                if (PathIsClear(i,mountingpoint, stand.hall))
+                if (PathIsClear(i,mountingfrom, stand))
                 {
-                    int pathlength = Math.Abs(mountingpoint - i) + 1 + c % 2 ;
-                    int costs = pathlength * CostsOf(stand.rooms[c]);
-                    result.Add((c, i + 8, costs, ApplyMove(stand,c,i)));
+                    int pathlength = Math.Abs(mountingfrom - i) + 1 + c % podSize ;
+                    int costs = pathlength * CostsOf(stand[c]);
+                    result.Add((costs, ApplyMove(stand,c,i)));
                 }
             }
         }
     }
-
-    // Get candidates to move into pods
-    for (int i = 0; i < stand.hall.Length; i++)
+    // Get candidates in hallway to move into pods
+    for (int i = podSize * 4 + 1; i < stand.Length; i++)
     {
-        if (stand.hall[i] != '.')
+        if (stand[i] != '.')
         {
-            int home = Home(stand.hall[i]);
-            if (stand.rooms[home] == '.' &&
-                (stand.rooms[home + 1] == '.' ||
-                    stand.rooms[home + 1] == stand.hall[i]))
+            int home = Home(stand[i], podSize);
+            bool isfree = true;
+            int k = home;
+            int c = home;
+            while (k < home + podSize && isfree)
             {
-                int mountingpoint = home + 2;
-                if (PathIsClear(i, mountingpoint, stand.hall))
+                if (stand[k] == '.') c = k;
+                else
+                    for (int l = k; l < home + podSize; l++)
+                        if (Home(stand[l],podSize) != home) isfree = false;
+                k++;
+            }
+            if (isfree)
+            {
+
+                int mountingpoint = home + 4 * podSize + 3;
+                if (PathIsClear(i, mountingpoint, stand))
                 {
-                    int c = stand.rooms[home + 1] == '.' ? home + 1 : home;
-                    int pathlength = Math.Abs(mountingpoint - i) + 1 + c % 2;
-                    int costs = pathlength * CostsOf(stand.hall[i]);
-                    result.Add((c, i + 8, costs, ApplyMove(stand, c, i)));
+                    int pathlength = Math.Abs(mountingpoint - i) + 1 + c % podSize;
+                    int costs = pathlength * CostsOf(stand[i]);
+                    result.Add((costs, ApplyMove(stand, c, i)));
                 }
             }
         };
@@ -152,23 +146,13 @@ void Run()
     return result.ToArray();
 }
 
-(string hall, string rooms) ApplyMovePod((string hall, string rooms) stand, int c, int c1)
+string ApplyMove(string stand, int c, int c1)
 {
-    var h = stand.hall.ToCharArray();
-    var r = stand.rooms.ToCharArray();
+    var r = stand.ToCharArray();
     (r[c], r[c1]) = (r[c1], r[c]);
-
-    return (new string(h), new string(r));
+    return new string(r);
 }
 
-(string hall, string rooms) ApplyMove((string hall, string rooms) stand, int roompos, int hallpos)
-{
-    var h = stand.hall.ToCharArray();
-    var r = stand.rooms.ToCharArray();
-    (h[hallpos], r[roompos]) = (r[roompos], h[hallpos]);
-
-    return (new string(h), new string (r));
-}
 bool PathIsClear(int i, int mountingpoint, string hall)
 {
     bool clear = true;
@@ -201,10 +185,15 @@ int CostsOf(char v)
     }
 }
 
-int Home(char candidate)
+int Home(char candidate, int podsize)
 {
-    return (candidate - 'a') * 2;
+    return (candidate - 'a') * podsize;
 }
+int Mountingpoint(char candidate, int podsize)
+{
+    return (candidate - 'a') * 2 + 4 * podsize + 3;
+}
+
 
 static void w<T>(int number, T val, T supposedval)
 {
