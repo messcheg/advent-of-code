@@ -14,17 +14,62 @@ void Run()
     long answer1 = 0;
     long answer2 = 0;
 
+    
     var a1 = CalculateCheapest(start1);
     answer1 = a1.costs;
-    foreach (var s in a1.history) Console.WriteLine(s);
+    //foreach (var s in a1.history) Console.WriteLine(s);
+    Console.WriteLine("ready, press any key to continue");
+    Console.ReadKey();
+    WriteFinal(a1.history);
 
     var a2 = CalculateCheapest(start2);
     answer2 = a2.costs;
-    foreach (var s in a2.history) Console.WriteLine(s);
+    //foreach (var s in a2.history) Console.WriteLine(s);
+    Console.WriteLine("ready, press any key to continue");
+    Console.ReadKey();
+    WriteFinal(a2.history);
 
 
     w(1, answer1, supposedanswer1);
     w(2, answer2, supposedanswer2);
+
+}
+
+void WriteFinal(string[] finalresult)
+{
+    Console.Clear();
+    Console.WriteLine("#############");
+    Console.WriteLine("#           #");
+    Console.WriteLine("### # # # ###");
+    var s1 = finalresult[0].Split("|");
+    int podsize = s1[0].Length/4;
+    for(int i=1; i<podsize; i++)
+        Console.WriteLine("  # # # # #  ");
+    Console.WriteLine("  #########  ");
+    string previous = finalresult[0].Split('|')[0];
+    var oldcolor = Console.ForegroundColor;
+    foreach (string s in finalresult)
+    {
+        Console.CursorLeft = 1;
+        Console.CursorTop = 1;
+        s1 = s.Split("|");
+        Console.Write(s1[1].Split(" ")[0]);
+        for (int i= 0; i < 4; i++)
+            for (int j=0; j<podsize; j++)
+            {
+                Console.CursorLeft = 3 + i * 2;
+                Console.CursorTop = 2 + j;
+                var c = s1[0][i * podsize + j];
+                if (c == '.') Console.ForegroundColor = oldcolor;
+                else if (c != previous[i * podsize + j]) Console.ForegroundColor = ConsoleColor.Green;
+                else Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.Write(c);
+                Console.ForegroundColor = oldcolor;
+            }
+        Thread.Sleep(500);
+        previous = s1[0];
+    }
+    Console.ForegroundColor = oldcolor;
 }
 
 (long costs, string stand, string[] history) CalculateCheapest(string input)
@@ -199,15 +244,8 @@ int CostsOf(char v)
     }
 }
 
-int Home(char candidate, int podsize)
-{
-    return (candidate - 'a') * podsize;
-}
-int Mountingpoint(char candidate, int podsize)
-{
-    return (candidate - 'a') * 2 + 4 * podsize + 3;
-}
-
+int Home(char candidate, int podsize) { return (candidate - 'a') * podsize; }
+int Mountingpoint(char candidate, int podsize) { return (candidate - 'a') * 2 + 4 * podsize + 3; }
 
 static void w<T>(int number, T val, T supposedval)
 {

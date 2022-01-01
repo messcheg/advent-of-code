@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "E:\\develop\\advent-of-code-2021\\AdventOfCode2021\\Day13\\Day13.csproj": {}
+    "E:\\develop\\advent-of-code\\AdventOfCode2021\\Day13\\Day13.csproj": {}
   },
   "projects": {
-    "E:\\develop\\advent-of-code-2021\\AdventOfCode2021\\Day13\\Day13.csproj": {
+    "E:\\develop\\advent-of-code\\AdventOfCode2021\\Day13\\Day13.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\develop\\advent-of-code-2021\\AdventOfCode2021\\Day13\\Day13.csproj",
+        "projectUniqueName": "E:\\develop\\advent-of-code\\AdventOfCode2021\\Day13\\Day13.csproj",
         "projectName": "Day13",
-        "projectPath": "E:\\develop\\advent-of-code-2021\\AdventOfCode2021\\Day13\\Day13.csproj",
+        "projectPath": "E:\\develop\\advent-of-code\\AdventOfCode2021\\Day13\\Day13.csproj",
         "packagesPath": "C:\\Users\\Gert-Jan\\.nuget\\packages\\",
-        "outputPath": "E:\\develop\\advent-of-code-2021\\AdventOfCode2021\\Day13\\obj\\",
+        "outputPath": "E:\\develop\\advent-of-code\\AdventOfCode2021\\Day13\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Gert-Jan\\AppData\\Roaming\\NuGet\\NuGet.Config",

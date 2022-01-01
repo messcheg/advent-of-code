@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "0QnuQ8m4/nQw1z4qg2xd+j+anALKfCxNXPMprDJl7x0lyqpijixIxbiipV1/D9FOVFdxr5jG+XrxQupZeibuNw==",
+  "dgSpecHash": "dO0P7sfgsZSIh/QQL4LSuR13rH0Y30XoJFQV5+FcOECFqYEawRnbkJfPccgKpD/oE9m92ArETtDadD5A4/M4Wg==",
   "success": true,
-  "projectFilePath": "E:\\develop\\advent-of-code-2021\\AdventOfCode2021\\Day2\\Day2.csproj",
+  "projectFilePath": "E:\\develop\\advent-of-code\\AdventOfCode2021\\Day2\\Day2.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

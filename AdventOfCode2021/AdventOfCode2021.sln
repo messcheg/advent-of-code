@@ -53,6 +53,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Day24", "Day24\Day24.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Day25", "Day25\Day25.csproj", "{76B52068-927E-47BF-A880-A3C54A99E006}"
 EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "ScratchExtensionsForNiels", "ScratchExtensionsForNiels\ScratchExtensionsForNiels.njsproj", "{C5EB18EB-7C7D-4AA1-A41B-E3F8654996A0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -159,6 +161,10 @@ Global
 		{76B52068-927E-47BF-A880-A3C54A99E006}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{76B52068-927E-47BF-A880-A3C54A99E006}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{76B52068-927E-47BF-A880-A3C54A99E006}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5EB18EB-7C7D-4AA1-A41B-E3F8654996A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5EB18EB-7C7D-4AA1-A41B-E3F8654996A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5EB18EB-7C7D-4AA1-A41B-E3F8654996A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5EB18EB-7C7D-4AA1-A41B-E3F8654996A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
