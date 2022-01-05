@@ -43,8 +43,6 @@ for instr in l:
     elif (c == 'R' and by == 90) or (c == 'L' and by == 270) : (wpx, wpy) = (wpy, -wpx)
     elif (c == 'R' or c == 'L') and by == 180 : (wpx, wpy) = (-wpx, -wpy)
     elif (c == 'L' and by == 90) or (c == 'R' and by == 270) : (wpx, wpy) = (-wpy, wpx)
-    if d > 3 : d -= 4
-    if d < 0 : d += 4
 print ("Answer2: ", x, y, abs(x)+abs(y))
 
 
