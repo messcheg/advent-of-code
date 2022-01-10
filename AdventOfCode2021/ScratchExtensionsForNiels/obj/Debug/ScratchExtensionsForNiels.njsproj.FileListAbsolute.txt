@@ -1,3 +1,0 @@
-E:\develop\advent-of-code-2021\AdventOfCode2021\ScratchExtensionsForNiels\obj\Debug\ScratchExtensionsForNiels.njsproj.AssemblyReference.cache
-E:\develop\advent-of-code-2021\AdventOfCode2021\ScratchExtensionsForNiels\obj\Debug\ScratchExtensionsForNiels.njsproj.CoreCompileInputs.cache
-E:\develop\advent-of-code-2021\AdventOfCode2021\ScratchExtensionsForNiels\bin\Microsoft.NodejsTools.WebRole.dll
