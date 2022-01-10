@@ -37,7 +37,6 @@ def checkrule(m, rules, rule):
         if r[0] and r[1] == '' : return True
     return False
 
-
 l = f.readlines()
 nl = []
 for s in l :
