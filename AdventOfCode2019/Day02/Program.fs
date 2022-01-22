@@ -13,10 +13,14 @@ let inp = File.ReadLines(filename) |>
 
 let inparr = Seq.toArray inp
 
+let indirect arrInp i = 
+    Array.get arrInp (Array.get arrInp i)
+    
+
 let get4 arrInp i =
     ( Array.get arrInp i,
-    Array.get arrInp (Array.get arrInp (i+1)),
-    Array.get arrInp (Array.get arrInp (i+2)),
+    indirect arrInp (i+1),
+    indirect arrInp (i+2),
     Array.get arrInp (i+3))
 
 let part2init arrInp a b = 
@@ -46,5 +50,3 @@ let determine arrInp =
     p * 100 + q
 
 printfn "Answer2: %d" (determine inparr)
-
-    
