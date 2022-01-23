@@ -6,7 +6,8 @@ let filename = "..\\..\\..\\real_input.txt"
 
 let fuel mass : int = (mass / 3) - 2 : int
 
-let sum (ff : int -> int ) = File.ReadLines(filename) |>  
+let sum (ff : int -> int ) = 
+            File.ReadLines(filename) |>  
             Seq.map System.Int32.Parse |>
             Seq.map ff |>
             Seq.sum 

@@ -5,10 +5,12 @@ open System
 // let filename = "..\\..\\..\\example_input.txt"
 let filename = "..\\..\\..\\real_input.txt"
 
-let inp = File.ReadLines(filename) |> 
-            Seq.head |> 
-            fun s -> s.Split(',') |>
-            Seq.map Int32.Parse 
+let inp = 
+    File.ReadLines(filename) |> 
+    Seq.head |> 
+    fun s -> 
+        s.Split(',') |>
+        Seq.map Int32.Parse 
 
 
 let inparr = Seq.toArray inp
@@ -34,6 +36,7 @@ let dorun arrInp =
         match (get4 arrInp i) with
             | ( a , b , c , d ) when a = 1 -> Array.set arrInp d (b+c)
             | ( a , b , c , d ) when a = 2 -> Array.set arrInp d (b*c)
+            | _ -> 
         i <- i + 4
     Array.get arrInp 0
 
