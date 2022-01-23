@@ -53,37 +53,60 @@ let getOverlaps a1 a2 b1 b2 =
         if b1 < b2 then overlapsinseq a2 a1 b1 b2
         else overlapsinseq a2 a1 b2 b1
 
-let intersect (x0, y0) (x1, y1) (p0, q0) (p1, q1) =
+let intersect (x0:int, y0:int) (x1, y1) (p0, q0) (p1, q1) step1 step2 =
+    let steps = 
+        step1 + step2 + Math.Abs(q0 - y0) + Math.Abs(p0 - x0)
     let reslt = 
         if x0 = x1 && q0 = q1 && (between x0 p0 p1) && (between q0 y0 y1) then
-            [|(x0, q0)|] 
+            [|((x0, q0), steps) |] 
         elif y0 = y1 && p0 = p1 && (between p0 x0 x1) && (between y0 q0 q1) then    
-            [|(p0, y0)|] 
+            [|((p0, y0), steps )|] 
         elif p0 = p1 && x0 = x1 && p0 = x0 && (overlap y0 y1 q0 q1) then
-            getOverlaps y0 y1 q0 q1 |> Array.map (fun s -> (x0, s))
+            getOverlaps y0 y1 q0 q1 |> Array.map (fun s -> ((x0, s), steps))
         elif q0 = q1 && y0 = y1 && q0 = y0 && (overlap x0 x1 p0 p1) then
-            getOverlaps x0 x1 p0 p1 |> Array.map (fun s -> (s, y0))
+            getOverlaps x0 x1 p0 p1 |> Array.map (fun s -> ((s, y0), steps))
         else [| |]
     reslt
-        
+
+let steps (x1:int, y1:int) (x2, y2) =
+    if x1 = x2 then Math.Abs (y2 - y1)
+    else Math.Abs (x2 - x1)
+ 
 let intersections arr1 arr2 =
     let mutable reslt = [| |]
     let mutable p1 = (0, 0)
+    let mutable step1 = 0
     for s1 in arr1 do
         let mutable p2 = (0, 0)
+        let mutable step2 = 0
         for s2 in arr2 do
-            reslt <- Array.insertManyAt reslt.Length (intersect p1 s1 p2 s2) reslt
+            reslt <- Array.insertManyAt reslt.Length (intersect p1 s1 p2 s2 step1 step2) reslt
+            step2 <- step2 + steps p2 s2
             p2 <- s2
+        step1 <- step1 + steps p1 s1
         p1 <- s1
     reslt
 
 let manhattandistance arr = 
-    Array.map (fun (x : int, y : int) -> (Math.Abs x) + (Math.Abs y)) arr
+    Array.map (fun ((x : int, y : int), z : int) -> (Math.Abs x) + (Math.Abs y)) arr
+
+let combinedpathlen arr = 
+    Array.map (fun ((x : int, y : int), z : int) -> z) arr
+
+let getintersections =
+    intersections (points inp0) (points inp1)
 
 let answer1 = 
-   (manhattandistance (intersections (points inp0) (points inp1))) |>
+   manhattandistance getintersections |>
    Array.distinct |> 
    Array.filter (fun s -> s <> 0) |>
    Array.min
     
+let answer2 = 
+   combinedpathlen getintersections |>
+   Array.distinct |> 
+   Array.filter (fun s -> s <> 0) |>
+   Array.min
+
 printfn "Answer1: %d" answer1
+printfn "Answer2: %d" answer2
