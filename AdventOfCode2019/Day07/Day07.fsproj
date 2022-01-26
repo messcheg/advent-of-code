@@ -6,13 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="example_input1.txt" />
-    <Content Include="real_input.txt" />
     <Compile Include="Program.fs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\IntcodeMachine\IntcodeMachine.fsproj" />
   </ItemGroup>
 
 </Project>

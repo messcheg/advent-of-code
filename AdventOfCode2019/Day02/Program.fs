@@ -1,51 +1,28 @@
 ﻿
 open System.IO
 open System
+open IntcodeMachine.Intcode
 
 // let filename = "..\\..\\..\\example_input.txt"
 let filename = "..\\..\\..\\real_input.txt"
 
-let inp = 
-    File.ReadLines(filename) |> 
-    Seq.head |> 
-    fun s -> 
-        s.Split(',') |>
-        Seq.map Int32.Parse 
-
-
-let inparr = Seq.toArray inp
-
-let indirect arrInp i = 
-    Array.get arrInp (Array.get arrInp i)
-    
-
-let get4 arrInp i =
-    ( Array.get arrInp i,
-    indirect arrInp (i+1),
-    indirect arrInp (i+2),
-    Array.get arrInp (i+3))
-
+let inparr = inp filename
 let part2init arrInp a b = 
     Array.set arrInp 1 a
     Array.set arrInp 2 b
     arrInp
 
-let dorun arrInp =
-    let mutable i : int = 0
-    while (Array.get arrInp i) <> 99 do
-        match (get4 arrInp i) with
-            | ( a , b , c , d ) when a = 1 -> Array.set arrInp d (b+c)
-            | ( a , b , c , d ) when a = 2 -> Array.set arrInp d (b*c)
-            | _ -> 
-        i <- i + 4
-    Array.get arrInp 0
+let runmachine arr a b = 
+    let prep = part2init (Array.copy arr) a b
+    let res = dorun prep 0
+    prep[0]
 
-printfn "Answer1: %d" (dorun (part2init (Array.copy inparr) 12 2))
+printfn "Answer1: %d" (runmachine inparr 12 2)
 
 let determine arrInp =
     let mutable p = 0
     let mutable q = 0
-    while (dorun (part2init (Array.copy inparr) p q)) <> 19690720 do
+    while (runmachine inparr p q) <> 19690720 do
         p <- p + 1
         if p > 99 then
             q <- q + 1
