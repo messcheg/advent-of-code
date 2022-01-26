@@ -41,7 +41,6 @@ let opr opc a b =
     elif opc = 8 then  if a = b then 1 else 0
     else 0
 
-
 let dorun arrInp getInput =
     let mutable i : int = 0
     let mutable outp = 0
