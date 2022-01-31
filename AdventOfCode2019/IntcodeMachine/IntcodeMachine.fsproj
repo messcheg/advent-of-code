@@ -9,4 +9,6 @@
     <Compile Include="IntCodeMachine.fs" />
   </ItemGroup>
 
+  <ItemGroup />
+
 </Project>
