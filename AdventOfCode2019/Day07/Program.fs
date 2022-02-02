@@ -10,20 +10,20 @@ let checksequence (seq1 :int64[]) inputsignal : int64 =
     let mutable amplifiers = Map []
     for c in seq1 do
         let newarr = Array.copy inparr
-        let res = (doruntilout newarr [| c ; out |] 0)
-        out <- fst res
-        amplifiers <- amplifiers.Add(c,(newarr,snd res))
+        let res = (doruntilout newarr [||] [| c ; out |] 0 0)
+        out <- gfst res
+        amplifiers <- amplifiers.Add(c,(newarr,gsnd res))
     
     let mutable finish = false
     while not finish do
         for c in seq1 do
             let nxt = amplifiers[c]
             let arr = fst nxt
-            let res = (doruntilout arr [| out |] (snd nxt))
-            finish <- finish || snd res = 0
-            out <- if finish then out else fst res
+            let res = (doruntilout arr [||] [| out |] (snd nxt) 0)
+            finish <- finish || gsnd res = 0
+            out <- if finish then out else gfst res
             amplifiers <- amplifiers.Remove(c)
-            amplifiers <- amplifiers.Add(c, (arr, snd res))
+            amplifiers <- amplifiers.Add(c, (arr, gsnd res))
     out
 
 
