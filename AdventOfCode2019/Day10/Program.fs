@@ -1,7 +1,7 @@
 ﻿open System.IO
 open System
 
-let ex1 = "..\\..\\..\\example_input2.txt"
+let ex1 = "..\\..\\..\\example_input3.txt"
 let real1 = "..\\..\\..\\real_input.txt"
 
 let inp fl = 
@@ -75,7 +75,9 @@ let losCounts fl =
                 //printfn "---------------"
     cnt
 
+//let loscEx1 = losCounts ex1 
 let loscEx1 = losCounts real1 
+
 for i in 0 .. Array2D.length1 loscEx1 - 1 do
     for j in 0 .. Array2D.length2 loscEx1 - 1 do
         printf "%d, " loscEx1[i,j]
@@ -83,11 +85,46 @@ for i in 0 .. Array2D.length1 loscEx1 - 1 do
  
 let d2max ar2 = 
     let mutable max = 0
+    let mutable coordinates = (0,0) 
     for i in 0 .. Array2D.length1 ar2 - 1 do
         for j in 0 .. Array2D.length2 ar2 - 1 do
-            if ar2[i,j] > max then max <- ar2[i,j]
-    max
+            if ar2[i,j] > max then
+                max <- ar2[i,j]
+                coordinates <- (i,j)
+    (max, coordinates)
 
 let answer1 = d2max loscEx1
 
-printfn "answer1: %d" answer1
+printfn "answer1: %d" (fst answer1)
+
+let vaporize ar3 =
+    let (max, (y,x)) = d2max ar3
+    let lines = linesofsight (Array2D.length1 ar3) (Array2D.length2 ar3) y x
+    let astrs = 
+        lines |> 
+        Array.map (fun z -> z |> Seq.filter ( fun (i,j) -> ar3[j,i] > 0)) |> 
+        Array.filter (fun z -> not (Seq.isEmpty z)) |>
+        Array.sortBy (fun z -> 
+                let (i,j) = Seq.head z  
+                let angle = Math.Atan2( float (i - x), float (y - j))
+                if angle >= 0 then angle
+                else angle + Math.PI * 2.0) 
+    let mutable cntr = 0
+    let mutable lastone = (x,y)
+    let mutable linestocheck = Array.toSeq astrs
+    let mutable nextlines = List.empty
+    while cntr < 200 do
+        let current = Seq.head linestocheck
+        lastone <- Seq.head current
+        if not (Seq.isEmpty (Seq.tail current)) then nextlines <- nextlines @ [Seq.tail current]
+        linestocheck <- Seq.tail linestocheck
+        cntr <- cntr + 1
+        if Seq.isEmpty linestocheck then
+            linestocheck <- nextlines
+            nextlines <- List.Empty
+    lastone
+
+let answer2 = vaporize loscEx1
+    
+printfn "answer2: %d"  (100 * (fst answer2) + (snd answer2))
+    

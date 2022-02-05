@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="example_input3.txt" />
     <Content Include="example_input1.txt" />
     <Content Include="real_input.txt" />
     <Content Include="example_input2.txt" />
