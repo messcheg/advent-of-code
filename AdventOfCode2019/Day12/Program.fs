@@ -57,3 +57,35 @@ let energy ar =
 let answer1 = energy test1
 
 printfn "Answer1: %d" answer1
+
+let rec applyuntilallOnce0 ar cnt (cx,cy,cz)=
+    let cnt1 = cnt + 1L 
+    let ar1 = applyStep ar
+    let cx1 = 
+        if cx > 0L then cx 
+        elif ar1 |> Array.forall (fun (_,(vx,vy,vz)) -> vx = 0) then cnt1
+        else 0L 
+    let cy1 = 
+        if cy > 0L then cy 
+        elif ar1 |> Array.forall (fun (_,(vx,vy,vz)) -> vy = 0) then cnt1
+        else 0L 
+    let cz1 = 
+        if cz > 0L then cz 
+        elif ar1 |> Array.forall (fun (_,(vx,vy,vz)) -> vz = 0) then cnt1
+        else 0L 
+    if cx1 > 0L && cy1 > 0L && cz1 > 0L then (cx1, cy1, cz1)   
+    else applyuntilallOnce0 ar1 cnt1 (cx1, cy1, cz1)
+
+let (tx, ty,tz) =
+    applyuntilallOnce0 (addV0 input) 0L (0,0,0)
+
+printfn "Answer2 x,y,z: %d %d %d" tx ty tz
+
+let rec GCD a b = 
+    if b = 0L then a
+    else GCD b (a % b)
+
+let LCM x y z =
+    x * y * z / (GCD (GCD x y) z)
+
+printfn "Answer2: %d" (LCM tx ty tz)
