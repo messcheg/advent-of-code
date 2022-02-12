@@ -64,7 +64,7 @@ module Intcode =
     let gfrt (_,_,_,d,_) = d
     let gfft (_,_,_,_,e) = e
 
-    let doruntilout (arrInp : int64[] ) (arrExtra : (int * int64)[]) (getInput : int64[]) pc (pbase : int) =
+    let runFunInUntilOut (arrInp : int64[]) (arrExtra : (int * int64)[]) (funinp : int64 -> int64) pc (pbase : int) =
         let mutable i : int = pc
         let mutable out = (0L,0,(0, pbase), true, (arrInp, arrExtra))
         let mutable inpcnt = 0
@@ -76,7 +76,7 @@ module Intcode =
                     arrs <- setValue arrs (int a) parambase (i+3) (opr (int de) (getValue arrs (int c) parambase (i+1)) (getValue arrs (int b) parambase (i+2)))
                     i <- i + 4
                 | ( _ , _ , c , de ) when de = 3 ->
-                    arrs <- setValue arrs (int c) parambase (i+1) getInput[inpcnt]
+                    arrs <- setValue arrs (int c) parambase (i+1) (funinp inpcnt)
                     inpcnt <- inpcnt + 1
                     out <- (gfst out, gsnd out, (inpcnt, parambase), true, arrs)
                     i <- i + 2
@@ -92,6 +92,10 @@ module Intcode =
                     i <- i + 2
                 | _ -> i <- i + 1
         out
+    
+    let doruntilout (arrInp : int64[] ) (arrExtra : (int * int64)[]) (getInput : int64[]) pc (pbase : int) =
+        runFunInUntilOut arrInp arrExtra (fun x -> getInput[int x]) pc pbase
+
 
     let dorun1 (arrInp : int64[] ) (getInput : int64[]) =
         let mutable pc : int = 0
