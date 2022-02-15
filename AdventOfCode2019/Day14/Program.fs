@@ -63,17 +63,12 @@ printfn "Answer1: %d, expected: %d" answer1 (fst input)
 let availablOre = 1000000000000L
 
 let rec findMaxFuel (under:int64) ore rest =
-    if rest < answer1 then
-        let mutable u1 = under
-        let mutable u2 = u1 + 1L
-        while (fuelInOre u2) <= (ore + rest) do
-            u1 <- u2
-            u2 <- u2 + 1L
-        u1
-    else
-        let under1 = under + rest / answer1
-        let subresult = fuelInOre under1
-        findMaxFuel under1 subresult (ore + rest - subresult)
+    let under1 = 
+        if rest < answer1 then under + 1L
+        else under + rest / answer1
+    let subresult = fuelInOre under1
+    if subresult > (ore + rest) then under
+    else findMaxFuel under1 subresult (ore + rest - subresult)
 
 let answer2 = findMaxFuel 0L 0L availablOre
 printfn "Answer2: %d" answer2 
