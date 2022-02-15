@@ -4,9 +4,9 @@ let ex1 = (165, "..\\..\\..\\Example1.txt")
 let ex2 = (13312, "..\\..\\..\\Example3.txt")
 let ex3 = (180697, "..\\..\\..\\Example2.txt")
 let ex4 = (2210736, "..\\..\\..\\Example4.txt")
+let real1 = (0, "..\\..\\..\\RealInput.txt")
 
-
-let input = ex3
+let input = real1
 
 let lookupInp = 
     File.ReadLines(snd input) |>
@@ -40,22 +40,40 @@ let hits =
     let hc2 = Array.map2(fun (a,b) c -> (a, (b, c))) hitcnt [|0..(Array.length hitcnt) - 1|]
     dict hc2
     
-let rec investigateneeds (n:string) number (reqs:int64[][]) = 
+let rec investigateneeds (n:string) numberToUse (reqs:(int64*int64)[]) = 
     let (gain, ingredients) = if n= "ORE" then (1L, [||]) else lookup[n]
     let (hit, idx) = hits[n]
-    reqs[idx] <- Array.append reqs[idx] [|number|]
-    if (Array.length reqs[idx]) = hit then
-        let needs = (Array.sum reqs[idx])
-        let req = needs/gain + (if needs % gain > 0L then 1L else 0L)
-        for (ing, need) in ingredients do   
-            investigateneeds ing (req * need) reqs |> ignore 
+    let (reqTot1, numTot1) = reqs[idx] 
+    let spare = numTot1 - reqTot1
+    let needs = numberToUse - spare
+    let requested = needs/gain + (if needs % gain > 0L then 1L else 0L)
+    reqs[idx] <- (reqTot1 + numberToUse, numTot1 + requested * gain)
+    for (ing, need) in ingredients do   
+        investigateneeds ing (requested * need) reqs |> ignore 
     reqs
 
-let counts = 
-    investigateneeds "FUEL" 1L (hits.Keys |> Seq.map(fun _ -> [||]) |> Seq.toArray) |>
-    Array.map(fun ar -> Array.fold(+) 0L ar) 
+let counts (n:int64) = investigateneeds "FUEL" n (hits.Keys |> Seq.map(fun _ -> (0L,0L)) |> Seq.toArray)
 
-let answer1 =
-    counts[snd hits["ORE"]]
+let fuelInOre (n:int64) = snd ((counts n)[snd hits["ORE"]])
+
+let answer1 = fuelInOre 1L
 
 printfn "Answer1: %d, expected: %d" answer1 (fst input) 
+
+let availablOre = 1000000000000L
+
+let rec findMaxFuel (under:int64) ore rest =
+    if rest < answer1 then
+        let mutable u1 = under
+        let mutable u2 = u1 + 1L
+        while (fuelInOre u2) <= (ore + rest) do
+            u1 <- u2
+            u2 <- u2 + 1L
+        u1
+    else
+        let under1 = under + rest / answer1
+        let subresult = fuelInOre under1
+        findMaxFuel under1 subresult (ore + rest - subresult)
+
+let answer2 = findMaxFuel 0L 0L availablOre
+printfn "Answer2: %d" answer2 
