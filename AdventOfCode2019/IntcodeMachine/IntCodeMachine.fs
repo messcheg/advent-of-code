@@ -100,8 +100,10 @@ module Intcode =
         let (outval, pc1, (_,pbase1), finish, (prog1, arrExtra1)) = doruntilout prog arrExtra [|inVal|] pc pbase
         (outval,(arrExtra1, prog1, pc1, pbase1))    
 
+    let initalprogstate prog  = ([||], prog, 0, 0)
+      
     let runFirstStep (inVal:int64) prog =
-        runNextStep inVal ([||], prog, 0, 0)
+        runNextStep inVal (initalprogstate prog)
     
     let dorun1 (arrInp : int64[] ) (getInput : int64[]) =
         let mutable pc : int = 0
