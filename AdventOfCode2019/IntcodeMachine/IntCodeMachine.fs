@@ -95,8 +95,14 @@ module Intcode =
     
     let doruntilout (arrInp : int64[] ) (arrExtra : (int * int64)[]) (getInput : int64[]) pc (pbase : int) =
         runFunInUntilOut arrInp arrExtra (fun x -> getInput[int x]) pc pbase
+    
+    let runNextStep (inVal:int64) ((arrExtra : (int * int64)[]), (prog : int64[]), pc, (pbase : int)) =
+        let (outval, pc1, (_,pbase1), finish, (prog1, arrExtra1)) = doruntilout prog arrExtra [|inVal|] pc pbase
+        (outval,(arrExtra1, prog1, pc1, pbase1))    
 
-
+    let runFirstStep (inVal:int64) prog =
+        runNextStep inVal ([||], prog, 0, 0)
+    
     let dorun1 (arrInp : int64[] ) (getInput : int64[]) =
         let mutable pc : int = 0
         let mutable inpcnt = 0
