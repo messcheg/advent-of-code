@@ -50,3 +50,55 @@ let answer1 =
     Seq.sum
 
 printfn "Answer1 = %d" answer1
+
+let numberofscaffolds pf = 
+    pf |> 
+    Seq.map(fun s -> 
+        s |> 
+        Seq.where(fun c -> c = '#' || c = '^') |> 
+        Seq.length) |>
+    Seq.sum 
+
+let findVacuumcleaner pf = 
+    let mutable ret = (0,0)
+    for i = 0 to (pf |> Array.length) - 1 do
+        let l = pf[i]
+        for j = 0 to (l |> Array.length)- 1 do
+            let c = l[j]
+            if c = '^' || c = 'v' || c = '>' || c = '<' then ret <- (i,j)
+    ret
+
+let rec getpath pf (i,j) visited scafleft intersections =
+    let visited1 = visited @ [(i,j)]
+    if scafleft = 0 then (true, (visited1, (i,j)))
+    else
+        let maxI = (Array.length pf) - 1
+        let maxJ = (Array.length pf[0]) - 1
+        let check (I,J) = 
+            if J <= maxJ && J >= 0 && I <= maxI && I >= 0 &&  
+                pf[I][J] = '#' then 
+                if  not (List.contains (I,J) visited) then 
+                    getpath pf (I, J) visited1 (scafleft - 1) intersections
+                elif List.contains (I,J) intersections then
+                    getpath pf (I, J) visited1 scafleft (intersections |> List.filter(fun p -> p <> (I,J))) 
+                else (false, (visited1, (I,J)))
+            else (false, (visited1, (I,J)))
+        let p1 = check (i,j+1) 
+        if fst p1 then p1
+        else    
+            let p2 = check (i,j-1) 
+            if fst p2 then p2
+            else    
+                let p3 = check (i+1,j) 
+                if fst p3 then p3
+                else    
+                    check (i-1,j) 
+                    
+                
+                      
+let path pf = getpath pf (findVacuumcleaner pf) [] (numberofscaffolds pf) (getIntersections pf)
+
+let answer2 = 
+    path playfield
+
+printfn "A2 %d" (Seq.length (fst (snd answer2)))
