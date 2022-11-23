@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Day03</RootNamespace>
+    <RootNamespace>Day04</RootNamespace>
     <TargetFramework>net7.0</TargetFramework>
   </PropertyGroup>
 
