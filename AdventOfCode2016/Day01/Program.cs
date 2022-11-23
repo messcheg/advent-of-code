@@ -17,7 +17,6 @@ void Run()
     int blockE = 0;
     HashSet<(int N, int E)> visited = new HashSet<(int N, int E)> ();
    
-
     for (int i = 0; i < S1.Length; i++)
     {
         var prevN = blockN;
@@ -28,11 +27,13 @@ void Run()
         int turneffect = (turn == 'L') ? -1 : 1;
         steps = turneffect * steps;
         
-        if (direction == 0) blockE += steps;
+        if (direction == 0 || direction == 3) blockE += steps;
         else if (direction == 1) blockN -= steps;
         else if (direction == 2) blockE -= steps;
         else if (direction == 3) blockN += steps;
+    
         direction += turneffect;
+        
         if (direction > 3) direction = 0;
         else if (direction < 0) direction = 3;
          
