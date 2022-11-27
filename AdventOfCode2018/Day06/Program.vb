@@ -22,9 +22,10 @@ Module Program
         Next
         Dim xMax = Xs.Max
         Dim yMax = Ys.Max
-        Dim XYs(xMax, yMax) As Integer
+        'Dim XYs(xMax, yMax) As Integer
         Dim fieldsize(lines.Count - 1) As Integer
         Dim sumOnBorder = False
+        Dim infinite As New HashSet(Of Integer)
         For x = 0 To xMax
 
             For y = 0 To yMax
@@ -37,7 +38,7 @@ Module Program
                     answer2 += 1
                     If x = 0 Or x = xMax Or y = 0 Or y = yMax Then sumOnBorder = True
                 End If
-                    Dim mindist = dist.Min
+                Dim mindist = dist.Min
                 Dim closest = -1
                 Dim count = 0
                 For j = 0 To dist.Count - 1
@@ -47,22 +48,22 @@ Module Program
                     End If
                 Next
                 If count = 1 Then
-                    XYs(x, y) = closest
+                    'XYs(x, y) = closest
                     fieldsize(closest) += 1
-                Else
-                    XYs(x, y) = -1
+                    If x = 0 OrElse x = xMax OrElse y = 0 OrElse y = yMax Then infinite.Add(closest)
+                    'Else
+                    'XYs(x, y) = -1
                 End If
             Next
         Next
-        Dim infinite As New HashSet(Of Integer)
-        For x = 0 To xMax
-            infinite.Add(XYs(x, 0))
-            infinite.Add(XYs(x, yMax))
-        Next
-        For y = 0 To yMax
-            infinite.Add(XYs(0, y))
-            infinite.Add(XYs(xMax, y))
-        Next
+        'For x = 0 To xMax
+        '    infinite.Add(XYs(x, 0))
+        '    infinite.Add(XYs(x, yMax))
+        'Next
+        'For y = 0 To yMax
+        '    infinite.Add(XYs(0, y))
+        '    infinite.Add(XYs(xMax, y))
+        'Next
         Dim largest As Integer = 0
         For i = 0 To fieldsize.Length - 1
             If Not infinite.Contains(i) AndAlso fieldsize(i) > largest Then largest = fieldsize(i)
