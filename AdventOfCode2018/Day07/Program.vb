@@ -31,7 +31,6 @@ Module Program
 
         Next
 
-        'onderstaande gaat niet werken, tenzij ik eers de sets aanvul
         Dim placed As New HashSet(Of String)
         Dim result As String = ""
         For i = 0 To rules.Count - 1
