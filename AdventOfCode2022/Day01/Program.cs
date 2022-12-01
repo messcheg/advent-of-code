@@ -31,12 +31,9 @@ void Run()
     }
     total.Add(sum);
     if (answer1 < sum) answer1 = sum;
+
+    answer2 = total.OrderByDescending(l => l).ToList().Take(3).Sum();
     
-    var x = total.OrderByDescending(l => l).ToList();
-    for (int i = 0; i<3;i++)
-    {
-        answer2 += x[i];
-    }
     w(1, answer1, supposedanswer1);
     w(2, answer2, supposedanswer2);
 }
