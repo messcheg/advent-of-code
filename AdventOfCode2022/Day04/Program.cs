@@ -2,7 +2,7 @@
 Run(@"..\..\..\real_input.txt");
 
 void Run(string inputfile)
-{
+{ 
     long supposedanswer1 = 0000;
     long supposedanswer2 = 0000;
 

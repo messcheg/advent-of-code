@@ -1,9 +1,8 @@
-﻿Run();
+﻿Run(@"..\..\..\example_input.txt");
+Run(@"..\..\..\real_input.txt");
 
-void Run()
+void Run(string inputfile)
 {
-    //string inputfile = @"..\..\..\example_input.txt";
-    string inputfile = @"..\..\..\real_input.txt";
     long supposedanswer1 = 15;
     long supposedanswer2 = 12;
 
@@ -108,5 +107,4 @@ static void w<T>(int number, T val, T supposedval)
     Console.WriteLine(sv);
     Console.ForegroundColor = previouscolour;
 }
-// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+
