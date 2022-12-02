@@ -5,7 +5,7 @@ void Run()
     //string inputfile = @"..\..\..\example_input.txt";
     string inputfile = @"..\..\..\real_input.txt";
     long supposedanswer1 = 15;
-    long supposedanswer2 = 0000;
+    long supposedanswer2 = 12;
 
     var S = File.ReadAllLines(inputfile).ToList();
     long answer1 = 0;
@@ -16,10 +16,10 @@ void Run()
     {
         char a = S[i][0];
         char b = S[i][2];
-        int point1 = (int)(b- 'W');
-        int point2 = 0;
-        int point1a = 0;
-        int point2a = 0;
+        int point1 = (int)(b - 'W');
+        int point2;
+        int point1a;
+        int point2a;
         if (a=='A' )
         {
             if (b == 'X')
@@ -43,7 +43,6 @@ void Run()
         }
         else if (a=='B')
         {
-
             if (b == 'X')
             {
                 point2 = 0;
@@ -84,11 +83,6 @@ void Run()
                 point2a = 6;
                 point1a = 1;
             }
-
-            if (b == 'X') point2 = 6;
-            else if (b == 'Y') point2 = 0;
-            else point2 = 3;
-
         }
         answer1 += point1 + point2;
         answer2 += point1a + point2a;
