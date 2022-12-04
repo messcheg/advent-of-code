@@ -16,14 +16,9 @@ void Run(string inputfile)
         var s = S[i].Split(",");
         var a = s[0].Split("-").Select(a => int.Parse(a)).ToArray();
         var b = s[1].Split("-").Select(a => int.Parse(a)).ToArray();
-        if (a != null && b != null)
-        {
-            bool full = a[0] <= b[0] && a[1] >= b[1] || b[0] <= a[0] && b[1] >= a[1];
-            if (full) answer1++;
-            if (full || a[0] <= b[0] && a[1] >= b[0] || b[0] <= a[0] && b[1] >= a[0]) answer2++;
-        }
-
-
+        bool full = a[0] <= b[0] && a[1] >= b[1] || b[0] <= a[0] && b[1] >= a[1];
+        if (full) answer1++;
+        if (full || a[0] <= b[0] && a[1] >= b[0] || b[0] <= a[0] && b[1] >= a[0]) answer2++;
     }
 
 
