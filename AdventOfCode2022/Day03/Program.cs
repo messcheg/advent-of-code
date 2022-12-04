@@ -35,7 +35,7 @@ void Run(string inputfile)
         }
     }
 
-    for (int i = 0; i < S.Count / 3; i += 3)
+    for (int i = 0; i < S.Count; i += 3)
     {
         foreach (var c in S[i])
         {
