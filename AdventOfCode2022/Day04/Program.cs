@@ -3,8 +3,8 @@ Run(@"..\..\..\real_input.txt");
 
 void Run(string inputfile)
 { 
-    long supposedanswer1 = 0000;
-    long supposedanswer2 = 0000;
+    long supposedanswer1 = 2;
+    long supposedanswer2 = 4;
 
     var S = File.ReadAllLines(inputfile).ToList();
     long answer1 = 0;
@@ -13,6 +13,16 @@ void Run(string inputfile)
 
     for (int i = 0; i < S.Count; i++)
     {
+        var s = S[i].Split(",");
+        var a = s[0].Split("-").Select(a => int.Parse(a)).ToArray();
+        var b = s[1].Split("-").Select(a => int.Parse(a)).ToArray();
+        if (a != null && b != null)
+        {
+            bool full = a[0] <= b[0] && a[1] >= b[1] || b[0] <= a[0] && b[1] >= a[1];
+            if (full) answer1++;
+            if (full || a[0] <= b[0] && a[1] >= b[0] || b[0] <= a[0] && b[1] >= a[0]) answer2++;
+        }
+
 
     }
 
