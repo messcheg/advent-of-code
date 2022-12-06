@@ -3,47 +3,19 @@ Run(@"..\..\..\real_input.txt", false);
 
 void Run(string inputfile, bool isTest)
 { 
-    long supposedanswer1 = 7;
-    long supposedanswer2 = 19;
+    long supposedanswer1 = 0000;
+    long supposedanswer2 = 0000;
 
-    var T = File.ReadAllLines(inputfile).First();
+    var S = File.ReadAllLines(inputfile).ToList();
     long answer1 = 0;
     long answer2 = 0;
 
-    int k = -1;
-    for (int i = 3; i < T.Length; i++)
+    for (int i = 0; i < S.Count; i++)
     {
-        string s = "";
-        for (int j = i - 3; j <= i; j++)
-        {
-            if (s.Contains(T[j])) break;
-            s = s + T[j];
-        }
-        if (s.Length == 4)
-        {
-            k = i + 1;
-            break;
-        }
+     
     }
-    answer1 = k;
-    w(1, answer1, supposedanswer1, isTest);
 
-    k = -1;
-    for (int i = 13; i < T.Length; i++)
-    {
-        string s = "";
-        for (int j = i - 13; j <= i; j++)
-        {
-            if (s.Contains(T[j])) break;
-                s = s + T[j];
-        }
-        if (s.Length == 14)
-        {
-            k = i + 1;
-            break;
-        }
-    }
-    answer2 = k;
+    w(1, answer1, supposedanswer1, isTest);
     w(2, answer2, supposedanswer2, isTest);
 }
 
