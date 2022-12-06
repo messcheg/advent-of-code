@@ -10,7 +10,6 @@ void Run(string inputfile, bool isTest)
     long answer1 = 0;
     long answer2 = 0;
 
-
     for (int i = 0; i < S.Count; i++)
     {
      
