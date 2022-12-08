@@ -1,10 +1,12 @@
-﻿Run(@"..\..\..\example_input.txt", true);
+﻿using System.Runtime.InteropServices;
+
+Run(@"..\..\..\example_input.txt", true);
 Run(@"..\..\..\real_input.txt", false);
 
 void Run(string inputfile, bool isTest)
 { 
-    long supposedanswer1 = 0000;
-    long supposedanswer2 = 0000;
+    long supposedanswer1 = 21;
+    long supposedanswer2 = 8;
 
     var S = File.ReadAllLines(inputfile).ToList();
     long answer1 = 0;
@@ -12,7 +14,41 @@ void Run(string inputfile, bool isTest)
 
     for (int i = 0; i < S.Count; i++)
     {
-     
+        for (int j = 0; j < S[i].Length; j++)
+        {
+            int sc1 = 0;
+            bool v1 = true;
+            for (int k = i - 1; k >= 0; k--)
+            {
+                if (v1) sc1 = i - k;
+                if (S[k][j] >= S[i][j]) v1 = false;
+            }
+            bool v2 = true;
+            int sc2 = 0;
+            for (int k = i + 1; k < S.Count(); k++)
+            {
+                if (v2) sc2 = k - i;
+                if (S[k][j] >= S[i][j]) v2 = false;
+            }
+            bool v3 = true;
+            int sc3 = 0;
+            for (int k = j - 1; k >= 0; k--)
+            {
+                if (v3) sc3 = j - k;
+                if (S[i][k] >= S[i][j]) v3 = false;
+            }
+            bool v4 = true;
+            int sc4 = 0;
+            for (int k = j + 1; k < S[i].Length; k++)
+            {
+                if (v4) sc4 = k - j;
+                if (S[i][k] >= S[i][j]) v4 = false;
+            }
+            if (v1 || v2 || v3 || v4) answer1++;
+
+            var sc = sc1 * sc2 * sc3 * sc4;
+            if (sc > answer2) answer2 = sc;
+        }
     }
 
     w(1, answer1, supposedanswer1, isTest);
