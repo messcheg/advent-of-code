@@ -1,23 +1,62 @@
-﻿Run(@"..\..\..\example_input.txt", true);
+﻿using Microsoft.VisualBasic.FileIO;
+
+Run(@"..\..\..\example_input.txt", true);
 Run(@"..\..\..\real_input.txt", false);
 
 void Run(string inputfile, bool isTest)
 { 
-    long supposedanswer1 = 0000;
+    long supposedanswer1 = 13140;
     long supposedanswer2 = 0000;
 
     var S = File.ReadAllLines(inputfile).ToList();
     long answer1 = 0;
     long answer2 = 0;
 
-    for (int i = 0; i < S.Count; i++)
+    var screen = (new string('.', 40)).ToCharArray();
+    int X = 1;
+    int cycle = 1;
+    int i = 0;
+    int readyCycle = 1;
+    while (i <  S.Count)
     {
-     
+
+        int position = (cycle - 1) % 40;
+        if (position == 0)
+        {
+            Console.WriteLine(new string(screen));
+            screen = (new string('.', 40)).ToCharArray();
+        }
+        if (position < X+2 && position >= X-1)
+        {
+            screen[position] = '#';
+        }
+        cycle++;
+        if (cycle == 20 || cycle == 60 || cycle == 100 || cycle == 140 || cycle == 180 || cycle == 220)
+        {
+            answer1 += cycle * X;
+        }
+        if (cycle > readyCycle)
+        {
+            var s = S[i].Split(' ');
+            if (s[0] == "noop")
+            {
+                readyCycle++;
+            }
+            else if (s[0] == "addx")
+            {
+                X += int.Parse(s[1]);
+                readyCycle += 2;
+            }
+            i++;
+        }
+
     }
 
     w(1, answer1, supposedanswer1, isTest);
     w(2, answer2, supposedanswer2, isTest);
 }
+
+
 
 static void w<T>(int number, T val, T supposedval, bool isTest)
 {
