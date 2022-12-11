@@ -1,24 +1,41 @@
 ﻿using Microsoft.VisualBasic.FileIO;
+using System.Net;
 
-Run(@"..\..\..\example_input.txt", true);
-Run(@"..\..\..\real_input.txt", false);
+Run(fromFile(@"..\..\..\example_input.txt"), true);
+Run(fromFile(@"..\..\..\real_input.txt"), false);
 
-void Run(string inputfile, bool isTest)
+void Run(string[] S, bool isTest)
 { 
     long supposedanswer1 = 13140;
     long supposedanswer2 = 0000;
 
-    var S = File.ReadAllLines(inputfile).ToList();
     long answer1 = 0;
     long answer2 = 0;
 
     var screen = (new string('.', 40)).ToCharArray();
     int X = 1;
-    int cycle = 1;
+    int cycle = 0;
     int i = 0;
     int readyCycle = 1;
-    while (i <  S.Count)
+    while (i <  S.Length)
     {
+        cycle++;
+
+        int Xnew = X;
+        if (cycle > readyCycle)
+        {
+            var s = S[i].Split(' ');
+            if (s[0] == "noop")
+            {
+                readyCycle++;
+            }
+            else if (s[0] == "addx")
+            {
+                Xnew += int.Parse(s[1]);
+                readyCycle += 2;
+            }
+            i++;
+        }
 
         int position = (cycle - 1) % 40;
         if (position == 0)
@@ -30,30 +47,17 @@ void Run(string inputfile, bool isTest)
         {
             screen[position] = '#';
         }
-        cycle++;
         if (cycle == 20 || cycle == 60 || cycle == 100 || cycle == 140 || cycle == 180 || cycle == 220)
         {
             answer1 += cycle * X;
         }
-        if (cycle > readyCycle)
-        {
-            var s = S[i].Split(' ');
-            if (s[0] == "noop")
-            {
-                readyCycle++;
-            }
-            else if (s[0] == "addx")
-            {
-                X += int.Parse(s[1]);
-                readyCycle += 2;
-            }
-            i++;
-        }
+
+        X = Xnew;
 
     }
 
     w(1, answer1, supposedanswer1, isTest);
-    w(2, answer2, supposedanswer2, isTest);
+    w(2, "zie scherm", "", isTest);
 }
 
 
@@ -77,4 +81,9 @@ static void w<T>(int number, T val, T supposedval, bool isTest)
     }
     else
         Console.WriteLine();
+}
+
+static string[] fromFile(string fileName)
+{
+    return  File.ReadAllLines(fileName).ToArray();
 }
