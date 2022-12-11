@@ -1,5 +1,5 @@
 ﻿Run(@"..\..\..\example_input.txt");
-Run(@"..\..\..\real_input.txt");
+Run(@"E:\develop\advent-of-code-input\2022\day04.txt");
 
 void Run(string inputfile)
 { 

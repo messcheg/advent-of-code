@@ -14,7 +14,6 @@
 
   <ItemGroup>
     <Resource Include="landsky.png" />
-    <Resource Include="real_input.txt" />
   </ItemGroup>
 
 </Project>

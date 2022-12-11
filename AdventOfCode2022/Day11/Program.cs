@@ -1,8 +1,11 @@
-﻿Run(@"..\..\..\example_input.txt", true);
-Run(@"..\..\..\real_input.txt", false);
+﻿using System.Diagnostics;
+
+Run(@"..\..\..\example_input.txt", true);
+Run(@"E:\develop\advent-of-code-input\2022\day11.txt", false);
 
 void Run(string inputfile, bool isTest)
 {
+    Stopwatch stopwatch = Stopwatch.StartNew();
     long supposedanswer1 = 10605;
     long supposedanswer2 = 2713310158;
 
@@ -10,6 +13,9 @@ void Run(string inputfile, bool isTest)
     long answer1 = PlayGame(S, 3, 20); ;
     long answer2 = PlayGame(S, 1, 10000);
 
+    stopwatch.Stop();
+    Console.WriteLine($"Used time (ms): {stopwatch.ElapsedMilliseconds}");
+    Console.WriteLine($"Used time (ticks): {stopwatch.ElapsedTicks}");
     w(1, answer1, supposedanswer1, isTest);
     w(2, answer2, supposedanswer2, isTest);
 }

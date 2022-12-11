@@ -1,7 +1,7 @@
 ﻿using System.Runtime.Serialization;
 
 Run(@"..\..\..\example_input.txt");
-Run(@"..\..\..\real_input.txt");
+Run(@"E:\develop\advent-of-code-input\2022\day03.txt");
 
 void Run(string inputfile)
 {

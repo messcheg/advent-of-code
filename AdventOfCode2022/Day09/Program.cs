@@ -2,7 +2,7 @@
 using System.Security.Cryptography.X509Certificates;
 
 Run(@"..\..\..\example_input.txt", true);
-Run(@"..\..\..\real_input.txt", false);
+Run(@"E:\develop\advent-of-code-input\2022\day09.txt", false);
 
 void Run(string inputfile, bool isTest)
 { 

@@ -82,7 +82,7 @@ namespace Day06Visual
             dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
             dispatcherTimer.Interval = new TimeSpan(0, 0,0,0,1,0);
             dispatcherTimer.Start();
-            var inputfile = @"..\..\..\real_input.txt";
+            var inputfile = @"E:\develop\advent-of-code-input\2022\day06.txt";
             if (File.Exists(inputfile))
                 signal = File.ReadAllLines(inputfile).First();
             (ct1, ct2) = PuzzleDay06(signal);

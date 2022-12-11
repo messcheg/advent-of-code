@@ -2,16 +2,14 @@
 using System.Net;
 
 Run(fromFile(@"..\..\..\example_input.txt"), true);
-Run(fromFile(@"..\..\..\real_input.txt"), false);
+Run(fromFile(@"E:\develop\advent-of-code-input\2022\day10.txt"), false);
 
 void Run(string[] S, bool isTest)
 { 
     long supposedanswer1 = 13140;
-    long supposedanswer2 = 0000;
-
+   
     long answer1 = 0;
-    long answer2 = 0;
-
+    
     var screen = (new string('.', 40)).ToCharArray();
     int X = 1;
     int cycle = 0;

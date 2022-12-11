@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 
 Run(@"..\..\..\example_input.txt", true);
-Run(@"..\..\..\real_input.txt", false);
+Run(@"E:\develop\advent-of-code-input\2022\day08.txt", false);
 
 void Run(string inputfile, bool isTest)
 { 

@@ -6,7 +6,7 @@ Run();
 void Run()
 {
     string inputfile = @"..\..\..\example_input.txt";
-    //string inputfile = @"..\..\..\real_input.txt";
+    //string inputfile = @"E:\develop\advent-of-code-input\2022\day01.txt";
     long supposedanswer1 = 24000;
     long supposedanswer2 = 45000;
 
