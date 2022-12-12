@@ -18,89 +18,61 @@ void Run(string inputfile, bool isTest)
     int X = S.Count;
     int Y = S[0].Length;
 
-    var visited = new HashSet<(int,int)>();
-    var distance = new List<Pad>();
+    var nodes = new Node[X,Y];
     var start = (0, 0);
     var end = (0, 0);
     for (int i = 0; i < S.Count; i++)
     {
         for (int j = 0; j < S[i].Length; j++)
         {
-            if (S[i][j] == 'S') start = (i, j);
-            else if (S[i][j] == 'E') end = (i, j);
+            char c = S[i][j];
+            if (c == 'S')
+            {
+                start = (i, j);
+                c = 'a';
+            }
+            else if (c == 'E')
+            {
+                end = (i, j);
+                c = 'z';
+            }
+            nodes[i, j] = new Node(c);
+            nodes[i, j].location = (i, j);
         }
     }
-
-    (int,int)[] p = new (int,int)[1];
-    p[0] = start;
-    distance.Add(new Pad(0, p));
+    nodes[start.Item1, start.Item2].canuse = true;
+    nodes[start.Item1, start.Item2].distance = 0;
     bool ready = false;
     while (!ready)
     {
-        var best = distance[0];
-        var cur = best.path[^1];
-        visited.Add(cur);
+        Node best = null;
+        foreach (var n in nodes)
+        {
+            if (n.canuse && !n.visited)
+            {
+                if (best == null || best.distance > n.distance) best = n;
+            }
+        }
+        
+        best.visited = true;
+        var cur = best.location;
         if (cur == end)
         {
             ready = true;
             answer1 = best.distance;
             break;
         }
-        var x = cur.Item1;
-        var y = cur.Item2;
-        char curChar = S[x][y];
-        if (curChar == 'S') curChar = 'a';
-        if (x > 0 && !visited.Contains((x - 1, y)) && isOk(curChar, S[x - 1][y]))
-        {
+        int x = cur.Item1;
+        int y = cur.Item2;
 
-            p = new (int, int)[best.path.Length + 1];
-            for (int i = 0; i < best.path.Length; i++) p[i] = best.path[i];
-            p[^1] = (x - 1, y);
-            distance.Add(new Pad(best.distance + 1, p));
-        }
-        if (x < X-1 && !visited.Contains((x + 1, y)) && isOk(curChar, S[x + 1][y]))
-        {
-
-            p = new (int, int)[best.path.Length + 1];
-            for (int i = 0; i < best.path.Length; i++) p[i] = best.path[i];
-            p[^1] = (x + 1, y);
-            distance.Add(new Pad(best.distance + 1, p));
-        }
-        if (y > 0 && !visited.Contains((x, y - 1)) && isOk(curChar, S[x][y -1] ))
-        {
-
-            p = new (int, int)[best.path.Length + 1];
-            for (int i = 0; i < best.path.Length; i++) p[i] = best.path[i];
-            p[^1] = (x, y-1);
-            distance.Add(new Pad(best.distance + 1,p));
-        }
-        if (y < Y - 1 && !visited.Contains((x, y+1)) && isOk(curChar, S[x][y+1] ))
-        {
-
-            p = new (int, int)[best.path.Length + 1];
-            for (int i = 0; i < best.path.Length; i++) p[i] = best.path[i];
-            p[^1] = (x, y+1);
-            distance.Add(new Pad(best.distance + 1, p));
-        }
-        distance = distance.Skip(1).OrderBy(n => n.distance).ToList();
-
+        if (x > 0) checkNode(best, nodes[x - 1, y]);
+        if (x < X-1) checkNode(best, nodes[x + 1, y]);
+        if (y > 0) checkNode(best, nodes[x , y - 1]);
+        if (y < Y - 1) checkNode(best, nodes[x, y + 1]);
     }
 
     w(1, answer1, supposedanswer1, isTest);
     w(2, answer2, supposedanswer2, isTest);
-}
-
-int dist(char from, char to)
-{
-    char a = from == 'S' ? 'a' : from;
-    char b = to == 'E' ? 'z' : to;
-    int r = b - a;
-    return r;
-}
-bool isOk(char from, char to)
-{
-    int r = dist(from,to);
-    return r >= 0 && r <= 1;
 }
 static void w<T>(int number, T val, T supposedval, bool isTest)
 {
@@ -123,13 +95,32 @@ static void w<T>(int number, T val, T supposedval, bool isTest)
         Console.WriteLine();
 }
 
-class Pad
+static void checkNode(Node best, Node test)
 {
-    public Pad(int d, (int,int)[] p)
+    if (!test.visited)
     {
-        distance = d;
-        path = p;
+        int d = test.val - best.val;
+        if ( d <= 1)
+        {
+            if (best.distance + 1 < test.distance)
+            {
+                test.distance = best.distance + 1;
+                test.canuse = true;
+                test.prev = best;
+            }
+        }
     }
-    public int distance = 0;
-    public (int, int)[] path = new (int,int)[0]; 
+}
+class Node
+{
+    public Node(char c)
+    {
+        val = c;
+    }
+    public char val;
+    public int distance = int.MaxValue;
+    public Node prev;
+    public bool visited;
+    public bool canuse;
+    public (int, int) location;
 }
