@@ -147,7 +147,7 @@ class mFile
 
 class mDir
 {
-    public mDir(mDir parent = null)
+    public mDir(mDir? parent = null)
     {
         Parent = parent;
     }

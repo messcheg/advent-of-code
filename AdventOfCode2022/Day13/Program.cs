@@ -90,10 +90,10 @@ class cmp : IComparer<string>
 
             if (left[i][0] == '[')
             {
-                var l1 = makelist(left[i].Substring(1, left[i].Length - 2));
+                var l1 = makelist(left[i][1..^1]);
                 if (right[i][0] == '[')
                 {
-                    var r1 = makelist(right[i].Substring(1, right[i].Length - 2));
+                    var r1 = makelist(right[i][1..^1]);
                     int order = compare1(l1, r1);
                     if (order != 0) return order;
                 }
@@ -107,7 +107,7 @@ class cmp : IComparer<string>
             else if (right[i][0] == '[')
             {
                 var l1 = new string[] { left[i] };
-                var r1 = makelist(right[i].Substring(1, right[i].Length - 2));
+                var r1 = makelist(right[i][1..^1]);
                 int order = compare1(l1, r1);
                 if (order != 0) return order;
             }
@@ -130,18 +130,15 @@ class cmp : IComparer<string>
         int level = 0;
         foreach (var c in s)
         {
-            if (c == '[') { level++; s1 += c; }
-            else if (c == ']') { level--; s1 += c; }
-            else if (c == ',')
+            if  (c == ',' && level == 0)
             {
-                if (level == 0)
-                {
-                    l.Add(s1);
-                    s1 = "";
-                }
-                else s1 += c;
-            }
-            else s1 += c;
+                l.Add(s1);
+                s1 = "";
+                continue;
+            } 
+            if (c == '[') level++; 
+            else if (c == ']')  level--;
+            s1 += c;
         }
         l.Add(s1);
         return l.ToArray();
