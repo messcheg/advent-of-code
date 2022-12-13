@@ -1,5 +1,7 @@
 ﻿Run(@"..\..\..\example_input.txt");
 Run(@"E:\develop\advent-of-code-input\2022\day04.txt");
+Run(@"X:\Thijs\Fun projects\AOC4numbers.txt");
+
 
 void Run(string inputfile)
 { 
@@ -18,7 +20,7 @@ void Run(string inputfile)
         var b = s[1].Split("-").Select(a => int.Parse(a)).ToArray();
         bool full = a[0] <= b[0] && a[1] >= b[1] || b[0] <= a[0] && b[1] >= a[1];
         if (full) answer1++;
-        if (full || a[0] <= b[0] && a[1] >= b[0] || b[0] <= a[0] && b[1] >= a[0]) answer2++;
+        if (! ( a[1] < b[0] || b[1] < a[0])) answer2++;
     }
 
 
