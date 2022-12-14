@@ -174,10 +174,12 @@ static void w<T>(int number, T val, T supposedval, bool isTest)
         Console.WriteLine();
 }
 
-class cmp : IComparer<string>
+class FieldComparer : IComparer<string>
 {
     int IComparer<string>.Compare(string? x, string? y)
     {
+        if (x==null) { if (y == null) return 0; else return -1; }
+        if (y == null) return 1;
         return compare1(new string[] { x }, new string[] { y });
         
     }
