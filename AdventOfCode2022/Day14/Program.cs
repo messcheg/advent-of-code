@@ -1,28 +1,78 @@
-﻿using System.Diagnostics;
+﻿using System.Data.SqlTypes;
+using System.Diagnostics;
 using System.Net.Security;
+using System.Runtime.CompilerServices;
 
 Run(@"..\..\..\example_input.txt", true);
-Run(@"E:\develop\advent-of-code-input\2022\day13.txt", false);
+Run(@"E:\develop\advent-of-code-input\2022\day14.txt", false);
 
 void Run(string inputfile, bool isTest)
 {
     Stopwatch stopwatch = Stopwatch.StartNew();
-    long supposedanswer1 = 13;
-    long supposedanswer2 = 140;
+    long supposedanswer1 = 24;
+    long supposedanswer2 = 93;
     
     var S = File.ReadAllLines(inputfile).ToList();
     long answer1 = 0;
     long answer2 = 0;
-
-  
+    var field = new Dictionary<(int x, int y), char>();
+    var maxy = 0;
     int i = 0;
     while (i<S.Count)
     {
         var s = S[i];
+        var points = s.Split(" -> ");
 
+        var pts = points[0].Split(',');
+        var x0 = int.Parse(pts[0]);
+        var y0 = int.Parse(pts[1]);
 
+        for (int j= 1; j < points.Length; j++)
+        {
+            pts = points[j].Split(',');
+            var x1  = int.Parse(pts[0]);
+            var y1 = int.Parse(pts[1]);
+            (var xa, var xb) = x0 > x1 ? (x1,x0) : (x0,x1);
+            (var ya, var yb) = y0 > y1 ? (y1,y0) : (y0,y1);
+            if (yb > maxy) { maxy = yb; }
+            for (int x = xa; x <= xb; x++)
+                for (int y = ya; y <= yb; y++)
+                    field[(x, y)] = '#';
+            (x0, y0) = (x1, y1);
+        }
         i++;
     }
+
+    bool ready = false;
+    bool useOne = true;
+    while (!ready)
+    {
+        var sx = 500;
+        var sy = 0;
+        bool a = !field.ContainsKey((sx, sy + 1));
+        bool b = !field.ContainsKey((sx - 1, sy + 1));
+        bool c = !field.ContainsKey((sx + 1, sy + 1));
+        while (sy < maxy + 1 && (a || b || c))
+        {
+            if (!a)
+            { 
+                if (b) sx--; else sx++;
+            }
+            sy++;
+            a=!field.ContainsKey((sx, sy + 1));
+            b=!field.ContainsKey((sx - 1, sy + 1));
+            c=!field.ContainsKey((sx + 1, sy + 1));
+        }
+        ready = field.ContainsKey((sx, sy));
+        if (sy > maxy) useOne = false;
+        if (!ready)
+        {
+            field[(sx, sy)] = 'o';
+            answer2++;
+            if (useOne) answer1++;
+        }
+    }
+
 
     stopwatch.Stop();
     Console.WriteLine($"Used time (ms): {stopwatch.ElapsedMilliseconds}");
