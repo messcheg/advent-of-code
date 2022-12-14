@@ -5,6 +5,8 @@ using System.Runtime.CompilerServices;
 
 Run(@"..\..\..\example_input.txt", true);
 Run(@"E:\develop\advent-of-code-input\2022\day14.txt", false);
+RunFaster(@"..\..\..\example_input.txt", true);
+RunFaster(@"E:\develop\advent-of-code-input\2022\day14.txt", false);
 
 void Run(string inputfile, bool isTest)
 {
@@ -81,6 +83,76 @@ void Run(string inputfile, bool isTest)
     w(2, answer2, supposedanswer2, isTest);
 }
 
+void RunFaster(string inputfile, bool isTest)
+{
+    Stopwatch stopwatch = Stopwatch.StartNew();
+    long supposedanswer1 = 24;
+    long supposedanswer2 = 93;
+
+    var coords = File.ReadAllLines(inputfile).Select(a => a.Split(" -> ").Select(b => b.Split(',').Select(c => int.Parse(c)).ToArray()).ToArray());
+    var field = new bool[1000, 1000];
+    long answer1 = 0;
+    long answer2 = 0;
+    var maxy = 0;
+    int i = 0;
+    foreach(var line in coords)
+    {
+        var x0 = line[0][0];
+        var y0 = line[0][1];
+
+        for (int j = 1; j < line.Length; j++)
+        {
+            var x1 = line[j][0];
+            var y1 = line[j][1];
+            (var xa, var xb) = x0 > x1 ? (x1, x0) : (x0, x1);
+            (var ya, var yb) = y0 > y1 ? (y1, y0) : (y0, y1);
+            if (yb > maxy) { maxy = yb; }
+            for (int x = xa; x <= xb; x++)
+                for (int y = ya; y <= yb; y++)
+                    field[x, y] = true;
+            (x0, y0) = (x1, y1);
+        }
+        i++;
+    }
+
+    bool ready = false;
+    bool useOne = true;
+    while (!ready)
+    {
+        var sx = 500;
+        var sy = 0;
+        var ny = 1;
+        bool a = !field[sx, ny];
+        bool b = !field[sx - 1, ny];
+        bool c = !field[sx + 1, ny];
+        while (sy < maxy + 1 && (a || b || c))
+        {
+            if (!a)
+            {
+                if (b) sx--; else sx++;
+            }
+            sy++; ny++;
+            a = !field[sx, ny];
+            b = !field[sx - 1, ny];
+            c = !field[sx + 1, ny];
+        }
+        ready = field[sx, sy];
+        if (sy > maxy) useOne = false;
+        if (!ready)
+        {
+            field[sx, sy] = true;
+            answer2++;
+            if (useOne) answer1++;
+        }
+    }
+
+
+    stopwatch.Stop();
+    Console.WriteLine($"Used time (ms): {stopwatch.ElapsedMilliseconds}");
+    Console.WriteLine($"Used time (ticks): {stopwatch.ElapsedTicks}");
+    w(1, answer1, supposedanswer1, isTest);
+    w(2, answer2, supposedanswer2, isTest);
+}
 static void w<T>(int number, T val, T supposedval, bool isTest)
 {
     string? v = (val == null) ? "(null)" : val.ToString();
