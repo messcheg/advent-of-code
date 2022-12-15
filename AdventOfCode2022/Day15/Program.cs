@@ -41,24 +41,24 @@ void Run(string inputfile, bool isTest, long checkrow, long maxXY)
     }
     answer1 = f.field[f.cur][0..f.cnt[f.cur]].Select(c => 1L + c.to - c.from).Sum() - beacons.Count;
 
-    var skipY = new List<(long, long)>(S.Count + 1);
-    foreach (var v in signals)
-    {
-        if (v.c.x - v.mhd <= 0 && v.c.x + mhd >= maxXY)
-        {
-            var skip1 = new List<(long, long)>(S.Count + 1);
-            long ydif = Math.Min(0 - (v.c.x - v.mhd), v.c.x + mhd >= maxXY);
-            long ymin = Math.Max(v.c.y - ydif, 0);
-            long ymax = Math.Min(v.c.y + ydiff, maxXY);
-            int k = 0;
-            while ( k < skipY.Count && skipY[k].Item2 < ymin -1)
-            {
-                skip1.Add(skipY[k]);
-                k++;
-            }
-            // HIer was ik gebleven
-        }
-    }
+    //var skipY = new List<(long, long)>(S.Count + 1);
+    //foreach (var v in signals)
+    //{
+    //    if (v.c.x - v.mhd <= 0 && v.c.x + mhd >= maxXY)
+    //    {
+    //        var skip1 = new List<(long, long)>(S.Count + 1);
+    //        long ydif = Math.Min(0 - (v.c.x - v.mhd), v.c.x + mhd >= maxXY);
+    //        long ymin = Math.Max(v.c.y - ydif, 0);
+    //        long ymax = Math.Min(v.c.y + ydiff, maxXY);
+    //        int k = 0;
+    //        while ( k < skipY.Count && skipY[k].Item2 < ymin -1)
+    //        {
+    //            skip1.Add(skipY[k]);
+    //            k++;
+    //        }
+    //        // HIer was ik gebleven
+    //    }
+    //}
         f.cur = 0;
     f.cnt[0] = 0;
     for (long y = 0; y <= maxXY; y++)
