@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Net.Security;
 using System.Runtime.InteropServices;
+using System.Runtime.Intrinsics.X86;
 using System.Security.Cryptography;
 
 Run(@"..\..\..\example_input.txt", true, 10, 20);
@@ -17,8 +19,7 @@ void Run(string inputfile, bool isTest, long checkrow, long maxXY)
     long answer1 = 0;
     long answer2 = 0;
 
-    var field = new Dictionary<(long, long), char>();
-    var field1 = new List<(long from, long to)>();
+    ((long from, long to)[][] field, int cur, long[] cnt) field3 = (new (long from, long to)[][] { new (long from, long to)[S.Count], new (long from, long to)[S.Count] }, 0, new long[] { 0L, 0L });
     var beacons = new HashSet<(long x, long y)>();
     var signals = new List<((long x, long y) c, long mhd)>();
     int i = 0;
@@ -31,28 +32,26 @@ void Run(string inputfile, bool isTest, long checkrow, long maxXY)
         long xB = long.Parse(sb[8][0..^1].Split("=")[1]);
         long yB = long.Parse(sb[9].Split("=")[1]);
         
-        if ( yS == checkrow ) field[(xS, yS)] = 'S';
-        if ( yB == checkrow) field[(xB, yB)] = 'S';
-        
         long mhd = Math.Abs(xS - xB) + Math.Abs(yS - yB);
         var c = ((xS, yS), mhd);
         signals.Add(c);
         if (yB == checkrow) beacons.Add((xB,yB));
-        field1 = addRange(((xS, yS), mhd), checkrow, field1);
+        field3 = addRange(((xS, yS), mhd), checkrow, field3);
         i++;
     }
-    answer1 = field1.Select(c => 1L + c.to - c.from).Sum() - beacons.Count;
+    answer1 = field3.field[field3.cur].Select(c => 1L + c.to - c.from).Sum() - beacons.Count;
 
+    field3.cur = 0;
+    field3.cnt[0] = 0;
     for (long y = 0; y <= maxXY; y++)
     {
-        var field2 = new List<(long from, long to)>();
         foreach (var v in signals)
         {
-            field2 = addRange(v, y, field2, maxXY);
+            field3 = addRange(v, y, field3, maxXY);
         }
-        if (field2.Count > 1) 
+        if (field3.cnt[field3.cur] > 1) 
         {
-            answer2 = 4000000 * (field2[0].to + 1) + y;
+            answer2 = 4000000 * (field3.field[field3.cur][0].to + 1) + y;
             break;
         }
     }
@@ -63,11 +62,12 @@ void Run(string inputfile, bool isTest, long checkrow, long maxXY)
     w(1, answer1, supposedanswer1, isTest);
     w(2, answer2, supposedanswer2, isTest);
 }
-static List<(long from,long to)> addRange(((long x, long y) c, long mhd) v, long y, List<(long from, long to)> field1, long? maxXY = null)
+
+static ((long from, long to)[][] field, int cur, long[] cnt) addRange(((long x, long y) c, long mhd) v, long y, ((long from, long to)[][] field, int cur, long[] cnt) f, long? maxXY = null)
 {
     if (y > v.c.y + v.mhd || y < v.c.y - v.mhd)
     {
-        return field1;
+        return f;
     }
     long mhdx = (v.mhd - (Math.Abs(y - v.c.y)));
     long xmin = v.c.x - mhdx;
@@ -78,41 +78,47 @@ static List<(long from,long to)> addRange(((long x, long y) c, long mhd) v, long
         xmax = Math.Min(xmax, maxXY.Value);
     }
 
+    int a = f.cur;
+    int b = 1 - f.cur;
     int k = 0;
-    var field2 = new List<(long from, long to)>();
     if (xmax >= xmin)
     {
-        while (k < field1.Count && field1[k].to < xmin - 1)
+        f.cnt[b] = 0;
+        while (k < f.cnt[a] && f.field[a][k].to < xmin - 1)
         {
-            field2.Add(field1[k]);
+            f.field[b][k] = f.field[a][ k];
+            f.cnt[b]++;
             k++;
         }
-        if (k < field1.Count)
+        if (k < f.cnt[a])
         {
-            xmin = Math.Min(xmin, field1[k].from);
+            xmin = Math.Min(xmin, f.field[a][k].from);
             long tempTo = 0;
-            while (k < field1.Count && field1[k].from <= xmax + 1)
+            while (k < f.cnt[a] && f.field[a][k].from <= xmax + 1)
             {
-                tempTo = field1[k].to;
+                tempTo = f.field[a][k].to;
                 k++;
             }
             xmax = Math.Max(xmax, tempTo);
-            field2.Add((xmin, xmax));
-            while (k < field1.Count())
+            f.field[b][k] = (xmin, xmax);
+            f.cnt[b]++;
+            while (k < f.cnt[a])
             {
-                field2.Add(field1[k]);
+                f.field[b][k] = f.field[a][k];
+                f.cnt[b]++;
                 k++;
             }
-
         }
         else
         {
-            field2.Add((xmin, xmax));
+            f.field[b][k] = (xmin, xmax);
+            f.cnt[b]++;
         }
-
-        return field2;
+        f.cur = b;
+        return f;
     }
-    return field1;
+    return f;
+
 }
 
 static void w<T>(int number, T val, T supposedval, bool isTest)
