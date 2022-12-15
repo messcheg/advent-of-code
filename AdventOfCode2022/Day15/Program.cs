@@ -19,7 +19,7 @@ void Run(string inputfile, bool isTest, long checkrow, long maxXY)
     long answer1 = 0;
     long answer2 = 0;
 
-    ((long from, long to)[][] field, int cur, long[] cnt) field3 = (new (long from, long to)[][] { new (long from, long to)[S.Count], new (long from, long to)[S.Count] }, 0, new long[] { 0L, 0L });
+    ((long from, long to)[][] field, int cur, int[] cnt) f = (new (long from, long to)[][] { new (long from, long to)[S.Count], new (long from, long to)[S.Count] }, 0, new int[] { 0, 0 });
     var beacons = new HashSet<(long x, long y)>();
     var signals = new List<((long x, long y) c, long mhd)>();
     int i = 0;
@@ -36,22 +36,42 @@ void Run(string inputfile, bool isTest, long checkrow, long maxXY)
         var c = ((xS, yS), mhd);
         signals.Add(c);
         if (yB == checkrow) beacons.Add((xB,yB));
-        field3 = addRange(((xS, yS), mhd), checkrow, field3);
+        f = addRange(((xS, yS), mhd), checkrow, f);
         i++;
     }
-    answer1 = field3.field[field3.cur].Select(c => 1L + c.to - c.from).Sum() - beacons.Count;
+    answer1 = f.field[f.cur][0..f.cnt[f.cur]].Select(c => 1L + c.to - c.from).Sum() - beacons.Count;
 
-    field3.cur = 0;
-    field3.cnt[0] = 0;
+    var skipY = new List<(long, long)>(S.Count + 1);
+    foreach (var v in signals)
+    {
+        if (v.c.x - v.mhd <= 0 && v.c.x + mhd >= maxXY)
+        {
+            var skip1 = new List<(long, long)>(S.Count + 1);
+            long ydif = Math.Min(0 - (v.c.x - v.mhd), v.c.x + mhd >= maxXY);
+            long ymin = Math.Max(v.c.y - ydif, 0);
+            long ymax = Math.Min(v.c.y + ydiff, maxXY);
+            int k = 0;
+            while ( k < skipY.Count && skipY[k].Item2 < ymin -1)
+            {
+                skip1.Add(skipY[k]);
+                k++;
+            }
+            // HIer was ik gebleven
+        }
+    }
+        f.cur = 0;
+    f.cnt[0] = 0;
     for (long y = 0; y <= maxXY; y++)
     {
+        f.cur = 0;
+        f.cnt[0] = 0;
         foreach (var v in signals)
         {
-            field3 = addRange(v, y, field3, maxXY);
+            f = addRange(v, y, f, maxXY);
         }
-        if (field3.cnt[field3.cur] > 1) 
+        if (f.cnt[f.cur] > 1) 
         {
-            answer2 = 4000000 * (field3.field[field3.cur][0].to + 1) + y;
+            answer2 = 4000000 * (f.field[f.cur][0].to + 1) + y;
             break;
         }
     }
@@ -63,7 +83,7 @@ void Run(string inputfile, bool isTest, long checkrow, long maxXY)
     w(2, answer2, supposedanswer2, isTest);
 }
 
-static ((long from, long to)[][] field, int cur, long[] cnt) addRange(((long x, long y) c, long mhd) v, long y, ((long from, long to)[][] field, int cur, long[] cnt) f, long? maxXY = null)
+static ((long from, long to)[][] field, int cur, int[] cnt) addRange(((long x, long y) c, long mhd) v, long y, ((long from, long to)[][] field, int cur, int[] cnt) f, long? maxXY = null)
 {
     if (y > v.c.y + v.mhd || y < v.c.y - v.mhd)
     {
@@ -77,16 +97,15 @@ static ((long from, long to)[][] field, int cur, long[] cnt) addRange(((long x, 
         xmin = Math.Max(xmin, 0);
         xmax = Math.Min(xmax, maxXY.Value);
     }
-
     int a = f.cur;
     int b = 1 - f.cur;
-    int k = 0;
     if (xmax >= xmin)
     {
+        int k = 0;
         f.cnt[b] = 0;
         while (k < f.cnt[a] && f.field[a][k].to < xmin - 1)
         {
-            f.field[b][k] = f.field[a][ k];
+            f.field[b][f.cnt[b]] = f.field[a][k];
             f.cnt[b]++;
             k++;
         }
@@ -100,18 +119,18 @@ static ((long from, long to)[][] field, int cur, long[] cnt) addRange(((long x, 
                 k++;
             }
             xmax = Math.Max(xmax, tempTo);
-            f.field[b][k] = (xmin, xmax);
+            f.field[b][f.cnt[b]] = (xmin, xmax);
             f.cnt[b]++;
             while (k < f.cnt[a])
             {
-                f.field[b][k] = f.field[a][k];
+                f.field[b][f.cnt[b]] = f.field[a][k];
                 f.cnt[b]++;
                 k++;
             }
         }
         else
         {
-            f.field[b][k] = (xmin, xmax);
+            f.field[b][f.cnt[b]] = (xmin, xmax);
             f.cnt[b]++;
         }
         f.cur = b;
