@@ -66,7 +66,7 @@ void Run(string inputfile, bool isTest)
         int top = tower.Count;
         while (top > 0 && !tower[top-1].Contains('#')) top--;
 
-        if (!aleadyskipped)
+        if (i > 2022 && !aleadyskipped)
         {
             // get profile
             var prof = new int[7];
@@ -147,9 +147,7 @@ void Run(string inputfile, bool isTest)
             }
         }
 
-        if (i - deSkip2022 + 1 == 2022) answer1 = tower.Where(s => s.Contains('#')).Count();
-
-        if ((i+1)%(items.Length * s.Length) == 0 )
+        if ( i > 2022 && (i+1)%(items.Length * s.Length) == 0 )
         {
             var filled = new bool[7];
             int cleanlevel = tower.Count -1;
@@ -169,7 +167,7 @@ void Run(string inputfile, bool isTest)
             towerbottom += cleanlevel;
             tower.RemoveRange(0, cleanlevel);
         }
-
+        else if (i == 2021) answer1 = tower.Where(s => s.Contains('#')).Count();
 
         currentItem++;
         if (currentItem == items.Length) currentItem = 0;
