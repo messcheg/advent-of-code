@@ -2,7 +2,7 @@
 using System.Net.Security;
 
 Run(@"..\..\..\example_input.txt", true);
-Run(@"E:\develop\advent-of-code-input\2022\day20.txt", false);
+Run(@"E:\develop\advent-of-code-input\2022\day21.txt", false);
 
 void Run(string inputfile, bool isTest)
 {
