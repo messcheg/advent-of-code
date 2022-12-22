@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Net.Security;
+using static System.Net.Mime.MediaTypeNames;
 
 Run(@"..\..\..\example_input.txt", true);
 Run(@"E:\develop\advent-of-code-input\2022\day22.txt", false);
@@ -7,8 +8,8 @@ Run(@"E:\develop\advent-of-code-input\2022\day22.txt", false);
 void Run(string inputfile, bool isTest)
 {
     Stopwatch stopwatch = Stopwatch.StartNew();
-    long supposedanswer1 = 13;
-    long supposedanswer2 = 140;
+    long supposedanswer1 = 6032;
+    long supposedanswer2 = 000;
     
     var S = File.ReadAllLines(inputfile).ToList();
     long answer1 = 0;
@@ -16,13 +17,90 @@ void Run(string inputfile, bool isTest)
 
   
     int i = 0;
-    while (i<S.Count)
+    var instruction = S[^1];
+    int x = 0;
+    int y = 0;
+    int dir = 0;
+    int xCnt = 0;
+    for (int j = 0; j < S.Count - 2; j++) xCnt = Math.Max(xCnt, S[j].Length);
+    while (S[0][x] != '.') x++;
+    while (i < instruction.Length)
     {
-        var s = S[i];
+        string a = "";
+        while (i < instruction.Length && instruction[i] <= '9' && instruction[i] >= '0')
+        {
+            a += instruction[i];
+            i++;
+        }
+        char b = ' ';
+        if (i < instruction.Length)
+        {
+            b = instruction[i];
+            i++;
+        }
 
-
-        i++;
+        for (int j = 0; j < int.Parse(a); j++)
+        {
+            if (dir == 0)
+            {
+                bool around = false;
+                int nextX = x + 1;
+                if (nextX == S[y].Length) around = true;
+                else if (S[y][nextX] == ' ') around = true;
+                if (around)
+                {
+                    nextX = 0;
+                    while (S[y][nextX] == ' ') nextX++;
+                }
+                if( S[y][nextX] == '.') x = nextX;                     
+            }
+            else if (dir == 1)
+                {
+                    bool around = false;
+                    int nextY = y + 1;
+                    if (nextY == S.Count - 2) around = true;
+                    else if (x > S[nextY].Length || S[nextY][x] == ' ') around = true;
+                    if (around)
+                    {
+                        nextY = 0;
+                        while (x >= S[nextY].Length || S[nextY][x] == ' ') nextY++;
+                    }
+                    if (S[nextY][x] == '.') y = nextY;
+                }
+            else if (dir == 2)
+            {
+                bool around = false;
+                int nextX = x - 1;
+                if (nextX < 0) around = true;
+                else if (S[y][nextX] == ' ') around = true;
+                if (around)
+                {
+                    nextX = S[y].Length - 1;
+                    while (S[y][nextX] == ' ') nextX--;
+                }
+                if (S[y][nextX] == '.') x = nextX;
+            }
+            else if (dir == 3)
+            {
+                bool around = false;
+                int nextY = y - 1;
+                if (nextY < 0 ) around = true;
+                else if (x > S[nextY].Length || S[nextY][x] == ' ') around = true;
+                if (around)
+                {
+                    nextY = S.Count - 3;
+                    while (x > S[nextY].Length || S[nextY][x] == ' ') nextY--;
+                }
+                if (S[nextY][x] == '.') y = nextY;
+            }
+        }
+        if (b == 'L') dir--;
+        else if (b == 'R') dir++;
+        if (dir < 0) dir = 3;
+        if (dir > 3) dir = 0;
     }
+
+    answer1 = 1000 * (y+1) + 4 * (x+1) + dir;
 
     stopwatch.Stop();
     Console.WriteLine($"Used time (ms): {stopwatch.ElapsedMilliseconds}");
