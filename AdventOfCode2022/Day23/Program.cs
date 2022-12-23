@@ -27,7 +27,6 @@ void Run(string inputfile, bool isTest)
         i++;
     }
 
-
     bool AddProposed(Dictionary<(long x, long y), List<(long x, long y)>> proposed, (long x, long y) elf, (long x, long y) target, (long x, long y) check1, (long x, long y) check2, (long x, long y) check3 )
     {
         if (!elves.Contains(check1) && !elves.Contains(check2) && !elves.Contains(check3))
@@ -107,7 +106,7 @@ bool NoElvesArround(HashSet<(long x, long y)> elves, (long x, long y) elf)
     return result;
 }
 
-            static void w<T>(int number, T val, T supposedval, bool isTest)
+    static void w<T>(int number, T val, T supposedval, bool isTest)
 {
     string? v = (val == null) ? "(null)" : val.ToString();
     string? sv = (supposedval == null) ? "(null)" : supposedval.ToString();
