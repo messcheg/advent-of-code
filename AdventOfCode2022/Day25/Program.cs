@@ -74,9 +74,10 @@ string DecToSnafu(long dec)
     {
         snf1 = snf0;
         snf0 /= 5;
+        
+        var d1 = dec >= 0 ? (dec + snfp) / snf1 : (dec - snfp) / snf1;
         snfp -= 2 * snf0;
 
-        var d1 = (dec + snfp) / snf1;
         char nxt = '0';
         switch(d1)
         {
