@@ -8,23 +8,25 @@ Run(@"E:\develop\advent-of-code-input\2022\day25.txt", false);
 void Run(string inputfile, bool isTest)
 {
     Stopwatch stopwatch = Stopwatch.StartNew();
-    long supposedanswer1 = 110;
+    string supposedanswer1 = "2=-1=0";
+    long checkdec1 = 4890;
     long supposedanswer2 = 000;
     
     var S = File.ReadAllLines(inputfile).ToList();
-    long answer1 = 0;
+    string  answer1 = "";
     long answer2 = 0;
     var elves = new HashSet<(long x, long y)>();
-  
+    long sum = 0;
     int i = 0;
     while (i<S.Count)
     {
         var s = S[i];
-       
+        sum += SnafuToDec(s);
 
         i++;
     }
-
+    if (isTest) Debug.Assert(sum == checkdec1);
+    answer1 = DecToSnafu(sum);
 
     stopwatch.Stop();
     Console.WriteLine($"Used time (ms): {stopwatch.ElapsedMilliseconds}");
@@ -33,6 +35,62 @@ void Run(string inputfile, bool isTest)
     w(2, answer2, supposedanswer2, isTest);
 }
 
+long SnafuToDec(string snafu)
+{
+    long dec = 0;
+    long mul = 1;
+    
+    for (int i = snafu.Length - 1; i >= 0; i--)
+    {
+        int a = 0;
+        switch(snafu[i])
+        {
+            case '0': a =  0; break;
+            case '1': a = 1; break;
+            case '2': a = 2; break;
+            case '-': a = -1; break;
+            case '=': a = -2; break;
+        }
+        dec += mul * a;
+        mul *= 5;
+    }
+    return dec;
+}
+
+string DecToSnafu(long dec)
+{
+    string snafu = "";
+    long snfp = 0;
+    long snf0 = 0;
+    long snf1 = 1;
+    while (dec > snf1 + snfp) 
+    {
+        snfp += 2 * snf0;
+        snf0 = snf1;
+        snf1 *= 5;
+    }
+
+    while (snf0 > 0)
+    {
+        snf1 = snf0;
+        snf0 /= 5;
+        snfp -= 2 * snf0;
+
+        var d1 = (dec + snfp) / snf1;
+        char nxt = '0';
+        switch(d1)
+        {
+            case -2: nxt = '='; break;
+            case -1: nxt = '-'; break;
+            case 0: nxt = '0'; break;
+            case 1: nxt = '1'; break;
+            case 2: nxt = '2'; break;
+        }
+        snafu += nxt;
+        dec -= d1 * snf1;        
+    }
+    return snafu;
+}
 static void w<T>(int number, T val, T supposedval, bool isTest)
 {
     string? v = (val == null) ? "(null)" : val.ToString();
