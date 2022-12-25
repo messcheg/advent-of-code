@@ -38,7 +38,7 @@ void Run(string inputfile, bool isTest)
 long SnafuToDec(string snafu)
 {
     long dec = 0;
-    for (int i = ; i < snafu.Length; i++)
+    for (int i = 0; i < snafu.Length; i++)
     {
         int a = 0;
         switch(snafu[i])
@@ -50,7 +50,6 @@ long SnafuToDec(string snafu)
             case '=': a = -2; break;
         }
         dec = 5 * dec + a;
-
     }
     return dec;
 }
