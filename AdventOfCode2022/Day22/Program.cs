@@ -33,7 +33,6 @@ void Run(string inputfile, bool isTest, int block, bool paint)
         xCnt = Math.Max(xCnt, S[j].Length);
         if ( paint) Console.WriteLine(S[j]);
     }
-    int side = 1;
     int virtDir = 0;
     while (S[0][x] != '.') x++;
 
