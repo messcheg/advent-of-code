@@ -5,7 +5,7 @@ let ex2 = "..\\..\\..\\Example2.txt"
 let rl = "..\\..\\..\\real_input.txt"
 
 let inp = 
-    File.ReadLines ex1 |>
+    File.ReadLines ex2 |>
     Seq.toArray
 
 let rec startlocation i j =
@@ -33,7 +33,7 @@ let rec reachable i j (collectedKeys: Set<char>) (visited: Set<int * int>) costs
     let lenI = Array.length inp
     let lenJ = String.length inp[0]
     if inp[i][j] = '#' then Set.empty
-    elif inp[i][j] >= 'A' && inp[i][j] <= 'Z' && not (collectedKeys.Contains( inp[i][j] + 'z' - 'a' )) then Set.empty 
+    elif inp[i][j] >= 'A' && inp[i][j] <= 'Z' && not (collectedKeys.Contains(char(inp[i][j] + 'a' - 'A' ))) then Set.empty 
     elif visited.Contains((i,j)) then Set.empty
     else    
         let newVisit = Set.empty.Add((i,j)) + visited
@@ -49,14 +49,37 @@ let rec reachable i j (collectedKeys: Set<char>) (visited: Set<int * int>) costs
         
 let GetReachable i j collectedKeys = reachable i j collectedKeys Set.empty 0
         
+let MakeSet (path:string) =
+       Set.ofArray (path |> Seq.toArray) 
 
-let rec findpath worklist visited =
-    let next = List.sortBy (fun (cost, path) -> cost) worklist 
-    let h = List.head next
-    let t = List.tail next
+let createGraph = // collection: From a to b, costs and needed keys
+    <hier was ik: nieuw idee, eerst een afstandstabel maken en dan pas zoeken>
+       
+let rec AddWork (worklist:List<int*(int*int)*string>) (reach:List<char*(int*int)*int>) path cost =
+    if reach.IsEmpty then worklist
+    else
+        let (k, (x,y), c) = List.head reach
+        let t = List.tail reach
+        AddWork ( worklist @ [(cost + c, (x,y), path + k.ToString() )]) t path cost
 
 
 
-    // mijn idee voor de oplossing: set-met-sleutels-leeg is "klaar"
-    // sleutel pakken is uit-de-set kortstepad naar de sleutel
-    // open deuren
+let rec findpath (worklist:List<int*(int*int)*string>) =
+    let next = List.sortBy (fun (cost, position, path) -> cost) worklist 
+    let (cost, (x,y), path) = List.head next
+    if path.Length = GetAllKeys.Count then (cost, path)
+    else
+        let t = List.tail next
+        let reach = GetReachable x y (MakeSet path)
+        let tnew = AddWork t (reach |> Set.toList) path cost
+        findpath tnew
+    
+let GetBestPath =
+    let start = GetStartLocation
+    let worklist = [(0, start, "")]
+    findpath worklist
+
+let (FinalCost, FinalPath) = GetBestPath
+
+printfn "Answer1: %d" FinalCost
+printfn "Path: %s" FinalPath

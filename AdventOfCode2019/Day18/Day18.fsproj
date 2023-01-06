@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="Example2.txt" />
     <Content Include="Example1.txt" />
     <Content Include="Real_input.txt" />
     <Compile Include="Program.fs" />

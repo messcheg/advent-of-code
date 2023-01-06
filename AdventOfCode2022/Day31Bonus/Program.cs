@@ -8,12 +8,14 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        //Run(@"..\..\..\example_input.txt", false);
+        Run(@"..\..\..\example_input.txt", false);
+        Run(@"..\..\..\example_input.txt", false, true);
         //Run(@"..\..\..\real_input.txt", false);
         Run(@"..\..\..\DistanceGraph.txt", true);
+        Run(@"..\..\..\DistanceGraph.txt", true, true);
 
 
-        void Run(string inputfile, bool isMatrix)
+        void Run(string inputfile, bool isMatrix, bool bruteforce = false)
         {
             Console.WriteLine($"--------------[{inputfile}]--------------------");
             Stopwatch stopwatch = Stopwatch.StartNew();
@@ -28,21 +30,25 @@ internal class Program
             else
                 LoadFromHencofile(S, postcodes, out cities, out distances);
 
-            List<(double distance, double hash, int[] path)>? best = GetBestpath(cities, distances);
+            (double distance,  int[] path) best;
+            if (bruteforce)
+                best = GetBestpathBruteForce(cities, distances);
+            else
+                best = GetBestpath(cities, distances);
 
-            for (int j = 0; j < best[0].path.Length; j++)
+            for (int j = 0; j < best.path.Length; j++)
             {
                 if (j > 0)
                 {
                     Console.WriteLine("         |  ");
-                    Console.WriteLine($" drive: {distances[best[0].path[j - 1], best[0].path[j]]} {(isMatrix ? "km" : "m")}");
+                    Console.WriteLine($" drive: {distances[best.path[j - 1], best.path[j]]} {(isMatrix ? "km" : "m")}");
                     Console.WriteLine("         |  ");
                 }
-                var bc = cities[best[0].path[j]];
+                var bc = cities[best.path[j]];
                 Console.WriteLine($"{bc.name} postcode:{bc.postal} ({bc.location.ToString()})");
 
              }
-            Console.WriteLine($"Total distance: {best[0].distance} {(isMatrix ? "km": "m")}");
+            Console.WriteLine($"Total distance: {best.distance} {(isMatrix ? "km": "m")}");
 
             stopwatch.Stop();
             Console.WriteLine($"Used time to caclulate (ms): {stopwatch.ElapsedMilliseconds}");
@@ -110,17 +116,8 @@ internal class Program
         }
     }
 
-    private static List<(double distance, double hash, int[] path)> GetBestpath(List<(string name, string postal, GeoCoordinate location)>? cities, double[,] distances)
+    private static (double distance, int[] path) GetBestpath(List<(string name, string postal, GeoCoordinate location)>? cities, double[,] distances)
     {
-        double TotalDistance(int[] x)
-        {
-            double result = 0;
-            for (int p = 0; p < x.Length - 1; p++)
-            {
-                result += distances[x[p], x[p + 1]];
-            }
-            return result;
-        }
         double GetHash(int[] x)
         {
             double result = x[1];
@@ -131,40 +128,123 @@ internal class Program
             return result;
         }
 
+        
         // start searching
-        var best = new List<(double distance, double hash, int[] path)>();
+        int[] path = new int[cities.Count + 1];
 
-        best.Add((0, 0, new int[cities.Count + 1]));
         for (int j = 0; j < cities.Count; j++)
         {
-            best[0].path[j] = j;
+            path[j] = j;
         }
-        best[0] = (TotalDistance(best[0].path), GetHash(best[0].path), best[0].path);
-        var rnd = new Random();
-        for (int k = 0; k < 100; k++)
-        {
-            var neighbours = new List<(double distance, double hash, int[] path)>();
+        (double distance, int[] path) best = (TotalDistance(path, distances), path.ToArray());
 
-            foreach (var b in best)
+        best = (TotalDistance(path, distances), path);
+        var rnd = new Random();
+
+        var neighbours = new List<(double distance, double hash, int[] path)>();
+
+        for (int k = 0; k < 50; k++)
+        {
+            HashSet<double> added = new HashSet<double>();
+            neighbours.Add((best.distance, GetHash(best.path), best.path));
+            double mdist = best.distance;
+            int cnt = neighbours.Count;
+            for (int i=0; i< cnt; i++)
             {
-                neighbours.Add(b);
-                for (int m = 0; m < 10; m++)
+                var b = neighbours[i];
+                added.Add(b.hash);
+                int m = 0;
+                while( m < 10)
                 {
                     var nb = b.path.ToArray();
-                    int cityFrom = rnd.Next(1, cities.Count - 1);
-                    int cityTo = rnd.Next(1, cities.Count - 1);
-                    if (cityFrom != cityTo)
+                    int cityFrom = rnd.Next(1, cities.Count);
+                    int cityTo = rnd.Next(1, cities.Count);
+                    if (cityFrom != cityTo )
                     {
                         (nb[cityFrom], nb[cityTo]) = (nb[cityTo], nb[cityFrom]);
-                        neighbours.Add((TotalDistance(nb), GetHash(nb), nb));
+                        var hash = GetHash(nb);
+                        if (!added.Contains(hash))
+                        {
+                            var distance = TotalDistance(nb, distances);
+                            if (distance < best.distance) best = (distance, nb.ToArray());
+                            else if (distance > mdist) mdist = distance;
+                            neighbours.Add((distance, hash, nb));
+                            m++;
+                        }
                     }
                 }
             }
+            var stddev = mdist / (mdist - best.distance) * .3;
+            neighbours = neighbours.OrderBy(b => MullerBoxRnd(rnd, b.distance,stddev)).Take(50).ToList();
 
-            var b1 = neighbours.DistinctBy(x => (x.distance, x.hash));
-            best = b1.OrderBy(x => x.distance).Take(10).ToList();
         }
 
         return best;
+    }
+
+    private static (double distance, int[] path) GetBestpathBruteForce(List<(string name, string postal, GeoCoordinate location)>? cities, double[,] distances)
+    {
+        // start searching
+        int[] path = new int[cities.Count + 1];
+        var usedAbove = new HashSet<int>();
+        for (int j = 0; j < cities.Count; j++)
+        {
+            path[j] = j;
+            usedAbove.Add(j);
+        }
+        (double distance, int[] path) best = (TotalDistance(path, distances), path.ToArray());
+        
+        int level = cities.Count -1;
+        bool down = true;
+        while (level > 0) 
+        { 
+            if (level == cities.Count - 1)
+            {
+                double distance = TotalDistance(path, distances);
+                if (distance < best.distance) best = (distance, path.ToArray());
+                down = false;
+            }
+            int i = path[level];
+            if (!down)
+            {
+                usedAbove.Remove(i);
+                i++;
+                while (i < cities.Count && usedAbove.Contains(i)) { i++; }
+            }
+            if (i == cities.Count) level--;
+            else
+            {
+                down = true;
+                usedAbove.Add(i);
+                path[level] = i;
+                level++;
+                i = 0;
+                while (i < cities.Count && usedAbove.Contains(i)) { i++; }
+                path[level] = i;
+            }
+        }
+        return best;
+    }
+
+
+    private static double TotalDistance(int[] x, double[,] distances)
+    {
+        double result = 0;
+        for (int p = 0; p < x.Length - 1; p++)
+        {
+            result += distances[x[p], x[p + 1]];
+        }
+        return result;
+    }
+
+    private static double MullerBoxRnd(Random rand, double mean, double stdDev)
+    {
+        double u1 = 1.0 - rand.NextDouble(); //uniform(0,1] random doubles
+        double u2 = 1.0 - rand.NextDouble();
+        double randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) *
+                     Math.Sin(2.0 * Math.PI * u2); //random normal(0,1)
+        double randNormal =
+                     mean + stdDev * randStdNormal; //random normal(mean,stdDev^2)
+        return randNormal;
     }
 }
