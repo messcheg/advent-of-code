@@ -9,7 +9,7 @@ internal class Program
     private static void Main(string[] args)
     {
         Run(@"..\..\..\example_input.txt", false);
-        Run(@"..\..\..\example_input.txt", false, true);
+        //Run(@"..\..\..\example_input.txt", false, true);
         //Run(@"..\..\..\real_input.txt", false);
         Run(@"..\..\..\DistanceGraph.txt", true);
         Run(@"..\..\..\DistanceGraph.txt", true, true);
