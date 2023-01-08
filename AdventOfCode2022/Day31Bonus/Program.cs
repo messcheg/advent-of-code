@@ -8,14 +8,14 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        Run(@"..\..\..\example_input.txt", false);
+        //Run(@"..\..\..\example_input.txt", false);
         //Run(@"..\..\..\example_input.txt", false, true);
         //Run(@"..\..\..\real_input.txt", false);
+        Run(@"..\..\..\DistanceGraph.txt", true, false, true);
         Run(@"..\..\..\DistanceGraph.txt", true);
-        Run(@"..\..\..\DistanceGraph.txt", true, true);
+        
 
-
-        void Run(string inputfile, bool isMatrix, bool bruteforce = false)
+        void Run(string inputfile, bool isMatrix, bool bruteforce = false, bool hyperspaceOnMars = false)
         {
             Console.WriteLine($"--------------[{inputfile}]--------------------");
             Stopwatch stopwatch = Stopwatch.StartNew();
@@ -30,6 +30,11 @@ internal class Program
             else
                 LoadFromHencofile(S, postcodes, out cities, out distances);
 
+            if(hyperspaceOnMars)
+            {
+                MakeHyperspaceTable(cities, distances);
+            }
+
             (double distance,  int[] path) best;
             if (bruteforce)
                 best = GetBestpathBruteForce(cities, distances);
@@ -41,19 +46,44 @@ internal class Program
                 if (j > 0)
                 {
                     Console.WriteLine("         |  ");
-                    Console.WriteLine($" drive: {distances[best.path[j - 1], best.path[j]]} {(isMatrix ? "km" : "m")}");
+                    Console.WriteLine($" {(hyperspaceOnMars? "Fly" : "Drive")}: {distances[best.path[j - 1], best.path[j]]} {(hyperspaceOnMars? "HyperHubs" : (isMatrix ? "km" : "m"))}");
                     Console.WriteLine("         |  ");
                 }
                 var bc = cities[best.path[j]];
                 Console.WriteLine($"{bc.name} postcode:{bc.postal} ({bc.location.ToString()})");
 
              }
-            Console.WriteLine($"Total distance: {best.distance} {(isMatrix ? "km": "m")}");
+            Console.WriteLine($"Total distance: {best.distance} {(hyperspaceOnMars ? "HyperHubs" : (isMatrix ? "km" : "m"))}");
 
             stopwatch.Stop();
             Console.WriteLine($"Used time to caclulate (ms): {stopwatch.ElapsedMilliseconds}");
             Console.WriteLine("--------------------------------------------------------------------");
             Console.WriteLine();
+        }
+    }
+
+    private static void MakeHyperspaceTable(List<(string name, string postal, GeoCoordinate location)> cities, double[,] distances)
+    {
+        int[] GetHypers(string zip)
+        {
+            int num(char n) { return n - '0'; }
+            if (zip.Length == 6)
+               return new int[] { num(zip[0]), num(zip[1]), num(zip[2]), num(zip[4]), num(zip[5]) };
+            if (zip.Length == 5)
+                return new int[] { num(zip[0]), num(zip[1]), num(zip[2]), num(zip[3]), num(zip[4]) };
+            if (zip.Length == 4)
+                return new int[] { 0, num(zip[0]), num(zip[1]), num(zip[2]), num(zip[3])};
+            return new int[] {0,0,0,0,0 };
+        }
+        for (int i=0;i < cities.Count-1;i++)
+        {
+            var pci = GetHypers(cities[i].postal);
+            for (int j=i+1;j<cities.Count;j++)
+            {
+                var pcj = GetHypers(cities[j].postal);
+                double hyperDist = Math.Sqrt(pci.Zip(pcj).Select(a => a.First * a.Second).Sum());
+                distances[i, j] = distances[j, i] = hyperDist;
+            }
         }
     }
 
