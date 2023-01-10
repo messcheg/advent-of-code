@@ -5,43 +5,48 @@ let ex2 = "..\\..\\..\\Example2.txt"
 let rl = "..\\..\\..\\real_input.txt"
 
 let inp = 
-    File.ReadLines ex1 |>
+    File.ReadLines rl |>
     Seq.toArray
 
-let rec allKeys i j (allkeys:Map<char,int*int>)= 
+let rec allKeys i j (allkeys:Map<char,int*int>) (alldoors:Map<char,int*int>)= 
     let lenI = Array.length inp
     let lenJ = String.length inp[0]
     let (nextI, nextJ) =
         if j+1 < lenJ then (i, (j+1))
         else ((i+1), 0)
-    if i >= lenI then allkeys
-    elif ( inp[i][j] >= 'a' && inp[i][j] <= 'z') || inp[i][j] = '@' then allKeys nextI nextJ (allkeys.Add(inp[i][j], (i,j))) 
-    else  allKeys nextI nextJ allkeys
+    if i >= lenI then (allkeys, alldoors)
+    elif ( inp[i][j] >= 'a' && inp[i][j] <= 'z') || inp[i][j] = '@' then allKeys nextI nextJ (allkeys.Add(inp[i][j], (i,j))) alldoors 
+    elif ( inp[i][j] >= 'A' && inp[i][j] <= 'Z') then allKeys nextI nextJ allkeys (alldoors.Add(inp[i][j], (i,j))) 
+    else  allKeys nextI nextJ allkeys alldoors
 
-let GetAllKeys = allKeys 0 0 Map.empty
+let GetAllKeys = allKeys 0 0 Map.empty Map.empty
  
-let rec reachable i j (collectedKeys: Set<char>) (visited: Set<int * int>) costs (reach:Map<char,int>)=
+let rec reachable (loc:int*int) (visited: Set<int * int>) (from:char) costs (reaching:Map<char,Map<char,int>>)=
     let lenI = Array.length inp
     let lenJ = String.length inp[0]
+    let (i,j) = loc
     let k = inp[i][j]
-    if k = '#' then reach
-    elif k >= 'A' && inp[i][j] <= 'Z' && not (collectedKeys.Contains(char(inp[i][j] + 'a' - 'A' ))) then reach 
-    elif visited.Contains((i,j)) then reach
-    else    
+    if k = '#' then reaching
+    elif visited.Contains((i,j)) then reaching
+    else
+        let (newFrom, newCosts) = if k >= 'A' && k <= 'Z' then (k, 1) else (from, costs + 1) 
+    
         let newVisit = visited.Add((i,j))
-        let newCosts = costs + 1
-        let n1 = if i + 1 < lenI then reachable (i+1) j collectedKeys newVisit newCosts reach else reach 
-        let n2 = if i > 0 then reachable (i-1) j collectedKeys newVisit newCosts n1  else n1 
-        let n3 = if j + 1 < lenJ then reachable i (j+1) collectedKeys newVisit newCosts n2  else n2 
-        let n4 = if j > 0 then reachable i (j-1) collectedKeys newVisit newCosts  n3 else n3
+        let n1 = if i + 1 < lenI then reachable ((i+1), j) newVisit newFrom newCosts reaching else reaching
+        let n2 = if i > 0 then reachable ((i-1), j) newVisit newFrom newCosts n1  else n1 
+        let n3 = if j + 1 < lenJ then reachable (i, (j+1)) newVisit newFrom newCosts n2  else n2 
+        let n4 = if j > 0 then reachable (i, (j-1)) newVisit newFrom newCosts n3 else n3
         
-        if k >= 'a' && k <= 'z' && not (collectedKeys.Contains(k)) then 
-            if n4.ContainsKey(k) && n4[k] > costs then 
-                n4.Remove(k).Add(k, costs)
-            else n4.Add(k,costs)
+        if (k >= 'a' && k <= 'z') || (k >= 'A' && k <= 'Z' ) then
+            if n4.ContainsKey(from) then 
+                if n4[from].ContainsKey(k) && n4[from][k] > costs then
+                    let newC = n4[from].Remove(k).Add(k, costs)
+                    n4.Remove(from).Add(from, newC)
+                else n4
+            else n4.Add(from,Map.empty.Add(k,costs))
         else n4
         
-let GetReachable i j collectedKeys = reachable i j collectedKeys Set.empty 0 Map.empty
+let GetReachable (allkeys:Map<char,int*int>) = reachable allkeys['@'] Set.empty '@' 0 (Map.empty.Add('@', Map.empty))
         
 let MakeSet (path:string) =
        Set.ofArray (path |> Seq.toArray) 
@@ -66,26 +71,31 @@ let rec AddWork (reach:Map<char,int>) path cost (costs:Map<char*string,int*strin
                 else costs.Add((k,keys), (newCost,path1))
             AddWork t path cost newCosts visited
             
-let rec findpath (costs:Map<char*string,int*string>) (visited:Set<char*string>) (allkeys:Map<char,int*int>)  =
-    let free = Map.keys costs |> Seq.filter(fun (k1,k2) -> not (visited.Contains((k1,k2))))
-    let (k,keys) = 
-        free |> 
-        Seq.minBy(fun k ->
-            let (c, _) = costs[k]
-            c)
-    let (x,y) = allkeys[k]
-    let (cost, path) = costs[(k,keys)]
-    if keys.Length = allkeys.Count - 1 then (cost, path)
-    else
-        let newVisit = visited.Add((k,keys))
-        let reach = GetReachable x y (MakeSet path)
-        let distnew = AddWork reach path cost costs newVisit
-        findpath distnew newVisit allkeys 
-    
-let GetBestPath =
-    findpath (Map.empty.Add(('@', ""),(0,""))) Set.empty GetAllKeys
 
-let (FinalCost, FinalPath) = GetBestPath
+//let rec findpath (costs:Map<char*string,int*string>) (visited:Set<char*string>) (allkeys:Map<char,int*int>)  =
+//    let free = Map.keys costs |> Seq.filter(fun (k1,k2) -> not (visited.Contains((k1,k2))))
+//    let (k,keys) = 
+//        free |> 
+//        Seq.minBy(fun k ->
+//            let (c, _) = costs[k]
+//            c)
+//    let (x,y) = allkeys[k]
+//    let (cost, path) = costs[(k,keys)]
+//    if keys.Length = allkeys.Count - 1 then (cost, path)
+//    else
+//        let newVisit = visited.Add((k,keys))
+//        let reach = GetReachable x y (MakeSet path)
+//        let distnew = AddWork reach path cost costs newVisit
+//        findpath distnew newVisit allkeys 
+//    
+//let GetBestPath =
+//    findpath (Map.empty.Add(('@', ""),(0,""))) Set.empty GetAllKeys
+//
+//let (FinalCost, FinalPath) = GetBestPath
+//
+//printfn "Answer1: %d" FinalCost
+//printfn "Path: %s" FinalPath
+//
 
-printfn "Answer1: %d" FinalCost
-printfn "Path: %s" FinalPath
+let (mk,md) = GetAllKeys
+printfn "Check: %d" (GetReachable mk).Keys.Count
