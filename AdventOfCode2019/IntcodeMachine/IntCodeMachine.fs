@@ -100,6 +100,11 @@ module Intcode =
         let (outval, pc1, (_,pbase1), finish, (prog1, arrExtra1)) = doruntilout prog arrExtra [|inVal|] pc pbase
         (outval,(arrExtra1, prog1, pc1, pbase1, finish))    
     
+    let runNextStepArr (inVals:int64 array) ((arrExtra : (int * int64)[]), (prog : int64[]), pc, (pbase : int), _) =
+        let (outval, pc1, (_,pbase1), finish, (prog1, arrExtra1)) = doruntilout prog arrExtra inVals pc pbase
+        (outval,(arrExtra1, prog1, pc1, pbase1, finish))    
+    
+
     let isFinished (_,(_,_,_,_,finished)) = finished
     
     let initalprogstate prog  = ([||], prog, 0, 0, false)
