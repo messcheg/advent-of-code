@@ -28,8 +28,6 @@ let prompt1 = p1 transJProg1 2000 (initalprogstate (Array.copy prog1)) ""
 
 printfn "%s" prompt1
 
-//let JProg2 = "NOT A J\nNOT B T\nOR T J\nNOT C T\nOR T J\nAND D J\nRUN\n"
-//let JProg2 = "NOT B J\nNOT E T\nAND T J\nNOT A T\nOR T J\nNOT C T\nAND D T\nAND H T\nOR T J\nRUN\n"
 let JProg2 = "NOT E J\nNOT I T\nOR T J\nNOT B T\nAND T J\nNOT A T\nOR T J\nNOT C T\nAND H T\nOR T J\nAND D J\nRUN\n"
 
 let transJProg2 = JProg2 |> Seq.map(fun x -> int64 x) |>  Seq.toArray
