@@ -21,7 +21,7 @@ let (wall, moved, movedOnOxSys, flooded ,ready, start) = (0L, 1L, 2L, 3L, 4L, 5L
 
 let rec navigateTo path progstate =
     path |>
-    Seq.fold (fun (_,ps) d -> runNextStep d ps) (-1L,progstate)
+    Seq.fold (fun (_,ps) d -> runNextStep d ps) ((-1L,false),progstate)
 
 let locationOf path =
     let x = path |> Seq.map (fun d -> if d = east then 1 elif d = west then -1 else 0) |> Seq.sum
@@ -52,7 +52,7 @@ let rec performstep (shortlist: (int * int64 * int64 list) list)  (visited : ((i
             performstep (List.tail shortlist) visited currentpath progstate 
         else    
             let pathAtoB = getPathFromAtoB currentpath path1
-            let (material, progstate1) = navigateTo pathAtoB progstate
+            let ((material,_), progstate1) = navigateTo pathAtoB progstate
             if material = wall then 
                 performstep (List.tail shortlist) (visited @ [(location, wall, costs, path1)]) path progstate1 
             else  

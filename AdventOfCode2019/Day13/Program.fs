@@ -7,13 +7,13 @@ let filename = "..\\..\\..\\real_input.txt"
 let prog1 = IntcodeMachine.Intcode.inp filename
 
 let rec determineGamefield program (fields:Map<int64*int64,int>) arrExtra pc pbase =
-        let (x, pc1, (_, pbase1), fin1, (prog1, extra1)) = 
+        let (x, pc1, (_, pbase1), fin1, (prog1, extra1), _) = 
             doruntilout program arrExtra [| |] pc pbase
         if fin1 then fields
         else
-            let (y, pc2, (_, pbase2), _, (prog2, extra2)) = 
+            let (y, pc2, (_, pbase2), _, (prog2, extra2), _) = 
                 doruntilout prog1 extra1 [| |] pc1 pbase1
-            let (tileID, pc3, (_, pbase3), _, (prog3, extra3)) = 
+            let (tileID, pc3, (_, pbase3), _, (prog3, extra3), _) = 
                 doruntilout prog2 extra2 [| |] pc2 pbase2
             let containedKey = Map.containsKey (x,y) fields
             let fields1 = 
@@ -53,14 +53,14 @@ let printTile x y tileid =
     Console.Write(sprintf "%c" prnt[int tileid])
 
 let rec playGame program pdlpos blocks ballpos score (fields:Map<int64*int64,int>)arrExtra pc pbase =
-    let joystick = (fun _ -> if pdlpos > ballpos then -1L elif pdlpos < ballpos then 1L else 0L)
-    let (x, pc1, (_, pbase1), fin1, (prog1, extra1)) = 
+    let joystick = (fun _ -> if pdlpos > ballpos then (true,-1L) elif pdlpos < ballpos then (true,1L) else (true,0L))
+    let (x, pc1, (_, pbase1), fin1, (prog1, extra1), _) = 
         runFunInUntilOut program arrExtra joystick pc pbase
     if fin1 then score
     else
-        let (y, pc2, (_, pbase2), _, (prog2, extra2)) = 
+        let (y, pc2, (_, pbase2), _, (prog2, extra2), _) = 
             runFunInUntilOut prog1 extra1 joystick pc1 pbase1
-        let (tileID, pc3, (_, pbase3), _, (prog3, extra3)) = 
+        let (tileID, pc3, (_, pbase3), _, (prog3, extra3), _) = 
             runFunInUntilOut  prog2 extra2 joystick pc2 pbase2
         if x = -1 then
             Console.CursorLeft <- 0

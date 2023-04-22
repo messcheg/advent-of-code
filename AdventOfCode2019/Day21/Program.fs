@@ -15,7 +15,7 @@ let rec p1 (transJProg:int64 array) x pst (txt:string) =
     else
         let (txt1,instr,newJProg) = if txt = "Input instructions:\n" then ("",transJProg, [||]) else (txt, [||], transJProg)  
         let a = runNextStepArr instr pst
-        let b = fst a
+        let (b,_) = fst a
         if b > 255 || b = 0 then string b 
         else 
             let txt2 = if txt1.EndsWith '\n' then "" else txt1

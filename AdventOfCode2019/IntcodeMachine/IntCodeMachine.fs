@@ -58,15 +58,17 @@ module Intcode =
         elif opc = 8 then  if a = b then 1 else 0
         else 0
     
-    let gfst (a,_,_,_,_) = a
-    let gsnd (_,b,_,_,_) = b
-    let gtrd (_,_,c,_,_) = c
-    let gfrt (_,_,_,d,_) = d
-    let gfft (_,_,_,_,e) = e
+    let gfst (a,_,_,_,_,_) = a
+    let gsnd (_,b,_,_,_,_) = b
+    let gtrd (_,_,c,_,_,_) = c
+    let gfrt (_,_,_,d,_,_) = d
+    let gfft (_,_,_,_,e,_) = e
+    let gsxt (_,_,_,_,_,f) = f
 
-    let runFunInUntilOut (arrInp : int64[]) (arrExtra : (int * int64)[]) (funinp : int64 -> int64) pc (pbase : int) =
+
+    let runFunInUntilOut (arrInp : int64[]) (arrExtra : (int * int64)[]) (funinp : int -> bool*int64) pc (pbase : int) =
         let mutable i : int = pc
-        let mutable out = (0L,0,(0, pbase), true, (arrInp, arrExtra))
+        let mutable out = (0L,0,(0, pbase), true, (arrInp, arrExtra), false)
         let mutable inpcnt = 0
         let mutable parambase = pbase
         let mutable arrs = (arrInp, arrExtra)
@@ -76,12 +78,16 @@ module Intcode =
                     arrs <- setValue arrs (int a) parambase (i+3) (opr (int de) (getValue arrs (int c) parambase (i+1)) (getValue arrs (int b) parambase (i+2)))
                     i <- i + 4
                 | ( _ , _ , c , de ) when de = 3 ->
-                    arrs <- setValue arrs (int c) parambase (i+1) (funinp inpcnt)
-                    inpcnt <- inpcnt + 1
-                    out <- (gfst out, gsnd out, (inpcnt, parambase), true, arrs)
-                    i <- i + 2
+                    let (hasInp, inp) = (funinp inpcnt)
+                    if hasInp then
+                        arrs <- setValue arrs (int c) parambase (i+1) inp
+                        inpcnt <- inpcnt + 1
+                        out <- (gfst out, gsnd out, (inpcnt, parambase), true, arrs, false)
+                        i <- i + 2
+                    else
+                        out <- (gfst out, i, (inpcnt, parambase), false, arrs, true)
                 | ( _ , _ , c , de ) when de = 4 ->
-                    out <- (getValue arrs (int c) parambase (i+1), i + 2, (inpcnt, parambase), false, arrs)
+                    out <- (getValue arrs (int c) parambase (i+1), i + 2, (inpcnt, parambase), false, arrs, false)
                     i <- i + 2
                 | ( _ , b , c , de ) when de = 5 || de = 6 ->
                     let cond = getValue arrs (int c) parambase (i+1)
@@ -93,16 +99,24 @@ module Intcode =
                 | _ -> i <- i + 1
         out
     
+    let getInpFunc x ar = 
+        if x < Array.length ar then (true, ar[x])
+        else (false, 0L)
+
     let doruntilout (arrInp : int64[] ) (arrExtra : (int * int64)[]) (getInput : int64[]) pc (pbase : int) =
-        runFunInUntilOut arrInp arrExtra (fun x -> getInput[int x]) pc pbase
+        runFunInUntilOut arrInp arrExtra (fun x -> getInpFunc x getInput) pc pbase
     
+    let doRunUntilOutOfIn  (arrInp : int64[] ) (arrExtra : (int * int64)[]) (getInput : int64[]) pc (pbase : int) =
+        runFunInUntilOut arrInp arrExtra (fun x -> getInpFunc x getInput) pc pbase
+        
+
     let runNextStep (inVal:int64) ((arrExtra : (int * int64)[]), (prog : int64[]), pc, (pbase : int), _) =
-        let (outval, pc1, (_,pbase1), finish, (prog1, arrExtra1)) = doruntilout prog arrExtra [|inVal|] pc pbase
-        (outval,(arrExtra1, prog1, pc1, pbase1, finish))    
+        let (outval, pc1, (_,pbase1), finish, (prog1, arrExtra1), waitForInput) = doruntilout prog arrExtra [|inVal|] pc pbase
+        ((outval, waitForInput),(arrExtra1, prog1, pc1, pbase1, finish))    
     
     let runNextStepArr (inVals:int64 array) ((arrExtra : (int * int64)[]), (prog : int64[]), pc, (pbase : int), _) =
-        let (outval, pc1, (_,pbase1), finish, (prog1, arrExtra1)) = doruntilout prog arrExtra inVals pc pbase
-        (outval,(arrExtra1, prog1, pc1, pbase1, finish))    
+        let (outval, pc1, (_,pbase1), finish, (prog1, arrExtra1),waitForInput) = doruntilout prog arrExtra inVals pc pbase
+        ((outval, waitForInput),(arrExtra1, prog1, pc1, pbase1, finish))    
     
 
     let isFinished (_,(_,_,_,_,finished)) = finished

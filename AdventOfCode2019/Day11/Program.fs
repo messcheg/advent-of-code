@@ -9,7 +9,7 @@ let directions = [|(0,1);(1,0);(0,-1);(-1,0)|]
 let rec determinePaintedTiles program tiles (x,y) dir arrExtra pc pbase=
         let containedkey = Map.containsKey (x,y) tiles 
         let color = if containedkey then tiles[(x,y)] else 0  
-        let (color1, pc1, (_, pbase1), fin1, (prog1, extra1)) = 
+        let (color1, pc1, (_, pbase1), fin1, (prog1, extra1), _) = 
             doruntilout program arrExtra [| color |] pc pbase
         if fin1 then tiles
         else 
@@ -17,7 +17,7 @@ let rec determinePaintedTiles program tiles (x,y) dir arrExtra pc pbase=
                 if color = int color1 && containedkey then tiles
                 elif containedkey then Map.add (x,y) (int color1) (Map.remove(x,y) tiles)
                 else Map.add (x,y) (int color1) tiles
-            let (direction, pc2, (_, pbase2), fin2, (prog2,extra2)) =
+            let (direction, pc2, (_, pbase2), fin2, (prog2,extra2),_) =
                 doruntilout prog1 extra1 [| |] pc1 pbase1
             if fin2 then tiles1
             else

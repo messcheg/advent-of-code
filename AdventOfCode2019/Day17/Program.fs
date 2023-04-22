@@ -8,9 +8,9 @@ let prog1 = IntcodeMachine.Intcode.inp filename
 
 let rec initialfield ps = 
     let s = runNextStep 0 ps
-    printf "%c" (char (fst s))
+    printf "%c" (char (fst(fst s)))
     if isFinished s then []
-    else [fst s] @ initialfield (snd s)
+    else [fst (fst s)] @ initialfield (snd s)
 
 let playfield = 
     System.Console.Clear()
@@ -262,11 +262,11 @@ let finalanswer =
     let mutable finised = false
     let mutable inputvals = inputcode
     let mutable extr1 = [||]
-    let mutable state = (0L, 0, (0,0),false,(p1,extr1))
+    let mutable state = (0L, 0, (0,0),false,(p1,extr1), false)
     let mutable veryout = 0L
     while not finised  do
         state <- doruntilout p1 extr1 inputvals (gsnd state) (snd(gtrd state))
-        let (outp, pc, (inpcnt, pbase), fini, arrs) = state
+        let (outp, pc, (inpcnt, pbase), fini, arrs, _) = state
         finised <- fini
         p1 <- fst arrs
         extr1 <- snd arrs
