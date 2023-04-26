@@ -4,13 +4,13 @@ These are my [advent-of-code solutions](https://adventofcode.com/ "advent of cod
 I started with the aoc, using C#, 5 days after AoC2021 started.
 Now I'm trying to solve all previous years in different languages (In my own pace).
 
-AoC           | Language
-------------- | -------------
-2022          | C#
-2021          | C#
-2020          | Python
-2019          | F#
-2018          | VB.Net
-2017          | Commodore 64
-2016          | 
-2015          | 
+AoC           | Language     | Completed 
+------------- | -------------|-----------
+2022          | C#           | Yes       
+2021          | C#           | Yes       
+2020          | Python       | Yes       
+2019          | F#           | _almost_  
+2018          | VB.Net       |           
+2017          | Commodore 64 |           
+2016          |              |           
+2015          |              |           
