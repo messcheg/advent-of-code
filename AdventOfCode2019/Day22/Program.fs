@@ -12,7 +12,7 @@ let inp2 =
     Seq.toArray
 
 let rec reverseMod (x:bigint) (inc:bigint) max = 
-    if x % inc = 0 then x / inc
+    if x % inc = (bigint 0) then x / inc
     else reverseMod (x+max) inc max
 
 // instead of immediately calculating x, we'll only calculate the factors of ax + b
@@ -38,7 +38,7 @@ let rec nextposition (reverse:bool) (a:bigint) (b:bigint) (i:int) (max:bigint) (
 
 let apply (a:bigint) (b:bigint) (x:bigint) (max:bigint) =
     let answ = ((a * x) + b) % max
-    if answ >= 0 then answ else answ+max
+    if answ >= (bigint 0) then answ else answ+max
 
 let calculateEndpos (reverse:bool) (x:bigint) (max:bigint) (input:string array) =
     let (a,b) = nextposition reverse (bigint 1) (bigint 0) (if reverse then input.Length-1 else 0) max input
@@ -47,11 +47,11 @@ let calculateEndpos (reverse:bool) (x:bigint) (max:bigint) (input:string array) 
 printfn "example %s" ((calculateEndpos false (bigint 9L) (bigint 10L) inp1).ToString())
 printfn "real %s" ((calculateEndpos  false (bigint 2019L) (bigint 10007L) inp2).ToString())
 
-printfn "example reverse %s" ((calculateEndpos  true 0L 10L inp1).ToString())
-printfn "real reverse %s" ((calculateEndpos  true 3749L 10007L inp2).ToString())
+printfn "example reverse %s" ((calculateEndpos  true (bigint 0L) (bigint 10L) inp1).ToString())
+printfn "real reverse %s" ((calculateEndpos  true (bigint 3749L) (bigint 10007L) inp2).ToString())
 
-let cardset = 119315717514047L
-let turns = 101741582076661L
+let cardset = (bigint 119315717514047L)
+let turns = (bigint 101741582076661L)
 
 let combine (a:bigint,b:bigint) (xA,xB) (max:bigint) =
     let nA =  (a*xA) %  max
@@ -59,7 +59,7 @@ let combine (a:bigint,b:bigint) (xA,xB) (max:bigint) =
     (nA, nB)
 
 let rec combineMultiple (count:bigint) (xA:bigint) (xB:bigint) (a:bigint) (b:bigint) (max:bigint) = 
-    if count = 0 then (xA,xB)
+    if count = bigint 0L then (xA,xB)
     else
         let (nXA,nXB) = if (count % bigint 2L) > bigint 0 then combine (a,b) (xA,xB) max else (xA,xB)
         let (nA,nB) = combine (a,b) (a,b) max
@@ -67,12 +67,12 @@ let rec combineMultiple (count:bigint) (xA:bigint) (xB:bigint) (a:bigint) (b:big
         combineMultiple nCnt nXA nXB nA nB max
 
 let performMultipleTerms (count:bigint) (reverse:bool) (x:bigint) (max:bigint) (input:string array) =
-    let (a,b) = nextposition reverse 1 0 (if reverse then input.Length-1 else 0) max input
-    let (cA, cB) = combineMultiple count 1 0 a b max
+    let (a,b) = nextposition reverse (bigint 1) (bigint 0) (if reverse then input.Length-1 else 0) max input
+    let (cA, cB) = combineMultiple count (bigint 1) (bigint 0) a b max
     apply cA cB x max
 
 
-let answer2 = performMultipleTerms turns true 2020L cardset inp2
+let answer2 = performMultipleTerms turns true (bigint 2020L) cardset inp2
 
 // check if the answer indeed end-up in position 2020
 let check = performMultipleTerms turns false answer2 cardset inp2
