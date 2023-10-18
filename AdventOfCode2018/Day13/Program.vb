@@ -47,48 +47,40 @@ Module Program
             For Each crt In carts
                 Dim from As New Tuple(Of Integer, Integer)(crt.x, crt.y)
                 Dim curtrack As Char = map(crt.y)(crt.x)
-                Select Case curtrack
-                    Case "|"
-                        If crt.direction = "v" Then
-                            crt.y += 1
-                        Else
-                            crt.y -= 1
-                        End If
-                    Case "-"
-                        If crt.direction = ">" Then
-                            crt.x += 1
-                        Else
-                            crt.x -= 1
-                        End If
-                    Case "/"
-                        If crt.direction = "^" Then
-                            crt.x += 1
-                            crt.direction = ">"
-                        ElseIf crt.direction = "<" Then
-                            crt.y += 1
+                Select Case curtrack & crt.direction
+                    Case "|v"
+                        crt.y += 1
+                    Case "|^"
+                        crt.y -= 1
+                    Case "->"
+                        crt.x += 1
+                    Case "-<"
+                        crt.x -= 1
+                    Case "/^"
+                        crt.x += 1
+                        crt.direction = ">"
+                    Case "/<"
+                        crt.y += 1
                             crt.direction = "v"
-                        ElseIf crt.direction = "v" Then
-                            crt.x -= 1
+                    Case "/v"
+                        crt.x -= 1
                             crt.direction = "<"
-                        ElseIf crt.direction = ">" Then
-                            crt.y -= 1
+                    Case "/>"
+                        crt.y -= 1
                             crt.direction = "^"
-                        End If
-                    Case "\"
-                        If crt.direction = "^" Then
-                            crt.x -= 1
+                    Case "\^"
+                        crt.x -= 1
                             crt.direction = "<"
-                        ElseIf crt.direction = "<" Then
-                            crt.y -= 1
+                    Case "\<"
+                        crt.y -= 1
                             crt.direction = "^"
-                        ElseIf crt.direction = "v" Then
-                            crt.x += 1
+                    Case "\v"
+                        crt.x += 1
                             crt.direction = ">"
-                        ElseIf crt.direction = ">" Then
-                            crt.y += 1
+                    Case "\>"
+                        crt.y += 1
                             crt.direction = "v"
-                        End If
-                    Case "+"
+                    Case "+v", "+^", "+<", "+>"
                         Select Case crt.nextAction
                             Case "L"
                                 crt.nextAction = "S"
