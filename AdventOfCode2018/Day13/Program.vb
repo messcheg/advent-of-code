@@ -41,7 +41,7 @@ Module Program
 
         Dim seconds As Integer = 0
         Dim crashed As Boolean = False
-        Dim crashCart As Cart
+        Dim crashCart As Cart = Nothing
         While carts.Count > 1
             Dim from_to As New List(Of Tuple(Of Integer, Tuple(Of Integer, Integer), Tuple(Of Integer, Integer)))
             For Each crt In carts
