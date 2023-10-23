@@ -52,8 +52,10 @@ Module Program
         Dim startG = totalG
 
         Dim round = 0
+        Dim lastroundbroken = False
         While totalG > 0 And totalE > 0
             round += 1
+            lastroundbroken = False
             'play a roud
             Dim players As New List(Of Tuple(Of Integer, Integer))()
             For py = 0 To field.Count - 1
@@ -77,6 +79,8 @@ Module Program
                         (x < field(y).Count - 1 And field(y)(x + 1) = enemy) OrElse
                         (y > 0 And field(y - 1)(x) = enemy) OrElse
                         (y < field.Count - 1 And field(y + 1)(x) = enemy)
+                    'çheck if there are enemies left
+                    If totalG = 0 Or totalE = 0 Then lastroundbroken = True
                     If Not touch Then
                         ' find  shortest path to nearest enemy
                         Dim path_to_here As List(Of List(Of Integer)) = Nothing
@@ -172,7 +176,7 @@ Module Program
             'Threading.Thread.Sleep(200)
             'Console.ReadKey()
         End While
-
+        If lastroundbroken Then round -= 1
         Dim outcome = round * hitpoints.Values.Sum()
         Return New Tuple(Of Integer, Integer, Integer, Integer)(outcome, startE - totalE, startG - totalG, round)
     End Function
