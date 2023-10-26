@@ -167,10 +167,10 @@ Module Program
         Next
 
         Dim answer1 = fields.Where(Function(t) t.Key.Item2 >= ymin And t.Key.Item2 <= ymax And (t.Value = "~" Or t.Value = "|")).Count
-        Console.Write("Amount of water: " & answer1)
+        Console.WriteLine("Amount of water: " & answer1)
 
         Dim answer2 = fields.Where(Function(t) t.Key.Item2 >= ymin And t.Key.Item2 <= ymax And (t.Value = "~")).Count
-        Console.Write("Amount of water: " & answer2)
+        Console.WriteLine("Amount of water: " & answer2)
 
     End Sub
 
