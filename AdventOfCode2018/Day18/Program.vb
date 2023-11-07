@@ -24,16 +24,15 @@ Module Program
         Dim totTree = 0
 
         Dim repeat As New Dictionary(Of String, Long)()
-
+        Dim key As New StringBuilder(2500)
         Dim repeating As Boolean = False
         Const totalrounds = 1000000000
         Dim m As Long = 1
         While m <= totalrounds
             totLumb = 0
             totTree = 0
-
+            key.Clear()
             Dim field_new As New List(Of List(Of Char))()
-            Dim key As New StringBuilder(2500)
             If m <= 10 Then Console.WriteLine("--------------[Round " & m & " ]--------------")
             For j = 0 To field.Count - 1
                 Dim newline As New List(Of Char)()
