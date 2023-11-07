@@ -32,6 +32,16 @@ Module Program
         Console.WriteLine("number of steps needed: " & steps)
         Console.WriteLine("registervalue 0 after code execution: " & registers(0))
 
+
+        Dim r5 As Long = 10551355
+        Dim r0 As Long = 0
+        For r1 = 1 To r5
+            If r5 Mod r1 = 0 Then
+                r0 += r1
+            End If
+        Next
+        Console.WriteLine("r0 after code execution: " & r0)
+
     End Sub
 
     Function Alu(instruction As Instructions, A As Long, B As Long, C As Long, regs As List(Of Long)) As List(Of Long)
