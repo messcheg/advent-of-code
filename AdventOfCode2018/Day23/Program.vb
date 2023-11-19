@@ -12,7 +12,7 @@ Imports System.Text.RegularExpressions
 Module Program
     Sub Main(args As String())
         'Const fileName = "..\..\..\example.txt"
-        'Const fileName = "..\..\..\example1.txt"
+        ' Const fileName = "..\..\..\example1.txt"
         Const fileName = "E:\develop\advent-of-code-input\2018\Day23.txt"
 
 
@@ -34,89 +34,126 @@ Module Program
 
         Dim maxovl As Integer = Nothing
         Dim candidates As List(Of HashSet(Of Integer)) = Nothing
-        GetBestSpot2(pods, maxovl)
-        Console.WriteLine("Number of candidates: " & candidates.Count & " with " & maxovl & " pods")
+        Dim dist = GetBestSpot(pods)
+
+        Console.WriteLine(" Distance to best spot " & dist)
 
     End Sub
 
-    Private Sub GetBestSpot1(pods As Dictionary(Of (x As Long, y As Long, z As Long), Long), ByRef maxovl As Integer, ByRef candidates As List(Of HashSet(Of Integer)))
-        Dim podlist = pods.Select(Function(f) (pos:=f.Key, r:=f.Value)).ToList()
-        Dim overlaps As New List(Of HashSet(Of Integer))
-        For i = 0 To podlist.Count - 1
-            overlaps.Add(New HashSet(Of Integer)({i}))
-        Next
-        Dim ready = False
-        While (Not ready)
-            Dim newovl = New List(Of HashSet(Of Integer))
-            For i = 0 To podlist.Count - 1
-                Dim cur = podlist(i)
-                For Each li In overlaps
-                    If Not li.Contains(i) Then
-                        Dim allOverlap = True
-                        For Each other In li
-                            Dim oth = podlist(other)
-                            allOverlap = allOverlap And Math.Abs(cur.pos.x - oth.pos.x) + Math.Abs(cur.pos.y - oth.pos.y) + Math.Abs(cur.pos.z - oth.pos.z) <= oth.r + cur.r
-                        Next
-                        If allOverlap Then
-                            Dim newli = li.ToList()
-                            newli.Add(i)
-                            newovl.Add(New HashSet(Of Integer)(newli))
-                        End If
-                    End If
-                Next
-            Next
-            If newovl.Count = 0 Then
-                ready = True
-            Else
-                overlaps = newovl
-            End If
 
-        End While
-        Dim maxovl1 = overlaps.Select(Function(f) f.Count).Max()
-        maxovl = maxovl1
-        candidates = overlaps.Where(Function(f) f.Count = maxovl1).ToList()
-    End Sub
-
-    Private Sub GetBestSpot2(pods As Dictionary(Of (x As Long, y As Long, z As Long), Long), ByRef maxovl As Integer)
+    Private Function GetBestSpot(pods As Dictionary(Of (x As Long, y As Long, z As Long), Long)) As Long
         Dim podlist = pods.Select(Function(f) (pos:=f.Key, r:=f.Value)).ToList()
 
         Dim podsSortedByXaxis = podlist.OrderBy(Function(x) x.pos.x - x.r).ToList()
-        Dim currentpods As New List(Of (pos As (x As Long, y As Long, z As Long), r As Long))()
-        Dim maxxount = 0
-        Dim maxpods As List(Of (pos As (x As Long, y As Long, z As Long), r As Long))
-        Dim xfrom As Long = 0
-        Dim xuntil As Long = 0
-        For Each pod In podsSortedByXaxis
-            Dim ended = currentpods.Where(Function(f) f.pos.x + f.r < pod.pos.x - pod.r).Count
-            currentpods.Add(pod)
-            If currentpods.Count > maxxount Then
-                maxxount = currentpods.Count
-                maxpods = currentpods
-                xfrom = currentpods.Select(Function(f) f.pos.x - f.r).Max()
-                xuntil = currentpods.Select(Function(f) f.pos.x + f.r).Min()
+        Dim podsSortedByEndXaxis = podlist.OrderBy(Function(x) x.pos.x + x.r).ToList()
+        Dim notabovex As Integer = 1001
+        Dim topcount = 0
+        Dim toppods As New List(Of (pos As (x As Long, y As Long, z As Long), r As Long))
 
-                Dim podsSortedByYaxis = currentpods.OrderBy(Function(y) y.pos.y - y.r).ToList()
-                Dim currentypods As New List(Of (pos As (x As Long, y As Long, z As Long), r As Long))()
-                For Each pody In podsSortedByYaxis
-                    Dim endedy = currentypods.Where(Function(f) f.pos.y + f.r < pody.pos.y - pody.r).Count
-                    If endedy > 0 Then
-                        currentypods = currentypods.Where(Function(f) f.pos.y + f.r >= pody.pos.y - pody.r).ToList()
-                        'hier was ik gebleven
+        While notabovex > topcount
+            Dim maxcount = 0
+            Dim maxpods As List(Of (pos As (x As Long, y As Long, z As Long), r As Long))
 
-                    End If
+            Dim currentpods As New List(Of (pos As (x As Long, y As Long, z As Long), r As Long))()
+            Dim xstarted = 0
+            Dim xended = 0
+            Dim bestpos As (x As Long, y As Long, z As Long) = (0, 0, 0)
+            Dim bestposdist As Long = 0
+            While xended < podlist.Count
+                If xstarted < podlist.Count AndAlso podsSortedByXaxis(xstarted).pos.x - podsSortedByXaxis(xstarted).r <= podsSortedByEndXaxis(xended).pos.x + podsSortedByEndXaxis(xended).r Then
+                    currentpods.Add(podsSortedByXaxis(xstarted))
+                    xstarted += 1
+                Else
+                    currentpods.Remove(podsSortedByEndXaxis(xended))
+                    xended += 1
+                End If
 
-                Next
+                If currentpods.Count > maxcount And currentpods.Count > topcount And currentpods.Count < notabovex Then
+                    maxcount = currentpods.Count
+                    maxpods = currentpods.ToList()
+                End If
+
+            End While
+            currentpods = maxpods
+            notabovex = maxcount
+
+            Dim podsSortedByYaxis = currentpods.OrderBy(Function(y) y.pos.y - y.r).ToList()
+            Dim podsSortedByEndYaxis = currentpods.OrderBy(Function(y) y.pos.y + y.r).ToList()
+
+            Dim currentypods As New List(Of (pos As (x As Long, y As Long, z As Long), r As Long))()
+            Dim ystarted = 0
+            Dim yended = 0
+            maxcount = 0
+            While yended < currentpods.Count
+                If ystarted < currentpods.Count AndAlso podsSortedByYaxis(ystarted).pos.y - podsSortedByYaxis(ystarted).r <= podsSortedByEndYaxis(yended).pos.y + podsSortedByEndYaxis(yended).r Then
+                    currentypods.Add(podsSortedByYaxis(ystarted))
+                    ystarted += 1
+                Else
+                    currentypods.Remove(podsSortedByEndYaxis(yended))
+                    yended += 1
+                End If
+
+                If currentypods.Count > maxcount Then
+                    maxcount = currentypods.Count
+                    maxpods = currentypods.ToList()
+                End If
+            End While
+
+            currentypods = maxpods
+
+            Dim podsSortedByZaxis = currentypods.OrderBy(Function(z) z.pos.z - z.r).ToList()
+            Dim podsSortedByEndZaxis = currentypods.OrderBy(Function(z) z.pos.z + z.r).ToList()
+
+            Dim currentzpods As New List(Of (pos As (x As Long, y As Long, z As Long), r As Long))()
+            Dim zstarted = 0
+            Dim zended = 0
+            maxcount = 0
+            While zended < currentypods.Count
+                If zstarted < currentypods.Count AndAlso podsSortedByZaxis(zstarted).pos.z - podsSortedByZaxis(zstarted).r <= podsSortedByEndZaxis(zended).pos.z + podsSortedByEndZaxis(zended).r Then
+                    currentzpods.Add(podsSortedByZaxis(zstarted))
+                    zstarted += 1
+                Else
+                    currentzpods.Remove(podsSortedByEndZaxis(zended))
+                    zended += 1
+                End If
+                If currentzpods.Count > maxcount Then
+                    maxcount = currentzpods.Count
+                    maxpods = currentzpods.ToList()
+                End If
+
+            End While
+
+            If maxcount > topcount Then
+                topcount = maxcount
+                toppods = maxpods
             End If
-            If ended > 0 Then
-                currentpods = currentpods.Where(Function(f) f.pos.x + f.r >= pod.pos.x - pod.r).ToList()
+        End While
+
+
+
+        Dim dist As Long = 0
+        Dim finalcnt = 0
+        Dim finalmxcnt = 0
+        Dim cnta = 0
+        Dim cntr = 0
+        Dim add = toppods.Select(Function(p) Math.Max(0, Math.Abs(p.pos.x) + Math.Abs(p.pos.y) + Math.Abs(p.pos.z) - p.r)).Order().ToList()
+        Dim remo = toppods.Select(Function(p) Math.Max(0, Math.Abs(p.pos.x) + Math.Abs(p.pos.y) + Math.Abs(p.pos.z) + p.r)).Order().ToList()
+        While cnta < add.Count
+            If add(cnta) <= remo(cntr) Then
+                cnta += 1
+                finalcnt += 1
+                If finalcnt > finalmxcnt Then
+                    dist = add(cnta - 1)
+                    finalmxcnt = finalcnt
+                End If
+            Else
+                cntr += 1
+                finalcnt -= 1
             End If
+        End While
 
-        Next
-
-
-        maxovl = maxxount
-
-    End Sub
+        Return dist
+    End Function
 
 
 
