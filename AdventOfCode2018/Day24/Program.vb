@@ -95,7 +95,7 @@ Module Program
 
         Dim powerboostUp = 4096
         Dim powerboostDown = 0
-
+        Dim upcount = 0
         While powerboostUp > powerboostDown + 1
             Dim powerboost = (powerboostUp + powerboostDown) \ 2
 
@@ -112,16 +112,14 @@ Module Program
 
             If result < 2 Then
                 powerboostUp = powerboost
+                upcount = imunesystem1.Select(Function(f) f.Value.units).Sum()
             Else
                 powerboostDown = powerboost
             End If
         End While
 
-        If imunesystem1.Count > 0 Then
-            Console.WriteLine("Imunesystem won: " & imunesystem1.Select(Function(f) f.Value.units).Sum() & " with powerboost: " & powerboostUp)
-        Else
-            Console.WriteLine("Infection won: " & infection1.Select(Function(f) f.Value.units).Sum() & " with powerboost: " & powerboostUp)
-        End If
+        Console.WriteLine("Imunesystem won: " & upcount & " with powerboost: " & powerboostUp)
+
 
     End Sub
 
