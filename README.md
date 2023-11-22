@@ -10,7 +10,7 @@ AoC           | Language     | Completed
 2021          | C#           | Yes       
 2020          | Python       | Yes       
 2019          | F#           | Yes       
-2018          | VB.Net       |           
+2018          | VB.Net       | Yes       
 2017          | Commodore 64 |           
 2016          |              |           
 2015          |              |           
