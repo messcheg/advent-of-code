@@ -77,12 +77,63 @@ Module Program
             i += 1
         End While
 
+
+        Dim infection1 As New Dictionary(Of Integer, (units As Long, hitpooint As Long, immunities As ULong, weaknesses As ULong, damage As Long, damagetype As ULong, initiative As Integer))
+        Dim imunesystem1 As New Dictionary(Of Integer, (units As Long, hitpooint As Long, immunities As ULong, weaknesses As ULong, damage As Long, damagetype As ULong, initiative As Integer))
+        For Each inf In infection : infection1.Add(inf.Key, inf.Value) : Next
+        For Each imu In imunesystem : imunesystem1.Add(imu.Key, imu.Value) : Next
+
+
+        PlayGame(infection1, imunesystem1)
+
+
+        If imunesystem1.Count > 0 Then
+            Console.WriteLine("Imunesystem won: " & imunesystem1.Select(Function(f) f.Value.units).Sum())
+        Else
+            Console.WriteLine("Infection won: " & infection1.Select(Function(f) f.Value.units).Sum())
+        End If
+
+        Dim powerboostUp = 4096
+        Dim powerboostDown = 0
+
+        While powerboostUp > powerboostDown + 1
+            Dim powerboost = (powerboostUp + powerboostDown) \ 2
+
+            infection1 = New Dictionary(Of Integer, (units As Long, hitpooint As Long, immunities As ULong, weaknesses As ULong, damage As Long, damagetype As ULong, initiative As Integer))
+            imunesystem1 = New Dictionary(Of Integer, (units As Long, hitpooint As Long, immunities As ULong, weaknesses As ULong, damage As Long, damagetype As ULong, initiative As Integer))
+            For Each inf In infection : infection1.Add(inf.Key, inf.Value) : Next
+            For Each imu In imunesystem
+                Dim v = imu.Value
+                v.damage += powerboost
+                imunesystem1.Add(imu.Key, v)
+            Next
+
+            Dim result = PlayGame(infection1, imunesystem1)
+
+            If result < 2 Then
+                powerboostUp = powerboost
+            Else
+                powerboostDown = powerboost
+            End If
+        End While
+
+        If imunesystem1.Count > 0 Then
+            Console.WriteLine("Imunesystem won: " & imunesystem1.Select(Function(f) f.Value.units).Sum() & " with powerboost: " & powerboostUp)
+        Else
+            Console.WriteLine("Infection won: " & infection1.Select(Function(f) f.Value.units).Sum() & " with powerboost: " & powerboostUp)
+        End If
+
+    End Sub
+
+    Private Function PlayGame(infection As Dictionary(Of Integer, (units As Long, hitpooint As Long, immunities As ULong, weaknesses As ULong, damage As Long, damagetype As ULong, initiative As Integer)), imunesystem As Dictionary(Of Integer, (units As Long, hitpooint As Long, immunities As ULong, weaknesses As ULong, damage As Long, damagetype As ULong, initiative As Integer))) As Integer
         While infection.Count > 0 And imunesystem.Count > 0
             'target selection
             Dim targets As New Dictionary(Of Integer, Integer)
             targets = Selecttargets(infection, imunesystem, targets)
             targets = Selecttargets(imunesystem, infection, targets)
 
+            If targets.Count = 0 Then Return 0
+            Dim changed = False
             'actual fight
             For Each t In targets.OrderByDescending(Function(f) f.Key)
                 Dim isAtcImu = imunesystem.ContainsKey(t.Key)
@@ -109,21 +160,18 @@ Module Program
 
                     If defUnit.units <= 0 Then
                         def.Remove(defUnit.initiative)
-                    Else
+                        changed = True
+                    ElseIf loss > 0 Then
                         def(defUnit.initiative) = defUnit
+                        changed = True
                     End If
                 End If
             Next
-
+            If Not changed Then Return 3
         End While
+        If infection.Count > 0 Then Return 2 Else Return 1
 
-        If imunesystem.Count > 0 Then
-            Console.Write("Imunesystem won: " & imunesystem.Select(Function(f) f.Value.units).Sum())
-        Else
-            Console.Write("Infection won: " & infection.Select(Function(f) f.Value.units).Sum())
-        End If
-
-    End Sub
+    End Function
 
     Private Function Selecttargets(attackers As Dictionary(Of Integer, (units As Long, hitpooint As Long, immunities As ULong, weaknesses As ULong, damage As Long, damagetype As ULong, initiative As Integer)), defenders As Dictionary(Of Integer, (units As Long, hitpooint As Long, immunities As ULong, weaknesses As ULong, damage As Long, damagetype As ULong, initiative As Integer)), targets As Dictionary(Of Integer, Integer)) As Dictionary(Of Integer, Integer)
         Dim avalable = defenders.Keys.ToHashSet()
