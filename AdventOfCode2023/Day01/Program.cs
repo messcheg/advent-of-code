@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Net.Security;
 using System.Runtime.InteropServices;
+using AocHelper;
 
 Run(@"..\..\..\example.txt", true);
 Run(@"..\..\..\example1.txt", true);
@@ -10,8 +11,8 @@ Run(@"E:\develop\advent-of-code-input\2023\day01.txt", false);
 void Run(string inputfile, bool isTest)
 {
     Stopwatch stopwatch = Stopwatch.StartNew();
-    long supposedanswer1 = 281;
-    long supposedanswer2 = 000;
+    long supposedanswer1 = 142;
+    long supposedanswer2 = 281;
 
     string[] nums = {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
 
@@ -20,18 +21,23 @@ void Run(string inputfile, bool isTest)
     long answer2 = 0;
     foreach(var cw in S)
     {
-        int a = 0 - 1;
-        int b = -1;
+        int a1 = 0 - 1;
+        int b1 = -1;
+        int a2 = 0 - 1;
+        int b2 = -1;
         for (int k = 0; k < cw.Length; k++)
         {
             char c = cw[k];
             if (c >= '0' && c <= '9')
             {
-                if (a == -1)
+                if (a1 == -1)
                 {
-                    a = c - '0';
+                    a1 = c - '0';
+                    if (a2 == -1) a2 = a1;
+
                 }
-                b = c - '0';
+
+                b2 = b1 = c - '0';
             }
             else
             {
@@ -39,41 +45,23 @@ void Run(string inputfile, bool isTest)
                 {
                     if (cw.Substring(k).StartsWith(nums[j]))
                     {
-                        if (a == -1)
+                        if (a2 == -1)
                         {
-                            a = j;
+                            a2 = j;
                         }
-                        b = j;
+                        b2 = j;
 
                     }
                 }
 
             }
         }
-        answer1 += a * 10 + b;
-
+        answer1 += a1 * 10 + b1;
+        answer2 += a2 * 10 + b2;
     }
 
 
-    w(1, answer1, supposedanswer1, isTest);
-    w(2, answer2, supposedanswer2, isTest);
+    Aoc.w(1, answer1, supposedanswer1, isTest);
+    Aoc.w(2, answer2, supposedanswer2, isTest);
 }
-static void w<T>(int number, T val, T supposedval, bool isTest)
-{
-    string? v = (val == null) ? "(null)" : val.ToString();
-    string? sv = (supposedval == null) ? "(null)" : supposedval.ToString();
 
-    var previouscolour = Console.ForegroundColor;
-    Console.Write("Answer Part " + number + ": ");
-    Console.ForegroundColor = (v == sv || !isTest) ? ConsoleColor.Green : ConsoleColor.Red;
-    Console.Write(v);
-    Console.ForegroundColor = previouscolour;
-    if (isTest)
-    {
-        Console.Write(" ... supposed (example) answer: ");
-        Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.Write(sv);
-        Console.ForegroundColor = previouscolour;
-    }
-    Console.WriteLine();
-}
