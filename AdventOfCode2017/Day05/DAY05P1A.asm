@@ -1,27 +1,43 @@
 !ZONE zone1
 *=$0801
 ;sys call is followed by colon, a REM token, 4 backspaces to hide them during LIST, and the actual comment
-!basic 2017, ":", $8F, $14,$14,$14,$14, " DAY05 PART I", init
-init
+!basic 2017, ":", $8F, $14,$14,$14,$14, " DAY05 PART I", .init
+.introtext
+  !text "AOC 2017 DAY05 PART I"
+  !byte $0
+.data=TestData
+.pos
+  !word .data
+.prevpos
+  !word .data
 
-ldx 0
-ldy 0
+.init
+.startofscreenbuffer=$0400
+jsr $E544 ; clear screen
+ldx #0
 .startheadertext
-  lda IntroText,y
-  cmp 255
+  lda .introtext, x ;load next character in A
+  cmp #0
   beq .endheadertext
   jsr $FFD2
-  iny
+  inx
   jmp .startheadertext
 .endheadertext
+jsr $FFD2
+
+;load current postion to previous
+lda .pos
+sta .prevpos    ;transfer low byte
+lda .pos+1
+sta .prevpos+1  ; transfer high byte
 
 rts
 
 !ZONE data1
-IntroText
-  !text "AOC 2017 - DAY05 PART I",255
-DataPointer
-!word InputData
+TestData
+!word 0,3,0,1,-3
+EndOfTestData
+
 InputData    
 !word 2,2,0,0,-2,-1,-3,0,0,-3,-5,-5,1,-10,-8,-1,-8,-5,-12,-5,1,-6
 !word -18,-17,-9,-12,-24,-16,-6,-12,-14,-15,-28,-1,-10,-2,-2,0,-16,-4
