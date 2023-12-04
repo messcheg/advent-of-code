@@ -15,15 +15,13 @@ void Run(string inputfile, bool isTest)
 {
     Stopwatch stopwatch = Stopwatch.StartNew();
     long supposedanswer1 = 13;
-    long supposedanswer2 = 30;
+    ulong supposedanswer2 = 30;
 
     var S = File.ReadAllLines(inputfile).ToList();
     long answer1 = 0;
-    long answer2 = 0;
-    var scores = new Dictionary<int, long>();
-    var finalscores = new Dictionary<int, long>();
-    var cardstoplay = new List<int>();
-    for (int i = 0; i < S.Count; i++) cardstoplay.Add(i);
+    ulong answer2 = 0;
+    var numberofcopies = new List<ulong>();
+    for (int i = 0; i < S.Count; i++) numberofcopies.Add(1);
 
 
     foreach (var s in S)
@@ -34,35 +32,19 @@ void Run(string inputfile, bool isTest)
 
     for (int crd = 0; crd < S.Count; crd++)
     {
-        answer2 += Getfinalscore(S, scores, finalscores, crd);
+        var score = getscore1(S[crd]);
+        for (int i = crd + 1; i < S.Count && i <= crd + score; i++) 
+        {
+            numberofcopies[i] += numberofcopies[crd];
+        }
+        answer2 += numberofcopies[crd];
     }
+
+
+
     Aoc.w(1, answer1, supposedanswer1, isTest);
     Aoc.w(2, answer2, supposedanswer2, isTest);
 
-    static long Getfinalscore(List<string> S, Dictionary<int, long> scores, Dictionary<int, long> finalscores, int crd1)
-    {
-        long subAnswer = 0;
-        int crd = crd1;
-        if (crd >= S.Count) return 0;
-
-        if (!finalscores.TryGetValue(crd, out subAnswer))
-        {
-            subAnswer = 1;
-            long score;
-            if (!scores.TryGetValue(crd, out score))
-            {
-                score = getscore1(S[crd]);
-                scores[crd] = score;
-            } 
-            while (crd < S.Count && crd < crd + score)
-            {
-                crd++;
-                subAnswer += Getfinalscore(S, scores, finalscores, crd);
-            }
-            finalscores[crd1] = subAnswer;
-        }
-        return subAnswer;
-    }
 }
 
 static long getscore(string? s)
