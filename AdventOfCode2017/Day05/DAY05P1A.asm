@@ -31,7 +31,31 @@ sta .prevpos    ;transfer low byte
 lda .pos+1
 sta .prevpos+1  ; transfer high byte
 
+and #$0F
+adc #"0"  
+jsr $FFD2
+
 rts
+
+;set the cursor position x,y
+.setcurpos
+stx 211
+sty 214
+jmp 58732 ;use the rts of the method to return.
+
+;put a string on the screen
+.stringaddr !word $0000
+.writestring
+ldx #0
+.startwritestring
+  lda (.stringaddr), x ;load next character in A
+  cmp #0
+  beq .endwritestring
+  jsr $FFD2
+  inx
+  jmp .startwritestring
+.endwritestring
+jsr $FFD2
 
 !ZONE data1
 TestData
