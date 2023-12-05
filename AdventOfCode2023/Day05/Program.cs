@@ -27,7 +27,7 @@ void Run(string inputfile, bool isTest)
 
     string dest = "";
     string src = "";
-    List<(long drange, long srange, long len)> map = null;
+    List<(long drange, long srange, long len)> map = new List<(long drange, long srange, long len)>();
     foreach (var s in S.Skip(2))
     {
         if (s.EndsWith(" map:"))
@@ -99,7 +99,7 @@ void Run(string inputfile, bool isTest)
                     }
                     else
                     {
-                        var newrng = mp.srange - p.rnge + mp.len;
+                        var newrng = mp.srange - p.pr + mp.len;
                         newprodcol.Add((prnew, newrng ));
                         mapped.Add((p.pr, newrng));
                     }

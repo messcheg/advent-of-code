@@ -49,6 +49,7 @@ void Run(string inputfile, bool isTest)
 
 static long getscore(string? s)
 {
+    if (s == null) return 0;
     var s1 = s.Split(" | ");
     var s2 = s1[0].Split(": ");
     var winning = s2[1].Trim().Split(" ").Where(a => a != "").Select(a => int.Parse(a)).ToHashSet();
@@ -68,6 +69,7 @@ static long getscore(string? s)
 
 static long getscore1(string? s)
 {
+    if (s == null) return 0;
     var s1 = s.Split(" | ");
     var s2 = s1[0].Split(": ");
     var winning = s2[1].Trim().Split(" ").Where(a => a != "").Select(a => int.Parse(a)).ToHashSet();

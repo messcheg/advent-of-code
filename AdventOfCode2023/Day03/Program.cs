@@ -87,7 +87,7 @@ static bool CheckAdjecentCells(List<string> S, Dictionary<(int, int), List<long>
         isAdjacent = true;
         if (a == '*')
         {
-            if (!gears.TryGetValue((i, j1), out List<long> gear))
+            if (!gears.TryGetValue((i, j1), out List<long>? gear))
             {
                 gear = new List<long>();
                 gears[(i, j1)] = gear;
