@@ -45,10 +45,15 @@ jmp 58732 ;use the rts of the method to return.
 
 ;put a string on the screen
 .stringaddr !word $0000
+.temstringaddr=$22
 .writestring
-ldx #0
+lda .stringaddr
+sta .temstringaddr
+lda .stringaddr + 1
+sta .temstringaddr + 1
+ldx #00
 .startwritestring
-  lda (.stringaddr), x ;load next character in A
+  lda (.temstringaddr, x) ;load next character in A
   cmp #0
   beq .endwritestring
   jsr $FFD2
