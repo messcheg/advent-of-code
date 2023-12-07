@@ -7,6 +7,7 @@ using System.Runtime.Intrinsics.Arm;
 using System.Runtime.Intrinsics.X86;
 using System.Security.Cryptography;
 using AocHelper;
+using Microsoft.Win32.SafeHandles;
 
 Run(@"..\..\..\example.txt", true);
 //Run(@"..\..\..\example1.txt", true);
@@ -139,6 +140,9 @@ void Run(string inputfile, bool isTest)
     }
 
     answer2 = (ulong)prodcol.Select(p => p.pr).Min();
+
+    stopwatch.Stop();
+    Console.WriteLine("Time in miliseconds: " + stopwatch.ElapsedMilliseconds.ToString());
 
     Aoc.w(1, answer1, supposedanswer1, isTest);
     Aoc.w(2, answer2, supposedanswer2, isTest);

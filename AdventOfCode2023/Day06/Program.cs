@@ -39,6 +39,10 @@ void Run(string inputfile, bool isTest)
 
     answer2 = Numberoftimes(t1, d1);
 
+
+    stopwatch.Stop();
+    Console.WriteLine("Time in miliseconds: " + stopwatch.ElapsedMilliseconds.ToString());
+
     Aoc.w(1, answer1, supposedanswer1, isTest);
     Aoc.w(2, answer2, supposedanswer2, isTest);
 
