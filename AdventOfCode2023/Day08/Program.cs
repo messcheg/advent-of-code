@@ -37,10 +37,7 @@ void Run(string inputfile, bool isTest, long supposedanswer1 = 0, long supposeda
     {
         while (cur != "ZZZ")
         {
-            if (instr[ip] == 'L')
-                cur = map[cur].L;
-            else
-                cur = map[cur].R;
+            cur = instr[ip] == 'L' ? map[cur].L : map[cur].R;
             answer1++;
             ip++;
             if (ip == instr.Length) ip = 0;
@@ -58,26 +55,18 @@ void Run(string inputfile, bool isTest, long supposedanswer1 = 0, long supposeda
         ip = 0;
         while (c3[2] != 'Z')
         {
-            if (instr[ip] == 'L')
-                c3 = map[c3].L;
-            else
-                c3 = map[c3].R;
+            c3 = instr[ip] == 'L' ? map[c3].L : map[c3].R;
             ip++;
             cnt++;
             if (ip == instr.Length) ip = 0;
         }
         // determine smallest common multiplier
-        var g1 = Math.Max(answer2, cnt);
-        var g2 = Math.Min(answer2, cnt);
-        while (g2 != 0)
-        {
-            long h1 = g2;
-            g2 = g1 % g2;
-            g1 = h1;
-        }
+        var (g1, g2) = answer2 > cnt ? (answer2, cnt) : (cnt, answer2);
+        while (g2 != 0) (g1, g2) = (g2, g1 % g2);
+        
         answer2 = answer2 * (cnt / g1);
     }
-        
+ 
     stopwatch.Stop();
     if (supposedanswer1 > -1) Aoc.w(1, answer1, supposedanswer1, isTest);
     if (supposedanswer2 > -1) Aoc.w(2, answer2, supposedanswer2, isTest);
