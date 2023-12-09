@@ -12,55 +12,69 @@
   !word .data
 
 .init
-.startofscreenbuffer=$0400
-jsr $E544 ; clear screen
-ldx #0
-.startheadertext
-  lda .introtext, x ;load next character in A
-  cmp #0
-  beq .endheadertext
+  .startofscreenbuffer=$0400
+  jsr $E544 ; clear screen
+  ldx #0
+  .startheadertext
+    lda .introtext, x ;load next character in A
+    cmp #0
+    beq .endheadertext
+    jsr $FFD2
+    inx
+    jmp .startheadertext
+  .endheadertext
   jsr $FFD2
-  inx
-  jmp .startheadertext
-.endheadertext
-jsr $FFD2
 
-;load current postion to previous
-lda .pos
-sta .prevpos    ;transfer low byte
-lda .pos+1
-sta .prevpos+1  ; transfer high byte
+  ;display second text
+  ldx #0
+  ldy #2
+  jsr .setcurpos
 
-and #$0F
-adc #"0"  
-jsr $FFD2
+  .a = DC.L .curposText
+  lda #DC.L .curposText
+  sta zone1.stringaddr
+  lda #DC.H .curposText
+  sta zone1.stringaddr+1
+  jsr zone1.writestring
+
+  ;load current postion to previous
+  lda .pos
+  sta .prevpos    ;transfer low byte
+  lda .pos+1
+  sta .prevpos+1  ; transfer high byte
+
+     
 
 rts
 
+.curposText
+!text "# 000000000000: position: 000  jump: 0000",$0
+
 ;set the cursor position x,y
 .setcurpos
-stx 211
-sty 214
-jmp 58732 ;use the rts of the method to return.
+  stx 211
+  sty 214
+  jmp 58732 ;use the rts of the method to return.
 
 ;put a string on the screen
 .stringaddr !word $0000
 .temstringaddr=$22
 .writestring
-lda .stringaddr
-sta .temstringaddr
-lda .stringaddr + 1
-sta .temstringaddr + 1
-ldx #00
-.startwritestring
-  lda (.temstringaddr, x) ;load next character in A
-  cmp #0
-  beq .endwritestring
+  lda .stringaddr
+  sta .temstringaddr
+  lda .stringaddr + 1
+  sta .temstringaddr + 1
+  .startwritestring
+    lda (.temstringaddr) ;load next character in A
+    cmp #0
+    beq .endwritestring
+    jsr $FFD2
+    INC .temstringaddr 
+    BNE .startwritestring
+    INC .temstringaddr + 1
+    jmp .startwritestring
+  .endwritestring
   jsr $FFD2
-  inx
-  jmp .startwritestring
-.endwritestring
-jsr $FFD2
 
 !ZONE data1
 TestData
