@@ -49,37 +49,38 @@ void Run(string inputfile, bool isTest, long supposedanswer1, long supposedanswe
     ready = false;
     X[y][x] = 'S';
     if (x < S[0].Length - 1 && "-J7".Contains(S[y][x+1])) direction = 1;
-    if (y > 0 && "|7F".Contains(S[y-1][x])) direction = 2;
-    if (x > 0 && "-FL".Contains(S[y][x-1])) direction = 3;
+    else if (y > 0 && "|7F".Contains(S[y-1][x])) direction = 2;
+    else if (x > 0 && "-FL".Contains(S[y][x-1])) direction = 3;
     while (!ready)
     {
         char c = '.';
-        if (direction == 0)
+        switch (direction)
         {
-            c = S[y+1][x];
-            if (c == 'J') direction = 3;
-            else if (c == 'L') direction = 1;
-            y++;
-        } else if (direction == 1)
-        {
-            c = S[y][x+1];
-            if (c == 'J') direction = 2;
-            else if (c == '7') direction = 0;
-            x++;
-        }
-        else if (direction == 2)
-        {
-            c = S[y-1][x];
-            if (c == 'F') direction = 1;
-            else if (c == '7') direction = 3;
-            y--;
-        }
-        else if (direction == 3)
-        {
-            c = S[y][x - 1];
-            if (c == 'F') direction = 0;
-            else if (c == 'L') direction = 2;
-            x--;
+            case 0:
+                c = S[y + 1][x];
+                if (c == 'J') direction = 3;
+                else if (c == 'L') direction = 1;
+                y++;
+                break;
+            case 1:
+                c = S[y][x + 1];
+                if (c == 'J') direction = 2;
+                else if (c == '7') direction = 0;
+                x++;
+                break;
+            case 2:
+                c = S[y - 1][x];
+                if (c == 'F') direction = 1;
+                else if (c == '7') direction = 3;
+                y--;
+                break;
+            case 3:
+                c = S[y][x - 1];
+                if (c == 'F') direction = 0;
+                else if (c == 'L') direction = 2;
+                x--;
+                break;
+            default: break;
         }
         X[y][x] = c;
         ready = c == 'S';
