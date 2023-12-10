@@ -5,11 +5,13 @@
 .introtext
   !text "AOC 2017 DAY05 PART I"
   !byte $0
-.data=TestData
+.startdata=TestData
+.enddata=EndTestData
 .pos
-  !word .data
+  !word .startdata
 .prevpos
-  !word .data
+  !word .startdata
+TempIndirectAddr=$22
 
 .init
   .startofscreenbuffer=$0400
@@ -30,10 +32,9 @@
   ldy #2
   jsr .setcurpos
 
-  .a = DC.L .curposText
-  lda #DC.L .curposText
+  lda .curposTextAddr
   sta zone1.stringaddr
-  lda #DC.H .curposText
+  lda .curposTextAddr+1
   sta zone1.stringaddr+1
   jsr zone1.writestring
 
@@ -43,13 +44,17 @@
   lda .pos+1
   sta .prevpos+1  ; transfer high byte
 
-     
-
+  ;look at the current position
+  ;add the value of the current position to the current position  
+  ;increment de value on the previous position
+  
+  
 rts
 
 .curposText
-!text "# 000000000000: position: 000  jump: 0000",$0
-
+!text "# 000000000000: POS: 0000  JMP: 0000",$0
+.curposTextAddr
+!word .curposText
 ;set the cursor position x,y
 .setcurpos
   stx 211
@@ -60,21 +65,23 @@ rts
 .stringaddr !word $0000
 .temstringaddr=$22
 .writestring
+  ldx #0
   lda .stringaddr
-  sta .temstringaddr
+  sta TempIndirectAddr
   lda .stringaddr + 1
-  sta .temstringaddr + 1
+  sta TempIndirectAddr + 1
   .startwritestring
-    lda (.temstringaddr) ;load next character in A
+    lda (TempIndirectAddr,x) ;load next character in A
     cmp #0
     beq .endwritestring
     jsr $FFD2
-    INC .temstringaddr 
+    INC TempIndirectAddr 
     BNE .startwritestring
-    INC .temstringaddr + 1
+    INC TempIndirectAddr + 1
     jmp .startwritestring
   .endwritestring
   jsr $FFD2
+rts
 
 !ZONE data1
 TestData

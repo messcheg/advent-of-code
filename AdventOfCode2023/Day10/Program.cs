@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Data.SqlTypes;
 using System.Diagnostics;
 using System.Dynamic;
 using System.Globalization;
@@ -9,9 +10,10 @@ using System.Runtime.Intrinsics.X86;
 using System.Security.Cryptography;
 using AocHelper;
 
-Run(@"..\..\..\example.txt", true, 114, 2);
-//Run(@"..\..\..\example1.txt", true, -1, 6);
-Run(@"E:\develop\advent-of-code-input\2023\day09.txt", false, 0, 0);
+Run(@"..\..\..\example.txt", true, 8, 0000);
+Run(@"..\..\..\example1.txt", true, 4, 1);
+Run(@"..\..\..\example2.txt", true, 22, 4);
+Run(@"E:\develop\advent-of-code-input\2023\day10.txt", false, 0, 0);
 
 void Run(string inputfile, bool isTest, long supposedanswer1, long supposedanswer2)
 {
@@ -21,8 +23,96 @@ void Run(string inputfile, bool isTest, long supposedanswer1, long supposedanswe
     long answer1 = 0;
     long answer2 = 0;
 
-  
+    var X = S.Select(l => l.Select(k => '.').ToArray()).ToArray();
 
+    // find S
+    int x = 0;
+    int y = 0;
+    bool ready = false;
+    while (y<S.Count && !ready)
+    {
+        while (x < S[0].Length && !ready)
+        {
+            ready = S[y][x] == 'S';
+            if (!ready) x++;
+        }
+        if (!ready)
+        {
+            x = 0;
+            y++;
+        }
+    }
+
+    var start = (x, y);
+    int direction = 0;
+    int steps = 0;
+    ready = false;
+    X[y][x] = 'S';
+    if (x < S[0].Length - 1 && "-J7".Contains(S[y][x+1])) direction = 1;
+    if (y > 0 && "|7F".Contains(S[y-1][x])) direction = 2;
+    if (x > 0 && "-FL".Contains(S[y][x-1])) direction = 3;
+    while (!ready)
+    {
+        char c = '.';
+        if (direction == 0)
+        {
+            c = S[y+1][x];
+            if (c == 'J') direction = 3;
+            else if (c == 'L') direction = 1;
+            y++;
+        } else if (direction == 1)
+        {
+            c = S[y][x+1];
+            if (c == 'J') direction = 2;
+            else if (c == '7') direction = 0;
+            x++;
+        }
+        else if (direction == 2)
+        {
+            c = S[y-1][x];
+            if (c == 'F') direction = 1;
+            else if (c == '7') direction = 3;
+            y--;
+        }
+        else if (direction == 3)
+        {
+            c = S[y][x - 1];
+            if (c == 'F') direction = 0;
+            else if (c == 'L') direction = 2;
+            x--;
+        }
+        X[y][x] = c;
+        ready = c == 'S';
+        steps++;
+    }
+
+    answer1 = (long)steps / 2;
+
+    for (int i=0;i<X.Length;i++)
+    {
+        bool inside = false;
+        char online = '.';
+        for (int j = 0; j < X[0].Length; j++)
+        {
+            char cx = X[i][j];
+            if ("|JLF7".Contains(cx))
+            {
+                switch (cx)
+                {
+                    case '|': inside = !inside; break;
+                    case 'F': online = 'F'; break;
+                    case 'L': online = 'L'; break;
+                    case '7': if (online == 'L') inside = !inside; break;
+                    case 'J': if (online == 'F') inside = !inside;break;
+                    default: break;
+                }
+            }
+            else if (cx == '.')
+            {
+                if (inside) answer2++;
+            }
+        }
+    }
 
 
     stopwatch.Stop();
