@@ -9,7 +9,7 @@ public class Program
     }
 
 
-    /* Let's rock with FizzBuzz!!!
+    /* Let's rock with Santa!!!
 
       Midnight takes your heart and your soul
       While your heart is as high as your soul
@@ -41,7 +41,7 @@ public class Program
 
     public static void Run()
     {
-        string inputfile = @"..\..\..\PresentSizes";
+        string inputfile = @"..\..\..\PresentSizes.txt";
         //string inputfile = @"..\..\..\real_input.txt";
         long supposedanswer1 = 0000;
         long supposedanswer2 = 0000;
@@ -51,7 +51,9 @@ public class Program
         long answer2 = 0;
 
 
-        Rockstar.FizzBuzz.LetsRock();
+        // Rockstar.FizzBuzz.LetsRock();
+        Rockstar.Santa.LetsRock();
+
 
         w(1, answer1, supposedanswer1);
         w(2, answer2, supposedanswer2);
