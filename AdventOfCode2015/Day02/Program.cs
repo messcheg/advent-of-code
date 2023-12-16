@@ -15,7 +15,8 @@ public class Program
     
     */
 
-    /*
+    /* PART I (Not possible with current Rockstar generator implementation)
+ 
         Rudolf wants love and attention
         The crowd says x
         Cut attention in the boat with the crowd
