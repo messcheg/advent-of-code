@@ -81,6 +81,7 @@ static void GetReflectionWithFIxedSmudge(List<string>? s, int v, int h, out int 
 }
 static void GetReflection(List<string>? s, out int v1, out int h1, out int v2, out int h2)
 {
+    if (s == null) s = new List<string>();
     //find vertical line from left
     v1 = 0;
     v2 = 0;

@@ -73,11 +73,11 @@ void Run(string inputfile, bool isTest, long supposedanswer1, long supposedanswe
     for (int i = 0; i < S[0].Length; i++)
     {
         currentbeams.Enqueue((i, 0, 1));
-        var a1 = GetEnergyV2(S, currentbeams, map);
+        var a1 = GetEnergy(S, currentbeams);
         if (a1 > answer2) answer2 = a1;
 
         currentbeams.Enqueue((i, S[0].Length - 1, 3));
-        a1 = GetEnergyV2(S, currentbeams, map);
+        a1 = GetEnergy(S, currentbeams);
         if (a1 > answer2) answer2 = a1;
     }
 
