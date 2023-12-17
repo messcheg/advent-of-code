@@ -32,84 +32,82 @@ void Run(string inputfile, bool isTest, long supposedanswer1, long supposedanswe
     long answer1 = 0;
     long answer2 = 0;
 
+    var visited = new bool[S[0].Count, S.Count,4, 4];
     var directions = new (int x, int y)[] { (1, 0), (0, 1), (-1, 0), (0, -1) };
-    var work = new Dictionary<(int x, int y, int moveurge,int direction),long>();
-    work[(0, 0, 0, 0)] = 0;
-    work[(0, 0, 0, 1)] = 0;
-    var mindist = new Dictionary<(int x, int y, int moveurge, int direction),long>();
+    var work = new PriorityQueue<(int x, int y, int streak,int direction),long>();
+    work.Enqueue((0, 0, 0, 0),0);
+    work.Enqueue((0, 0, 0, 1), 0);
+    var mindist = new Dictionary<(int x, int y, int streak, int direction),long>();
+    mindist[(0, 0, 0, 0)] = 0;
+    mindist[(0, 0, 0, 1)] = 0;
     bool found = false;
     while (work.Count > 0 && !found)
     {
-        var min = work.Min(x => x.Value);
-        var cur = work.Where(x => x.Value == min).First();
-        work.Remove(cur.Key);
-        if (!mindist.ContainsKey(cur.Key))
-        {
-            mindist[cur.Key] = min;
-        }
+        var cur = work.Dequeue();
+        visited[cur.x, cur.y,cur.direction,cur.streak] = true;
         //add new work to the queue
-        if (cur.Key.moveurge < 2)
+        if (cur.streak < 2)
         {
-            var dir = cur.Key.direction;
-            var urge = cur.Key.moveurge + 1;
-            TryToAddWork(S, directions, work, mindist, cur, dir, urge);
+            var dir = cur.direction;
+            var urge = cur.streak + 1;
+            TryToAddWork(S, directions, work, mindist, cur, dir, urge, visited);
             
         }
-        if (cur.Key.direction == 0 || cur.Key.direction == 2)
+        if (cur.direction == 0 || cur.direction == 2)
         {
-            TryToAddWork(S, directions, work, mindist, cur, 1, 0);
-            TryToAddWork(S, directions, work, mindist, cur, 3, 0);
+            TryToAddWork(S, directions, work, mindist, cur, 1, 0, visited);
+            TryToAddWork(S, directions, work, mindist, cur, 3, 0, visited);
         }
-        else if (cur.Key.direction == 1 || cur.Key.direction == 3)
+        else if (cur.direction == 1 || cur.direction == 3)
         {
-            TryToAddWork(S, directions, work, mindist, cur, 0, 0);
-            TryToAddWork(S, directions, work, mindist, cur, 2, 0);
+            TryToAddWork(S, directions, work, mindist, cur, 0, 0, visited);
+            TryToAddWork(S, directions, work, mindist, cur, 2, 0, visited);
         }
-        if (cur.Key.x == S[0].Count - 1 && cur.Key.y == S.Count - 1)
+        if (cur.x == S[0].Count - 1 && cur.y == S.Count - 1)
         {
             found = true;
-            answer1 = cur.Value;
+            answer1 = mindist[cur];
         }
     }
 
-    work = new Dictionary<(int x, int y, int moveurge, int direction), long>();
-    work[(0, 0, 0, 0)] = 0;
-    work[(0, 0, 0, 1)] = 0;
-    mindist = new Dictionary<(int x, int y, int moveurge, int direction), long>();
+    work = new PriorityQueue<(int x, int y, int streak, int direction), long>();
+    work.Enqueue((0, 0, 0, 0), 0);
+    work.Enqueue((0, 0, 0, 1), 0);
+    mindist = new Dictionary<(int x, int y, int streak, int direction), long>();
+    mindist[(0, 0, 0, 0)] = 0;
+    mindist[(0, 0, 0, 1)] = 0;
     found = false;
+    visited = new bool[S[0].Count, S.Count, 4, 10];
     while (work.Count > 0 && !found)
     {
-        var min = work.Min(x => x.Value);
-        var cur = work.Where(x => x.Value == min).First();
-        work.Remove(cur.Key);
-        if (!mindist.ContainsKey(cur.Key))
-        {
-            mindist[cur.Key] = min;
-        }
+
+        var cur = work.Dequeue();
+        visited[cur.x, cur.y,cur.direction,cur.streak] = true;
+
         //add new work to the queue
-        if (cur.Key.moveurge < 9)
+        if (cur.streak < 9)
         {
-            var dir = cur.Key.direction;
-            var urge = cur.Key.moveurge + 1;
-            TryToAddWork(S, directions, work, mindist, cur, dir, urge);
+            var dir = cur.direction;
+            var urge = cur.streak + 1;
+            TryToAddWork(S, directions, work, mindist, cur, dir, urge, visited);
 
         }
-        if (cur.Key.moveurge >= 3)
+        if (cur.streak >= 3)
         {
-            if (cur.Key.direction == 0 || cur.Key.direction == 2)
+            if (cur.direction == 0 || cur.direction == 2)
             {
-                TryToAddWork(S, directions, work, mindist, cur, 1, 0);
-                TryToAddWork(S, directions, work, mindist, cur, 3, 0);
+                TryToAddWork(S, directions, work, mindist, cur, 1, 0, visited);
+                TryToAddWork(S, directions, work, mindist, cur, 3, 0, visited);
             }
-            else if (cur.Key.direction == 1 || cur.Key.direction == 3)
+            else if (cur.direction == 1 || cur.direction == 3)
             {
-                TryToAddWork(S, directions, work, mindist, cur, 0, 0);
-                TryToAddWork(S, directions, work, mindist, cur, 2, 0);
+                TryToAddWork(S, directions, work, mindist, cur, 0, 0, visited);
+                TryToAddWork(S, directions, work, mindist, cur, 2, 0, visited);
             }
-            if (cur.Key.x == S[0].Count - 1 && cur.Key.y == S.Count - 1)
+            if (cur.x == S[0].Count - 1 && cur.y == S.Count - 1)
             {
                 found = true;
-                answer2 = cur.Value;
+                answer2 = mindist[cur];
             }
         }
     }
@@ -120,17 +118,26 @@ void Run(string inputfile, bool isTest, long supposedanswer1, long supposedanswe
     Console.WriteLine("Time in miliseconds: " + stopwatch.ElapsedMilliseconds.ToString());
 }
 
-static void TryToAddWork(List<List<int>> S, (int x, int y)[] directions, 
-    Dictionary<(int x, int y, int moveurge, int direction), long> work, 
-    Dictionary<(int x, int y, int moveurge, int direction), long> mindist, 
-    KeyValuePair<(int x, int y, int moveurge, int direction), long> cur, int dir, int urge)
+static void TryToAddWork(List<List<int>> S, (int x, int y)[] directions,
+    PriorityQueue<(int x, int y, int streak, int direction), long> work, 
+    Dictionary<(int x, int y, int streak, int direction), long> mindist, 
+    (int x, int y, int streak, int direction) cur, int dir, int urge,
+    bool[,,,] visited)
 {
-    (int x, int y, int moveurge, int direction) newpos = (cur.Key.x + directions[dir].x, cur.Key.y + directions[dir].y, urge, dir);
-    if (newpos.x >= 0 && newpos.y >= 0 && newpos.x < S[0].Count && newpos.y < S.Count && !mindist.ContainsKey(newpos))
+    (int x, int y, int streak, int direction) newpos = (cur.x + directions[dir].x, cur.y + directions[dir].y, urge, dir);
+    if (newpos.x >= 0 && newpos.y >= 0 && newpos.x < S[0].Count && newpos.y < S.Count && !visited[newpos.x, newpos.y, newpos.direction, newpos.streak])
     {
-        var newval = cur.Value + S[newpos.y][newpos.x];
-        if (!work.ContainsKey(newpos)) work[newpos] = newval;
-        else if  (work[newpos] > newval) { work[newpos] = newval; }
+        var newval = mindist[cur] + S[newpos.y][newpos.x];
+        if (!mindist.ContainsKey(newpos))
+        {
+            mindist[newpos] = newval;
+            work.Enqueue(newpos, newval);
+        }
+        else if (mindist[newpos] > newval) 
+        {
+            mindist[newpos] = newval;
+            work.Enqueue(newpos, newval);
+        }
         
     }
 }
