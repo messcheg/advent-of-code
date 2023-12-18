@@ -17,10 +17,10 @@ using System.Security;
 using System.Security.Cryptography;
 using AocHelper;
 
-Run(@"..\..\..\example.txt", true, 62, 0000);
+Run(@"..\..\..\example.txt", true, 62, 952408144115);
 //Run(@"..\..\..\example1.txt", true, 61, 0000);
 //Run(@"..\..\..\example2.txt", true, 22, 4);
-Run(@"E:\develop\advent-of-code-input\2023\day18.txt", true, 0, 0);
+Run(@"E:\develop\advent-of-code-input\2023\day18.txt", false, 0, 0);
 
 void Run(string inputfile, bool isTest, long supposedanswer1, long supposedanswer2)
 {
