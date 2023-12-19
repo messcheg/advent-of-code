@@ -76,6 +76,19 @@ void Run(string inputfile, bool isTest, long supposedanswer1, long supposedanswe
         if (workflow == "A") answer1 += total;
     }
 
+    var work = new Queue<(string flow, (long min, long max)[] bounds)>();
+    work.Enqueue(("in", new (long min, long max)[]{ (1,4000),(1,4000),(1, 4000),(1, 4000) }));
+    while (work.Count > 0)
+    {
+        var wrk = work.Dequeue();
+        var rl = rules[wrk.flow];
+        var rest = wrk.bounds.ToList();
+        foreach (var r in rl)
+        {
+            var first = rest.ToArray();
+            // hier splitsen
+        }
+    }
     
 
     stopwatch.Stop();
