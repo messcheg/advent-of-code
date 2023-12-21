@@ -32,11 +32,11 @@ void Run(string inputfile, bool isTest, long supposedanswer1, long supposedanswe
     var S = File.ReadAllLines(inputfile).ToList();
 
     long answer1 = 0;
-    long answer2 = 0;
+    ulong answer2 = 0;
 
+    // initialize modules
     var modules = new Dictionary<string, (char type, int state, string[] destinations, Dictionary<string, int > inputs, string name )>();
-    
-    foreach(var s in S)
+    foreach (var s in S)
     {
         var s1 = s.Split(" -> ");
         var type = s1[0][0];
@@ -50,20 +50,78 @@ void Run(string inputfile, bool isTest, long supposedanswer1, long supposedanswe
             if (mod2.destinations.Contains(mod.name)) mod.inputs[mod2.name] = -1;
         }
     }
-    
+
+
+    //find relevant modules for performance
+    var reversemodules = new Dictionary<string, List<string>>();
+    var relevant = new HashSet<string>();
+    foreach (var t in modules.SelectMany(m => m.Value.destinations.Select(a => (m.Value.name, a))))
+    {
+        List<string> sources;
+        if (!reversemodules.TryGetValue(t.a, out sources))
+        {
+            sources = new List<string>();
+            reversemodules[t.a] = sources;
+        }
+        sources.Add(t.name);
+    }
+    var work1 = new Queue<string>();
+    work1.Enqueue("rx");
+    work1.Enqueue("output");
+    while (work1.Count > 0)
+    {
+        var wrk = work1.Dequeue();
+        if (reversemodules.ContainsKey(wrk)) {
+            var rev = reversemodules[wrk];
+            relevant.Add(wrk);
+            foreach (var r in rev) if (!relevant.Contains(r))
+                {
+                    relevant.Add(r);
+                    work1.Enqueue(r);
+                }
+        }
+    }
+    var relevantConjunctions = new Dictionary<string, ulong>();
+    foreach (var r in relevant)
+    {
+        if (modules.ContainsKey(r) && modules[r].type == '&') relevantConjunctions.Add(r, 0);
+    }
+
     var work = new Queue<(string target, string origin, int pulse)>();
     long i = 0;
     long top = 1000;
     long highpulses = 0;
     long lowpulses = 0;
     bool skipped = false;
-    while (i < top)
+    while (answer1 == 0 || answer2 == 0)
     {
         work.Enqueue(("broadcaster", "button", -1));
+        i++;
         while (work.Count > 0)
         {
             var cur = work.Dequeue();
-            if (cur.pulse == -1) lowpulses++;
+
+            if (cur.pulse == -1)
+            {
+                lowpulses++;
+                if (relevantConjunctions.Count > 0)
+                {
+                    if (relevantConjunctions.ContainsKey(cur.target))
+                    {
+                        relevantConjunctions[cur.target] = (ulong) i;
+                    }
+                    ulong LCM(ulong a, ulong b)
+                    {
+                        var (g1, g2) = a > b ? (a, b) : (b, a);
+                        while (g2 != 0) (g1, g2) = (g2, g1 % g2);
+
+                        return a * (b / g1);
+                    }
+
+                    if (relevantConjunctions.Values.All(v => v > 0)) answer2 = relevantConjunctions.Values.Aggregate((a, b) => LCM(a,b ));
+                }
+                else answer2 = 1;
+            }
             if (cur.pulse == 1) highpulses++;
             if (modules.ContainsKey(cur.target))
             {
@@ -100,19 +158,11 @@ void Run(string inputfile, bool isTest, long supposedanswer1, long supposedanswe
                 {
                     foreach (var t in mod.destinations)
                     {
-                        if (t == "vr")
-                        {
-                            Console.Write("Current: " + mod.name + " Pulse " + cur.pulse + " values ");
-                            foreach (var v in mod.inputs) { Console.Write(v.Key + ":" + v.Value + " "); }
-                            Console.WriteLine();
-
-                        }
-                        work.Enqueue((t, mod.name, snd));
+                        if (relevant.Count == 0 || relevant.Contains(t)) work.Enqueue((t, mod.name, snd));
                     }
                 }
             }
         }
-        i++;
         if (!skipped)
         {
             var cnt = modules.Select(a => a.Value).Where(c => c.state == -1).ToList().Count;
@@ -124,13 +174,13 @@ void Run(string inputfile, bool isTest, long supposedanswer1, long supposedanswe
                 i *= gap;
             }
         }
-    }
+        if (i==top) answer1 = lowpulses * highpulses;
 
-    answer1 = lowpulses * highpulses;
+    }
 
 
     stopwatch.Stop();
     if (supposedanswer1 > -1) Aoc.w(1, answer1, supposedanswer1, isTest);
-    if (supposedanswer2 > -1) Aoc.w(2, answer2, supposedanswer2, isTest);
+    if (supposedanswer2 > -1) Aoc.w(2, answer2, (ulong)supposedanswer2, isTest);
     Console.WriteLine("Time in miliseconds: " + stopwatch.ElapsedMilliseconds.ToString());
 }
