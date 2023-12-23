@@ -11,6 +11,7 @@ using System.Net.WebSockets;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.Marshalling;
 using System.Runtime.Intrinsics.Arm;
 using System.Runtime.Intrinsics.X86;
 using System.Security;
@@ -65,13 +66,13 @@ void Run(string inputfile, bool isTest, long supposedanswer1, long supposedanswe
             if (S[up][ix] != '#') newsteps.Add((x, y - 1));
         }
 
-        if (isTest && i < 35)
+        if (isTest && i < 31)
         {
             Console.SetCursorPosition(0, 0);
             Console.WriteLine("Step: " + i.ToString());
             for (int j = -30; j < 30; j++)
             {
-                for (int k = -50; k < 50; k++)
+                for (int k = -30; k < 30; k++)
                 {
                     var ix = (int)(k % X + X) % X;
                     var iy = (int)(j % Y + Y) % Y;
@@ -94,6 +95,7 @@ void Run(string inputfile, bool isTest, long supposedanswer1, long supposedanswe
 
     // Try to flod unil a certain level
     var visited = new HashSet<(long x, long y)>();
+    var visited1 = new HashSet<(long x, long y)>();
     bool ready = false;
     var work = new HashSet<(long x, long y)>();
     work.Add((sx, sy));
@@ -124,15 +126,25 @@ void Run(string inputfile, bool isTest, long supposedanswer1, long supposedanswe
             if (S[iy][left] != '#' && !visited.Contains((x - 1, y))) newwork.Add((x - 1, y));
             if (S[up][ix] != '#' && !visited.Contains((x, y - 1))) newwork.Add((x, y - 1));
 
-            if (steps1 == 0 && x == 5 * X - 1) steps1 = steps;
-            if (x == -4 * X) steps2 = steps;
+            if (steps1 == 0 && x == -4 * X) steps1 = steps;
+            if (x == -6 * X) steps2 = steps;
         }
-        if (steps1 == steps) cnt1 = visited.Count(a=> (a.x + a.y) % 2 == 0);
+        if (steps1 == steps)
+        {
+            cnt1 = visited.Count(a => (a.x + a.y) % 2 == 0);
+            visited1 = visited.ToHashSet();
+        }
         if (steps2 == steps) cnt2 = visited.Count(a => (a.x + a.y) % 2 == 0);
-        work = newwork; 
+        work = newwork;
     }
+    Dictionary<(int x, int y), (int odds, int evens)> cards1 = GetCardValues(X, Y, visited1, 5);
+    Dictionary<(int x, int y), (int odds, int evens)> cards2 = GetCardValues(X, Y, visited, 7);
+    
+    Console.WriteLine(cards1);
 
-    var rest  = 26501365 % steps2;
+
+    var rest = 26501365 % steps2;
+    
     var div = 26501365 / steps2;
 
 
@@ -142,4 +154,33 @@ void Run(string inputfile, bool isTest, long supposedanswer1, long supposedanswe
     if (supposedanswer1 > -1) Aoc.w(1, answer1, supposedanswer1, isTest);
     if (supposedanswer2 > -1) Aoc.w(2, answer2, supposedanswer2, isTest);
     Console.WriteLine("Time in miliseconds: " + stopwatch.ElapsedMilliseconds.ToString());
+}
+
+static Dictionary<(int x, int y), (int odds, int evens)> GetCardValues(int X, int Y, HashSet<(long x, long y)> visited1 , int distance)
+{
+    var cards1 = new Dictionary<(int x, int y), (int odds, int evens)>();
+    var work1 = new Queue<(int x, int y)>();
+    work1.Enqueue((0, 0));
+    while (work1.Count > 0)
+    {
+        var wrk = work1.Dequeue();
+        if (!cards1.ContainsKey(wrk))
+        {
+            var Y0 = wrk.y * Y;
+            var X0 = wrk.x * X;
+            var card = visited1.Where(a => X0 <= a.x && a.x < X + X0 && Y0 <= a.y && a.y < Y + Y0);
+            var odds = card.Count(a => Math.Abs((a.x + a.y)) % 2 == 1);
+            var evens = card.Count(a => (a.x + a.y) % 2 == 0);
+            cards1[wrk] = (odds, evens);
+            if (Math.Abs(wrk.x) + Math.Abs(wrk.y) < distance)
+            {
+                work1.Enqueue((wrk.x + 1, wrk.y));
+                work1.Enqueue((wrk.x - 1, wrk.y));
+                work1.Enqueue((wrk.x, wrk.y + 1));
+                work1.Enqueue((wrk.x, wrk.y - 1));
+            }
+        }
+    }
+
+    return cards1;
 }
