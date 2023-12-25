@@ -53,6 +53,9 @@ void Run(string inputfile, bool isTest, long supposedanswer1, long supposedanswe
         nodes.Add(si.b);
     }
 
+
+
+    var rnd = new Random();
     bool ready = false;
     while (!ready)
     {
@@ -63,18 +66,19 @@ void Run(string inputfile, bool isTest, long supposedanswer1, long supposedanswe
             subsets[n] = new HashSet<string>() { n };
         }
 
-        while (subsets.Count > 2 && consleft.Count >= 3)
+        while (subsets.Count > 2  && consleft.Count > 3)
         {
-            int i = new Random().Next() % consleft.Count;
-            var con = sc[i];
+            int i = rnd.Next() % consleft.Count;
+            var con = consleft[i];
             consleft.RemoveAt(i);
-            var subset1 = subsets.Where(s => s.Value.Contains(con.a)).First();
-            var subset2 = subsets.Where(s => s.Value.Contains(con.a)).First();
+            var subset1 = subsets.Where(s => s.Value.Contains(con.a));
+            foreach (var ss1 in subset1) foreach( var subset2 in subsets.Where(s => s.Value.Contains(con.b)))
+            {
+                if (ss1.Key == subset2.Key) continue;
 
-            if (subset1.Key == subset2.Key) continue;
-
-            subsets.Remove(subset2.Key);
-            foreach (var n in subset2.Value) { subset1.Value.Add(n); }
+                subsets.Remove(subset2.Key);
+                foreach (var n in subset2.Value) { ss1.Value.Add(n); }
+            }
         }
 
         var notused = 0;
@@ -84,8 +88,10 @@ void Run(string inputfile, bool isTest, long supposedanswer1, long supposedanswe
             if (!subset.Value.Contains(si.b)) notused++;
 
         }
-        answer1 = subsets.Values.First().Count * subsets.Values.Skip(1).First().Count;
-        ready = notused == 3 && subsets.Count == 2;
+        var a = subsets.Values.First();
+        var b = subsets.Values.Last();
+        answer1 = a.Count * b.Count;
+        ready = notused == 3 && subsets.Count == 2 && a.Count > 1 && b.Count>1 ;
     } 
 
 

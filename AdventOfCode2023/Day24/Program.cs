@@ -107,11 +107,24 @@ bool Optimize(List<List<double>> m)
     {
         int line = i;
         while (line < m.Count && m[line][i + 1] == 0) line++;
-        if (line != i)
+        var div = 1 / m[line][i + 1];
+        if (line == i)
         {
-            var div = 1 / m[line][i+1];
-           // for (int j = 0; j <line)
+            for (int j = 0; j < m[i].Count; j++)
+            {
+                m[i][j] = m[i][j] * div;
+            }
         }
+        else 
+        { 
+            for (int j = 0; j < m[line].Count; j++)
+            {
+                if (j == m[i].Count) m[i].Add(0);
+                m[i][j] += m[line][j] * div;
+            }
+        }
+
+        // nu nog andere lijnen wegvegen
     }
     return ready;
 }
