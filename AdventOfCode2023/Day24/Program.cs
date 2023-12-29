@@ -72,14 +72,20 @@ void Run(string inputfile, bool isTest, long supposedanswer1, long supposedanswe
 
     int k = 3;
     bool ready = Optimize(M);
-    while (!ready)
+    while (!ready && k < S.Length)
     {
         AddHail(M, S, k);
         ready = Optimize(M);
         k++;
     }
 
-    stopwatch.Stop();
+    var (rpx, rpy, rpz, trvx, trvy, trvz, x1, y1, z1) = (M[0][0], M[1][0], M[2][0], M[3][0], M[4][0], M[5][0], M[6][0], M[7][0], M[8][0]);
+    var (p1x, p1y, p1z, v1x, v1y, v1z) = (S[0][0][0], S[0][0][1], S[0][0][2], S[0][1][0], S[0][1][1], S[0][1][2]);
+    var (t1, t2, t3) = ((x1 - p1x) / v1x, (y1 - p1y) / v1y, (z1 - p1z) / v1z);
+    
+
+    stopwatch.Stop(); // ti = (X(ti) - px) /vx  - dat nog uitrekenen. 
+
     if (supposedanswer1 > -1) Aoc.w(1, answer1, supposedanswer1, isTest);
     if (supposedanswer2 > -1) Aoc.w(2, answer2, supposedanswer2, isTest);
     Console.WriteLine("Time in miliseconds: " + stopwatch.ElapsedMilliseconds.ToString());
@@ -89,24 +95,37 @@ void Run(string inputfile, bool isTest, long supposedanswer1, long supposedanswe
 void AddHail(List<List<double>> M, double[][][] S, int i)
 {
     var (px, py, pz, vx, vy, vz) = (S[i][0][0], S[i][0][1], S[i][0][2], S[i][1][0], S[i][1][1], S[i][1][2]);
-    Add(M, new double[] { px, 0, 0, 0 }, new double[] { 0, 0, 0, vx, 1, 0, 0 }, i);
-    Add(M, new double[] { py, 0, 0, 0 }, new double[] { 0, 0, 0, vy, 0, 1, 0 }, i);
-    Add(M, new double[] { pz, 0, 0, 0 }, new double[] { 0, 0, 0, vz, 0, 0, 1 }, i);
-    Add(M, new double[] { 0, 1, 0, 0 }, new double[] { 1, 0, 0, vx, px, 0, 0 }, i);
-    Add(M, new double[] { 0, 0, 1, 0 }, new double[] { 0, 1, 0, vy, 0, py, 0 }, i);
-    Add(M, new double[] { 0, 0, 0, 1 }, new double[] { 0, 0, 1, vz, 0, 0, pz }, i);
-    Add(M, new double[] { px / vx - py / vy, 0, 0, 0 }, new double[] { 0, 0, 0, 0, 1 / vx, -1 / vy, 0 }, i);
-    Add(M, new double[] { py / vy - pz / vz, 0, 0, 0 }, new double[] { 0, 0, 0, 0, 0, 1 / vy, -1 / vz }, i);
-    Add(M, new double[] { pz / vz - px / vx, 0, 0, 0 }, new double[] { 0, 0, 0, 0, -1 / vx, 0, 1 / vz }, i);
+    Add(M, new double[] { px, 0, 0, 0 }, new double[] { 0, 0, 0, 1, 0, 0 }, i);
+    Add(M, new double[] { py, 0, 0, 0 }, new double[] { 0, 0, 0, 0, 1, 0 }, i);
+    Add(M, new double[] { pz, 0, 0, 0 }, new double[] { 0, 0, 0, 0, 0, 1 }, i);
+    Add(M, new double[] { 0, 1, 0, 0 }, new double[] { 1, 0, 0, px, 0, 0 }, i);
+    Add(M, new double[] { 0, 0, 1, 0 }, new double[] { 0, 1, 0, 0, py, 0 }, i);
+    Add(M, new double[] { 0, 0, 0, 1 }, new double[] { 0, 0, 1, 0, 0, pz }, i);
+    Add(M, new double[] { px / vx - py / vy, 0, 0, 0 }, new double[] { 0, 0, 0, 1 / vx, -1 / vy, 0 }, i);
+    Add(M, new double[] { py / vy - pz / vz, 0, 0, 0 }, new double[] { 0, 0, 0, 0, 1 / vy, -1 / vz }, i);
+    Add(M, new double[] { pz / vz - px / vx, 0, 0, 0 }, new double[] { 0, 0, 0, -1 / vx, 0, 1 / vz }, i);
+
+    if (i > 0)
+    {
+        AddCombi(M, 4, new double[] { 1, 0, 0, 1, 0, 0 }, i - 1, new double[] { -1, 0, 0, -1, 0, 0 }, i);
+        AddCombi(M, 4, new double[] { 0, 1, 0, 0, 1, 0 }, i - 1, new double[] { 0, -1, 0, 0, -1, 0 }, i);
+        AddCombi(M, 4, new double[] { 0, 0, 1, 0, 0, 1 }, i - 1, new double[] { 0, 0, -1, 0, 0, -1 }, i);
+    }
+
 }
 
 bool Optimize(List<List<double>> m)
 {
     bool ready = true;
-    for (int i = 0; i< m[-1].Count-1; i++)
+    for (int i = 0; i< m[m.Count-1].Count-1; i++)
     {
         int line = i;
+        var maxlen = m.Max(l => l.Count);
+        foreach(var l in m) if(l.Count < maxlen) l.AddRange(new double[maxlen-l.Count]);    
+
         while (line < m.Count && m[line][i + 1] == 0) line++;
+        if (line == m.Count) { ready = false; break; }
+        
         var div = 1 / m[line][i + 1];
         if (line == i)
         {
@@ -119,12 +138,19 @@ bool Optimize(List<List<double>> m)
         { 
             for (int j = 0; j < m[line].Count; j++)
             {
-                if (j == m[i].Count) m[i].Add(0);
                 m[i][j] += m[line][j] * div;
             }
         }
-
-        // nu nog andere lijnen wegvegen
+        for (int k = 0; k < m.Count; k++)
+        {
+            if (k != i)
+            {
+                for (int j = 0; j < m[i].Count; j++)
+                {
+                    m[k][j] -= m[i][j] * m[k][i + 1];
+                }
+            }
+        }
     }
     return ready;
 }
@@ -132,7 +158,19 @@ bool Optimize(List<List<double>> m)
 static void Add(List<List<double>> M, double[] first, double[] second,  int count)
 {
     var line = new List<double>(first);
-    for (int i = 0; i < count; i++) line.Add(0);
+    for (int i = 0; i < count; i++) line.AddRange(new double[second.Length]);
+    line.AddRange(second);
+    M.Add(line);
+}
+
+
+static void AddCombi(List<List<double>> M, int offset, double[] first, int c1, double[] second, int c2)
+{
+    var line = new List<double>();
+    line.AddRange(new double[offset]);
+    for (int i = 0; i < c1; i++) line.AddRange(new double[first.Length]);
+    line.AddRange(first);
+    for (int i = 0; i < c2; i++) line.AddRange(new double[second.Length]);
     line.AddRange(second);
     M.Add(line);
 }

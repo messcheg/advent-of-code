@@ -43,7 +43,6 @@ void Run(string inputfile, bool isTest, long supposedanswer1, long supposedanswe
         }
     }
 
-    var start = (x, y);
     int direction = 0;
     int steps = 0;
     ready = false;
