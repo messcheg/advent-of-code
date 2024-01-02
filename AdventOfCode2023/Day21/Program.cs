@@ -8,6 +8,7 @@ using System.Dynamic;
 using System.Globalization;
 using System.Net.Security;
 using System.Net.WebSockets;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
@@ -68,27 +69,7 @@ void Run(string inputfile, bool isTest, long supposedanswer1, long supposedanswe
 
         if (isTest && i < 31)
         {
-            Console.SetCursorPosition(0, 0);
-            Console.WriteLine("Step: " + i.ToString());
-            for (int j = -30; j < 30; j++)
-            {
-                for (int k = -30; k < 30; k++)
-                {
-                    var ix = (int)(k % X + X) % X;
-                    var iy = (int)(j % Y + Y) % Y;
-
-                    if (newsteps.Contains((k, j)))
-                    {
-                        var clr = Console.ForegroundColor;
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.Write("O");
-                        Console.ForegroundColor = clr;
-                    }
-                    else Console.Write(S[iy][ix]);
-
-                }
-                Console.WriteLine();
-            }
+            Drawfield(S, X, Y, i, newsteps);
         }
         stepsset = newsteps;
     }
@@ -100,13 +81,13 @@ void Run(string inputfile, bool isTest, long supposedanswer1, long supposedanswe
     var work = new HashSet<(long x, long y)>();
     work.Add((sx, sy));
     long steps = 0;
-    long steps1 = 0;
     long cnt1 = 0;
     long cnt2 = 0;
-    long steps2 = 0;
-    while (steps2 == 0)
+   
+    long steps1 = 5 * X + 65;
+    long steps2 = 6 * X + 65;
+    while (steps <= steps2)
     {
-        steps++;
         var newwork = new HashSet<(long x, long y)>();
         foreach (var pos in work)
         {
@@ -126,28 +107,50 @@ void Run(string inputfile, bool isTest, long supposedanswer1, long supposedanswe
             if (S[iy][left] != '#' && !visited.Contains((x - 1, y))) newwork.Add((x - 1, y));
             if (S[up][ix] != '#' && !visited.Contains((x, y - 1))) newwork.Add((x, y - 1));
 
-            if (steps1 == 0 && x == -4 * X) steps1 = steps;
-            if (x == -6 * X) steps2 = steps;
         }
-        if (steps1 == steps)
+        if (steps == targetdist)
         {
-            cnt1 = visited.Count(a => (a.x + a.y) % 2 == 0);
+            answer1 = GetCount(steps, visited);
+        }
+        if (steps == steps1)
+        {
+            cnt1 = GetCount(steps, visited);
             visited1 = visited.ToHashSet();
         }
-        if (steps2 == steps) cnt2 = visited.Count(a => (a.x + a.y) % 2 == 0);
+        if ( steps == steps2) cnt2 = GetCount(steps, visited);
         work = newwork;
+        steps++;
+
     }
-    Dictionary<(int x, int y), (int odds, int evens)> cards1 = GetCardValues(X, Y, visited1, 5);
-    Dictionary<(int x, int y), (int odds, int evens)> cards2 = GetCardValues(X, Y, visited, 7);
-    
-    Console.WriteLine(cards1);
+    Dictionary<(int x, int y), (long odds, long evens)> cards1 = GetCardValues(X, Y, visited1, 7);
+    Dictionary<(int x, int y), (long odds, long evens)> cards2 = GetCardValues(X, Y, visited, 8);
 
+    for (int i = -10; i <= 10; i++)
+    {
+        for (int j = -10; j <= 10; j++)
+        {
 
-    var rest = 26501365 % steps2;
-    
-    var div = 26501365 / steps2;
+            if (cards1.ContainsKey((i, j))) Console.Write(cards1[(i, j)].odds.ToString(" 0000 "));
+            else Console.Write("      ");
+        }
+        Console.WriteLine();
+    }
 
+    for (int i = -10; i <= 10; i++)
+    {
+        for (int j = -10; j <= 10; j++)
+        {
 
+            if (cards2.ContainsKey((i, j))) Console.Write(cards2[(i, j)].odds.ToString(" 0000 "));
+            else Console.Write("      ");
+        }
+        Console.WriteLine();
+    }
+
+    var testvalue = EstimateHugeNumerOfSteps(X, cards2, steps1);
+    var testvalue1 = EstimateHugeNumerOfSteps(X, cards2, steps2);
+    long target = 26501365;
+    answer2 = EstimateHugeNumerOfSteps(X, cards2, target);
 
     // 26501365
     stopwatch.Stop();
@@ -156,9 +159,18 @@ void Run(string inputfile, bool isTest, long supposedanswer1, long supposedanswe
     Console.WriteLine("Time in miliseconds: " + stopwatch.ElapsedMilliseconds.ToString());
 }
 
-static Dictionary<(int x, int y), (int odds, int evens)> GetCardValues(int X, int Y, HashSet<(long x, long y)> visited1 , int distance)
+static int GetCount(long stps, HashSet<(long x, long y)> vis)
 {
-    var cards1 = new Dictionary<(int x, int y), (int odds, int evens)>();
+    var odd = stps % 2;
+    var a = vis.Count(a => (a.x + a.y) % 2 == 0);
+    var b = vis.Count - a;
+
+    return odd == 0 ? a : b;
+}
+
+static Dictionary<(int x, int y), (long odds, long evens)> GetCardValues(int X, int Y, HashSet<(long x, long y)> visited1 , int distance)
+{
+    var cards1 = new Dictionary<(int x, int y), (long odds, long evens)>();
     var work1 = new Queue<(int x, int y)>();
     work1.Enqueue((0, 0));
     while (work1.Count > 0)
@@ -169,8 +181,8 @@ static Dictionary<(int x, int y), (int odds, int evens)> GetCardValues(int X, in
             var Y0 = wrk.y * Y;
             var X0 = wrk.x * X;
             var card = visited1.Where(a => X0 <= a.x && a.x < X + X0 && Y0 <= a.y && a.y < Y + Y0);
-            var odds = card.Count(a => Math.Abs((a.x + a.y)) % 2 == 1);
             var evens = card.Count(a => (a.x + a.y) % 2 == 0);
+            var odds = card.Count() - evens;
             cards1[wrk] = (odds, evens);
             if (Math.Abs(wrk.x) + Math.Abs(wrk.y) < distance)
             {
@@ -183,4 +195,56 @@ static Dictionary<(int x, int y), (int odds, int evens)> GetCardValues(int X, in
     }
 
     return cards1;
+}
+
+static long EstimateHugeNumerOfSteps(int X, Dictionary<(int x, int y), (long odds, long evens)> cards2, long target)
+{
+    long numberofcards = target / X;
+    BigInteger numberOdd = 0;
+    BigInteger numberEven = 0;
+    if (numberofcards % 2 == 0) { numberOdd = (numberofcards - 1) * (numberofcards - 1); numberEven = (numberofcards ) * (numberofcards ); }
+    else { numberOdd = (numberofcards ) * (numberofcards ); numberEven = (numberofcards - 1) * (numberofcards - 1); }
+    BigInteger numberSideFirstrow = numberofcards;
+    BigInteger numberSideSecondrow = numberofcards - 1;
+
+    BigInteger answer =
+            numberOdd * cards2[(0, 0)].odds +
+            numberEven * cards2[(0, 0)].evens +
+            numberSideFirstrow * (cards2[(-1, 6)].odds + cards2[(1, 6)].odds + cards2[(-1, -6)].odds + cards2[(1, -6)].odds) +
+            numberSideSecondrow * (cards2[(-1, 5)].odds + cards2[(1, 5)].odds + cards2[(-1, -5)].odds + cards2[(1, -5)].odds) +
+            (cards2[(0, 6)].odds + cards2[(6, 0)].odds + cards2[(0, -6)].odds + cards2[(-6, 0)].odds);
+    BigInteger answer2 =
+            numberOdd * cards2[(0, 0)].evens +
+            numberEven * cards2[(0, 0)].odds +
+            numberSideFirstrow * (cards2[(-1, 6)].odds + cards2[(1, 6)].odds + cards2[(-1, -6)].odds + cards2[(1, -6)].odds) +
+            numberSideSecondrow * (cards2[(-1, 5)].odds + cards2[(1, 5)].odds + cards2[(-1, -5)].odds + cards2[(1, -5)].odds) +
+            (cards2[(0, 6)].odds + cards2[(6, 0)].odds + cards2[(0, -6)].odds + cards2[(-6, 0)].odds);
+    
+   
+    return target % 2 == 1 ? (long)answer : (long)answer2;
+}
+
+static void Drawfield(List<string> S, int X, int Y, int i, HashSet<(long x, long y)> newsteps)
+{
+    Console.SetCursorPosition(0, 0);
+    Console.WriteLine("Step: " + i.ToString());
+    for (int j = -30; j < 30; j++)
+    {
+        for (int k = -30; k < 30; k++)
+        {
+            var ix = (int)(k % X + X) % X;
+            var iy = (int)(j % Y + Y) % Y;
+
+            if (newsteps.Contains((k, j)))
+            {
+                var clr = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write("O");
+                Console.ForegroundColor = clr;
+            }
+            else Console.Write(S[iy][ix]);
+
+        }
+        Console.WriteLine();
+    }
 }

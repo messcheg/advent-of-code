@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AocHelper\AocHelper.csproj" />
+    <ProjectReference Include="..\Day11\Day11.csproj" />
   </ItemGroup>
 
 </Project>
