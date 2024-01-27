@@ -6,6 +6,7 @@ Now I'm trying to solve all previous years in different languages (In my own pac
 
 AoC           | Language     | Completed 
 ------------- | -------------|-----------
+2023          | C#           | Yes
 2022          | C#           | Yes       
 2021          | C#           | Yes       
 2020          | Python       | Yes       
