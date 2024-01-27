@@ -11,6 +11,6 @@ AoC           | Language     | Completed
 2020          | Python       | Yes       
 2019          | F#           | Yes       
 2018          | VB.Net       | Yes       
-2017          | Commodore 64 | Still calculating...          
+2017          | Commodore 64 | Still repairing the c64...          
 2016          |              |           
-2015          |              |           
+2015          | RockStar     |           
