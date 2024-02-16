@@ -1,88 +1,92 @@
 Listen to the instructions
 Rock Johny Feelgood
-let Johnies Buddy be nobody
+Let Johnies Buddy be nobody
 Rock Brenda Bright
 Let Brendas Sister be nobody
-while the instructions aren't silent
+While the instructions aren't silent
 Shout the instructions
 Force is the best
-knock force down, down
-cast force
-shatter the instructions into the time with force
-noon is 1
-let the light be the time at 0
-if the light is "turn"
-let the light be the time at 1
-build noon up
+Knock force down, down
+Cast force
+Shatter the instructions into the time with force
+The morning is almost'gone
+Noon is coming-soon
+Let the light be the time at the morning
+If the light is "turn"
+Let the light be the time at noon
+Build noon up
   
-put the time at noon in your heart
-build noon up, up
-put the time at noon in your soul
-cut your heart into half with ","
-cut your soul into double with ","
-first is 0
-second is nothing
-build second up
-let AX be half at first
-let AY be half at second
-let BX be double at first
-let BY be double at second
-cast AX with 10
-cast AY with 10
-cast BX with 10
-cast BY with 10
-let CY be AY
-build BX up
-build BY up
-while AX ain't BX
-while AY ain't BY
-let the school be empty
-rock AX,AY into the school
-join the school with force
-let XX be Johny Feelgood at the school
-let YY be Brenda Bright at the school
-if YY is mysterious
-YY is 0
+Put the time at noon in your heart
+Build noon up, up
+Put the time at noon in your soul
+The knife is your tool
+Cast the knife
+Cut your heart into half with the knife
+Cut your soul into double with the knife
+Let First be the morning 
+Second is nothing
+Build second up
+Let your body be half at first
+Let your mind be half at second
+Let the health be double at first
+Let the fitness be double at second
+Energy is a good-thing
+Cast your body with energy
+Cast your mind with energy
+Cast the health with energy
+Cast the fitness with energy
+Let your thoughts be your mind
+Build the health up
+Build the fitness up
+While your body ain't the health
+While your mind ain't the fitness
+Let the school be empty
+Rock your body, your mind into the school
+Join the school with force
+Let John be Johny Feelgood at the school
+Let Bren be Brenda Bright at the school
+If Bren is mysterious
+Bren is first
 
-if the light is "on"
-Build YY up
-let Brenda Bright at the school be YY 
+If the light is "on"
+Build Bren up
+Let Brenda Bright at the school be Bren 
 Build Brendas Sister up
-if XX is mysterious
-let Johny Feelgood at the school be 1
+If John is mysterious
+Let Johny Feelgood at the school be second
 Build Johnies Buddy up
 
 
-if the light is "off" 
-if YY ain't mysterious and YY is stronger than 0
-Knock YY down
+If the light is "off" 
+If Bren ain't mysterious and Bren is stronger than first
+Knock Bren down
 Knock Brendas Sister down
-let Brenda Bright at the school be YY
+Let Brenda Bright at the school be Bren
 
-if XX ain't mysterious
-let Johny Feelgood at the school be mysterious
-knock Johnies Buddy down
+If John ain't mysterious
+Let Johny Feelgood at the school be mysterious
+Knock Johnies Buddy down
 
 
-if the light is "toggle"
-Build YY up, up
-let Brenda Bright at the school be YY 
+If the light is "toggle"
+Build Bren up, up
+Let Brenda Bright at the school be Bren 
 Build Brendas Sister up, up
-if XX is mysterious
-let Johny Feelgood at the school be 1
-build Johnies Buddy up
+If John is mysterious
+Let Johny Feelgood at the school be first
+Build Johnies Buddy up
 
-if XX isn't mysterious
-let Johny Feelgood at the school be mysterious
-knock Johnies Buddy down
+If John isn't mysterious
+Let Johny Feelgood at the school be mysterious 
+Knock Johnies Buddy down
 
 
-let AY be 1 plus AY
+Let your mind be second with your mind
 
-let AY be CY
-let AX be 1 plus AX
+Let your mind be your thoughts
+Let your body be second with your body
 
-listen to the instructions
+Listen to the instructions
 
-shout Johnies Buddy
-shout Brendas Sister
+Whisper  Johnies Buddy
+Scream  Brendas Sister
