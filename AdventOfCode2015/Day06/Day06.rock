@@ -1,6 +1,8 @@
 Listen to the instructions
 Rock Johny Feelgood
 let Johnies Buddy be nobody
+Rock Brenda Bright
+Let Brendas Sister be nobody
 while the instructions aren't silent
 Shout the instructions
 Force is the best
@@ -38,17 +40,36 @@ let the school be empty
 rock AX,AY into the school
 join the school with force
 let XX be Johny Feelgood at the school
-if the light is "on" and XX is mysterious
-let Johny Feelgood at the school be "o"
-build Johnies Buddy up
+let YY be Brenda Bright at the school
+if YY is mysterious
+YY is 0
 
-if the light is "off" and XX ain't mysterious
+if the light is "on"
+Build YY up
+let Brenda Bright at the school be YY 
+Build Brendas Sister up
+if XX is mysterious
+let Johny Feelgood at the school be 1
+Build Johnies Buddy up
+
+
+if the light is "off" 
+if YY ain't mysterious and YY is stronger than 0
+Knock YY down
+Knock Brendas Sister down
+let Brenda Bright at the school be YY
+
+if XX ain't mysterious
 let Johny Feelgood at the school be mysterious
 knock Johnies Buddy down
 
+
 if the light is "toggle"
+Build YY up, up
+let Brenda Bright at the school be YY 
+Build Brendas Sister up, up
 if XX is mysterious
-let Johny Feelgood at the school be "o"
+let Johny Feelgood at the school be 1
 build Johnies Buddy up
 
 if XX isn't mysterious
@@ -64,3 +85,4 @@ let AX be 1 plus AX
 listen to the instructions
 
 shout Johnies Buddy
+shout Brendas Sister
