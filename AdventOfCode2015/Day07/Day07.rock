@@ -1,0 +1,61 @@
+Splitter wants T
+Split T into H with " -> "
+B is nobody
+roll H into B
+roll H into C
+Rock C into R1
+Rock B into R2
+oh
+
+Finder wants K
+X1 is 0
+Put R1 at X1 into S
+while S ain't misterious and S ain't K
+build X1 up
+Put R1 at X1 into S
+oh
+give X1 back
+
+
+IsNumber wants K
+cut K into pieces
+X3 = 0
+put pieces at X3 into V2
+while V2 ain't misterious
+if V2 
+
+Getvalue wants K
+if IsNumber K
+Let K1 be K
+Cast K1
+give it back
+
+Put Finder taking K into Ind
+Put R2 at Ind into Instr
+shout instr
+cut instr into parts with " "
+if parts at 2 ain't misterious (3 long)
+put parts at 0 in P1
+put parts at 2 in P2
+put parts at 1 in OP1
+put Gertvalue taking P1 in V1
+put Getvalue taking P2 in V2
+put PerformINstruction taking V1, V2, OP1 into RES1
+Give RES1 back
+
+if parts at 1 ain't misterious (2 long)
+put parts at
+give 1 back
+
+
+Rock R1
+Rock R2
+listen to L
+until L is silent
+call Splitter with L
+listen to L
+
+shout GetValue taking "e"
+
+shout R1
+shout R2
