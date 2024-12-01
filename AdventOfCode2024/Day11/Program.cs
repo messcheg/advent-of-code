@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 Run(@"..\..\..\example.txt", true);
 Run(@"..\..\..\example1.txt", true);
-//Run(@"E:\develop\advent-of-code-input\2024\day01.txt", false);
+//Run(@"E:\develop\advent-of-code-input\2024\day11.txt", false);
 
 void Run(string inputfile, bool isTest)
 {
@@ -22,6 +22,6 @@ void Run(string inputfile, bool isTest)
 
     Aoc.w(1, answer1, supposedanswer1, isTest);
     Aoc.w(2, answer2, supposedanswer2, isTest);
-    Console.WriteLine("DUration: " + stopwatch.ElapsedMilliseconds.ToString() + " miliseconds.");
+    Console.WriteLine("Duration: " + stopwatch.ElapsedMilliseconds.ToString() + " miliseconds.");
 }
 
