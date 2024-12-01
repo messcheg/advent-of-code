@@ -44,6 +44,6 @@ void Run(string inputfile, bool isTest)
 
     Aoc.w(1, answer1, supposedanswer1, isTest);
     Aoc.w(2, answer2, supposedanswer2, isTest);
-    Console.WriteLine("DUration: " + stopwatch.ElapsedMilliseconds.ToString() + " miliseconds.");
+    Console.WriteLine("Duration: " + stopwatch.ElapsedMilliseconds.ToString() + " miliseconds.");
 }
 
