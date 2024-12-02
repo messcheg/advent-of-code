@@ -21,25 +21,13 @@ void Run(string inputfile, bool isTest)
             bool up = s[0] <= s[1];
             for (int i = 1; i < s.Count; i++)
             {
-                long dif = 0;
-                if (up)
-                {
-                    dif = s[i] - s[i - 1];
-                }
-                else
-                {
-                    dif = s[i - 1] - s[i];
-                }
-                if (dif < 1 || dif > 3)
-                {
-                    return (false, i);
-                }
+                long dif = up ? dif = s[i] - s[i - 1] : dif = s[i - 1] - s[i];
+                if (dif < 1 || dif > 3) return (false, i);
             }
             return (true, 0);
         }
 
-        bool safe; int location = 0;
-        (safe, location) = test(s);
+        (bool safe, int location) = test(s);
         if (safe)
         {
             answer1++;
@@ -48,22 +36,15 @@ void Run(string inputfile, bool isTest)
         else
         {
             var s1 = s.ToList();
-            int l1;
             s1.RemoveAt(location - 1);
-            (safe, l1) = test(s1);
-            if (safe)
-            {
-                answer2++;
-            }
+            (safe, int l1) = test(s1);
+            if (safe) answer2++;
             else
             {
                 s1 = s.ToList();
                 s1.RemoveAt(location);
                 (safe, l1) = test(s1);
-                if (safe)
-                {
-                    answer2++;
-                }
+                if (safe) answer2++;
                 else
                 {
                     if (location > 1)
@@ -72,11 +53,7 @@ void Run(string inputfile, bool isTest)
                         s1.RemoveAt(location - 2);
                         (safe, l1) = test(s1);
                     }
-                    if (safe)
-                    {
-                        answer2++;
-
-                    }
+                    if (safe) answer2++;
                 }
             }
         }
