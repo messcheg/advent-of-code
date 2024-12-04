@@ -363,9 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # Advent-of-code input files
-example.txt
-example1.txt
-example2.txt
-real_input.txt
-input.txt
-example*_input*.txt
+example*.txt
+*input*.txt
