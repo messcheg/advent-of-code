@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="landsky.png" />
+    <None Remove="real_input.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="landsky.png" />
+  </ItemGroup>
+
+</Project>

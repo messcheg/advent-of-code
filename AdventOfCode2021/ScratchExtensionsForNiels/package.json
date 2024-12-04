@@ -1,0 +1,9 @@
+{
+  "name": "scratch-extensions-for-niels",
+  "version": "0.0.0",
+  "description": "ScratchExtensionsForNiels",
+  "main": "app.js",
+  "author": {
+    "name": ""
+  }
+}

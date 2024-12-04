@@ -1,0 +1,92 @@
+Splitter wants T
+Split T into H with " -> "
+B is nobody
+roll H into B
+roll H into C
+Rock C into R1
+Rock B into R2
+oh
+
+Finder wants K
+X1 is 0
+Put R1 at X1 into S
+while S ain't misterious and S ain't K
+build X1 up
+Put R1 at X1 into S
+oh
+give X1 back
+
+IsNumber wants K
+cut K into pieces
+X3 = 0
+put pieces at X3 into V2
+while V2 ain't misterious
+if V2 < "0" or V2 > "9" give back false
+build X3 up
+put pieces at X3 into V2
+oh
+give back true
+
+Getvalue wants K
+if not IsNumber taking K give back 0
+cut K into pieces
+X3 = 0
+TOT=0
+put pieces at X3 into V2
+while V2 ain't misterious
+Cast V2
+Let TOT be TOT times 10 with V2 without 48
+build X3 up
+put pieces at X3 into V2
+oh
+give back TOT
+
+Resolve wants K
+if IsNumber taking K Give Back GetValue taking K
+Put Finder taking K into Ind
+If R4 at Ind give back R3 at Ind
+Put R2 at Ind into Instr
+cut instr into parts with " "
+if parts at 2 ain't misterious (3 long)
+put parts at 0 in P1
+put parts at 2 in P2
+put parts at 1 in OP1
+put Resolve taking P1 into V1
+put Resolve taking P1 into V2
+put V1 with V2 in V3 (change it to the right instructions)
+R4 at Ind = true
+Let R3 at Ind be V3
+give back V3
+oh
+if parts at 1 ain't misterious (2 long)
+put parts at 0 in OP1
+put parts at 1 in P1
+put Resolve taking P1 into V1
+put V1 in V3 (change it to the right instructions)
+R4 at Ind = true
+Let R3 at Ind be V3
+give back V3
+oh
+put parts at 0 in P1
+put Resolve taking P1 in V3
+R4 at Ind = true
+Let R3 at Ind be V3
+give back V3
+oh
+
+Rock R1
+Rock R2
+listen to L
+until L is silent
+Rock R3 with 0
+Rock R4 with false
+call Splitter with L
+listen to L
+
+shout Resolve taking "e"
+shout R1
+shout R2
+shout R3
+shout R4
+
+	

@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="example_input3.txt" />
+    <Content Include="example_input2.txt" />
+    <Content Include="example_input1.txt" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="real_input.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\IntcodeMachine\IntcodeMachine.fsproj" />
+  </ItemGroup>
+
+</Project>

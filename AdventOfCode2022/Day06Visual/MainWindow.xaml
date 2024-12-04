@@ -1,0 +1,61 @@
+﻿<Window x:Class="Day06Visual.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Day06Visual"
+        mc:Ignorable="d"
+        Title="Advent-of-Code 2022 Day 06" Height="450" Width="800">
+    <Grid>
+        <Canvas Width="800">
+            <Canvas.Background>
+                <ImageBrush ImageSource="landsky.png" />
+            </Canvas.Background>
+
+            <Label Name="l01" Content="" Canvas.Left="115" Canvas.Top="106"/>
+            <Label Name="l02" Content="" Canvas.Left="130" Canvas.Top="106"/>
+            <Label Name="l03" Content="" Canvas.Left="145" Canvas.Top="103"/>
+            <Label Name="l04" Content="" Canvas.Left="160" Canvas.Top="101"/>
+            <Label Name="l05" Content="" Canvas.Left="175" Canvas.Top="100"/>
+            <Label Name="l06" Content="" Canvas.Left="180" Canvas.Top="100"/>
+            <Label Name="l07" Content="" Canvas.Left="195" Canvas.Top="100"/>
+            <Label Name="l08" Content="" Canvas.Left="210" Canvas.Top="99"/>
+            <Label Name="l09" Content="" Canvas.Left="225" Canvas.Top="98"/>
+            <Label Name="l10" Content="" Canvas.Left="240" Canvas.Top="96"/>
+            <Label Name="l11" Content="" Canvas.Left="255" Canvas.Top="94"/>
+            <Label Name="l12" Content="" Canvas.Left="270" Canvas.Top="91"/>
+            <Label Name="l13" Content="" Canvas.Left="285" Canvas.Top="88"/>
+            <Label Name="l14" Content="" Canvas.Left="300" Canvas.Top="85"/>
+            <Label Name="l15" Content="" Canvas.Left="315" Canvas.Top="80"/>
+            <Label Name="l16" Content="" Canvas.Left="330" Canvas.Top="80"/>
+            <Label Name="l17" Content="" Canvas.Left="345" Canvas.Top="75"/>
+            <Label Name="l18" Content="" Canvas.Left="360" Canvas.Top="70"/>
+            <Label Name="l19" Content="" Canvas.Left="375" Canvas.Top="65"/>
+            <Label Name="l20" Content="" Canvas.Left="390" Canvas.Top="58"/>
+            <Label Name="l21" Content="" Canvas.Left="405" Canvas.Top="52"/>
+            <Label Name="l22" Content="" Canvas.Left="420" Canvas.Top="47"/>
+            <Label Name="l23" Content="" Canvas.Left="435" Canvas.Top="44"/>
+            <Label Name="l24" Content="" Canvas.Left="450" Canvas.Top="41"/>
+            <Label Name="l25" Content="" Canvas.Left="465" Canvas.Top="38"/>
+            <Label Name="l26" Content="" Canvas.Left="480" Canvas.Top="35"/>
+            <Label Name="l27" Content="" Canvas.Left="495" Canvas.Top="32"/>
+            <Label Name="l28" Content="" Canvas.Left="510" Canvas.Top="29"/>
+            <Label Name="l29" Content="" Canvas.Left="525" Canvas.Top="26"/>
+            <Label Name="l30" Content="" Canvas.Left="540" Canvas.Top="24"/>
+            <Label Name="l31" Content="" Canvas.Left="555" Canvas.Top="22"/>
+            <Label Name="l32" Content="" Canvas.Left="570" Canvas.Top="20"/>
+            <Label Name="l33" Content="" Canvas.Left="585" Canvas.Top="18"/>
+            <Label Name="l34" Content="" Canvas.Left="600" Canvas.Top="16"/>
+            <Label Name="l35" Content="" Canvas.Left="615" Canvas.Top="14"/>
+            <Label Name="l36" Content="" Canvas.Left="630" Canvas.Top="12"/>
+            <Label Name="l37" Content="" Canvas.Left="645" Canvas.Top="10"/>
+            <Label Name="l38" Content="" Canvas.Left="670" Canvas.Top="4"/>
+            <Label Content="Message:" Canvas.Left="21" Canvas.Top="5"/>
+            <Label Name="lblCount" Content="0" Canvas.Left="90" Canvas.Top="5"/>
+            <Label Content="start-of-packet marker:" Canvas.Left="21" Canvas.Top="30"/>
+            <Label Name="lblSOP" Content="----" Canvas.Left="150" Canvas.Top="30"/>
+            <Label Content="start-of-message marker:" Canvas.Left="21" Canvas.Top="55"/>
+            <Label Name="lblMSG" Content="-------------" Canvas.Left="160" Canvas.Top="55"/>
+        </Canvas>
+    </Grid>
+</Window>
