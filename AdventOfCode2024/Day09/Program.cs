@@ -49,64 +49,76 @@ void Run(string inputfile, bool isTest)
         id1++;
     }
 
-    var disk = new List<(int size, int content)>();
+    var disk = new LinkedList<(int size, int content)>();
     bool space = false;
     id1 = 0;
+
     foreach (var size in S)
     {
         if (space)
         {
-            disk.Add((size, -1));
+            disk.AddLast((size, -1));
         }
         else
         {
-            disk.Add((size, id1));
+            disk.AddLast((size, id1));
             id1++;
         }
         space = !space;
     }
 
-    int candidate = disk.Count - 1;
+    var candidate = disk.Last;
+    var firstempty = disk.First?.Next;
     ready = false;
-    while (!ready && candidate > 0)
+    int minId = 0;
+    while (!ready && candidate != null && candidate.Value.content != minId)
     {
-        int block = 0;
+        var block = firstempty;
 
-        while (disk[candidate].content < 0) candidate--;
-        while (block < candidate && disk[block].content >= 0) block++;
-
-        while (candidate > block && disk[block].size < disk[candidate].size)
+        while (candidate != null && candidate.Value.content < 0) candidate = candidate.Previous;
+        while (block != null && block != candidate && block.Value.content >= 0)
         {
-            block++;
-            while (block < disk.Count && disk[block].content >= 0) block++;
+            if (block.Value.content == minId + 1) minId++;
+            block = block.Next;
+            firstempty = block;
         }
-        if (candidate > block)
-        {
-            var originalcandidate = disk[candidate];
-            var originalblock = disk[block];
 
-            disk[block] = (originalblock.size - disk[candidate].size, -1);
-            disk[candidate] = (disk[candidate].size, -1);
-            if (candidate < disk.Count - 1 && disk[candidate + 1].content == -1)
+        while (candidate != null && block != null && candidate != block && block.Value.size < candidate.Value.size)
+        {
+            block = block.Next;
+            while (block != null && block != candidate && block.Value.content >= 0) block = block.Next;
+        }
+        if (candidate != null && block != null && candidate != block)
+        {
+            var originalcandidate = candidate.Value;
+            var originalblock = block.Value;
+
+            block.Value = (originalblock.size - candidate.Value.size, -1);
+            candidate.Value = (candidate.Value.size, -1);
+            if (candidate.Next != null && candidate.Next.Value.content == -1)
             {
-                disk[candidate] = (disk[candidate].size + disk[candidate + 1].size, -1);
-                disk.RemoveAt(candidate + 1);
+                candidate.Value = (candidate.Value.size + candidate.Next.Value.size, -1);
+                disk.Remove(candidate.Next);
             }
-            if (candidate >= block && disk[candidate - 1].content == -1)
+            if (candidate.Previous != null && candidate.Previous.Value.content == -1)
             {
-                disk[candidate] = (disk[candidate].size + disk[candidate - 1].size, -1);
-                disk.RemoveAt(candidate - 1);
-                candidate--;
+                candidate.Value = (candidate.Value.size + candidate.Previous.Value.size, -1);
+                if (candidate.Previous == block)
+                {
+                    block = candidate;
+                    if (candidate.Previous == firstempty) firstempty = candidate;
+                }
+                disk.Remove(candidate.Previous);
             }
-            disk.Insert(block, originalcandidate);
-            block++; candidate++;
-            if (disk[block].size == 0)
+            disk.AddBefore(block, originalcandidate);
+
+            if (block.Value.size == 0)
             {
-                disk.RemoveAt(block);
-                candidate--;
+                if (firstempty == block) firstempty = block.Next;
+                disk.Remove(block);
             }
         }
-        candidate--;
+        candidate = candidate?.Previous;
     }
 
     Console.WriteLine();
