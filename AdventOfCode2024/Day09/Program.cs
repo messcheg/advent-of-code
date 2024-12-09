@@ -95,21 +95,6 @@ void Run(string inputfile, bool isTest)
 
             block.Value = (originalblock.size - candidate.Value.size, -1);
             candidate.Value = (candidate.Value.size, -1);
-            if (candidate.Next != null && candidate.Next.Value.content == -1)
-            {
-                candidate.Value = (candidate.Value.size + candidate.Next.Value.size, -1);
-                disk.Remove(candidate.Next);
-            }
-            if (candidate.Previous != null && candidate.Previous.Value.content == -1)
-            {
-                candidate.Value = (candidate.Value.size + candidate.Previous.Value.size, -1);
-                if (candidate.Previous == block)
-                {
-                    block = candidate;
-                    if (candidate.Previous == firstempty) firstempty = candidate;
-                }
-                disk.Remove(candidate.Previous);
-            }
             disk.AddBefore(block, originalcandidate);
 
             if (block.Value.size == 0)
