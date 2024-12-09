@@ -41,7 +41,6 @@ void Run(string inputfile, bool isTest)
                 var loc1 = node[i];
                 for (int j = i + 1; j < node.Count; j++)
                 {
-
                     var loc2 = node[j];
                     var dx = loc2.x - loc1.x;
                     var dy = loc2.y - loc1.y;
