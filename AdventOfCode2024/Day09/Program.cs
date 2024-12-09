@@ -49,6 +49,8 @@ void Run(string inputfile, bool isTest)
         id1++;
     }
 
+    var holes = new SortedList<int, LinkedListNode<(int size, int content)>>[10];
+    for (int i = 0; i < holes.Length; i++) holes[i] = new SortedList<int, LinkedListNode<(int size, int content)>>(10);
     var disk = new LinkedList<(int size, int content)>();
     bool space = false;
     id1 = 0;
@@ -57,7 +59,7 @@ void Run(string inputfile, bool isTest)
     {
         if (space)
         {
-            disk.AddLast((size, -1));
+            holes[size].Add(id1, disk.AddLast((size, -1)));
         }
         else
         {
@@ -68,46 +70,35 @@ void Run(string inputfile, bool isTest)
     }
 
     var candidate = disk.Last;
-    var firstempty = disk.First?.Next;
-    ready = false;
     int minId = 0;
-    while (!ready && candidate != null && candidate.Value.content != minId)
+    while (candidate != null && candidate.Value.content != minId)
     {
-        var block = firstempty;
-
         while (candidate != null && candidate.Value.content < 0) candidate = candidate.Previous;
-        while (block != null && block != candidate && block.Value.content >= 0)
+        if (candidate != null)
         {
-            if (block.Value.content == minId + 1) minId++;
-            block = block.Next;
-            firstempty = block;
-        }
+            var ah = holes[candidate.Value.size..].Where((h) => h.Count > 0).Select(can => can.First());
+            var hole = ah.OrderBy(h => h.Key).FirstOrDefault();
 
-        while (candidate != null && block != null && candidate != block && block.Value.size < candidate.Value.size)
-        {
-            block = block.Next;
-            while (block != null && block != candidate && block.Value.content >= 0) block = block.Next;
-        }
-        if (candidate != null && block != null && candidate != block)
-        {
-            var originalcandidate = candidate.Value;
-            var originalblock = block.Value;
-
-            block.Value = (originalblock.size - candidate.Value.size, -1);
-            candidate.Value = (candidate.Value.size, -1);
-            disk.AddBefore(block, originalcandidate);
-
-            if (block.Value.size == 0)
+            if (hole.Value != null && candidate.Value.content > hole.Key)
             {
-                if (firstempty == block) firstempty = block.Next;
-                disk.Remove(block);
+                var block = hole.Value;
+                var originalcandidate = candidate.Value;
+                var orgblocksize = block.Value.size;
+
+                block.Value = (orgblocksize - candidate.Value.size, -1);
+                holes[orgblocksize].Remove(hole.Key);
+                holes[block.Value.size].Add(hole.Key, hole.Value);
+
+                candidate.Value = (candidate.Value.size, -1);
+                disk.AddBefore(block, originalcandidate);
             }
+            candidate = candidate?.Previous;
         }
-        candidate = candidate?.Previous;
     }
 
     Console.WriteLine();
-    int location2 = 0;
+    long location2 = 0;
+    answer2 = 0;
     foreach (var blck in disk)
     {
         if (blck.size == 0) continue;
@@ -116,11 +107,11 @@ void Run(string inputfile, bool isTest)
             location2 += blck.size;
             continue;
         }
-        for (int j = 0; j < blck.size; j++)
-        {
-            answer2 += location2 * blck.content;
-            location2++;
-        }
+        long con = blck.content;
+        long sz = blck.size;
+        answer2 += con * sz * location2 + con * (sz * (sz - 1) / 2);
+        location2 += blck.size;
+
     }
 
     Console.WriteLine();
