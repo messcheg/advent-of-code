@@ -21,7 +21,6 @@ void Run(string inputfile, bool isTest, long supposedanswer1 = 0, long supposeda
         {
             if (S[y][x] == '0')
             {
-                var visited = new HashSet<(int x, int y)>();
                 var addedwork = new Dictionary<(int x, int y), long>();
                 var ninesVisited = new HashSet<(int x, int y)>();
                 var work = new Queue<(int x, int y)>();
@@ -30,9 +29,7 @@ void Run(string inputfile, bool isTest, long supposedanswer1 = 0, long supposeda
                 while (work.Count > 0)
                 {
                     var w = work.Dequeue();
-                    if (!visited.Contains(w))
                     {
-                        visited.Add(w);
                         var c = S[w.y][w.x];
                         if (c == '9') ninesVisited.Add(w);
 
@@ -51,7 +48,6 @@ void Run(string inputfile, bool isTest, long supposedanswer1 = 0, long supposeda
                                 }
                             }
                         }
-
                         tryAddwork(w.x - 1, w.y, w.x > 0);
                         tryAddwork(w.x + 1, w.y, w.x < S[0].Length - 1);
                         tryAddwork(w.x, w.y - 1, w.y > 0);
