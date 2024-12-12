@@ -5,7 +5,10 @@ Run(@"..\..\..\example0.txt", true, 140, 80);
 Run(@"..\..\..\example.txt", true, 1930, 1206);
 Run(@"..\..\..\example3.txt", true, 0, 436);
 Run(@"..\..\..\example4.txt", true, 0, 368);
+Run(@"..\..\..\example5.txt", true, 0, 946);
 Run(@"..\..\..\example2.txt", true, 204, 236);
+Run(@"..\..\..\example6.txt", true, 36, 36);
+Run(@"..\..\..\example7.txt", true, 380, 164);
 Run(@"..\..\..\example1.txt", false);
 //Run(@"E:\develop\advent-of-code-input\2024\day12.txt", false);
 
@@ -49,14 +52,15 @@ void Run(string inputfile, bool isTest, long supposedanswer1 = 0, long supposeda
                                 }
 
                             }
+
                             fence.Add((x1, y1, direction));
                             return 1;
                         }
 
-                        int perometer = dowork(cur.x, cur.y - 1, 0);
-                        perometer += dowork(cur.x, cur.y + 1, 1);
-                        perometer += dowork(cur.x - 1, cur.y, 2);
-                        perometer += dowork(cur.x + 1, cur.y, 3);
+                        int perometer = dowork(cur.x, cur.y - 1, 1);
+                        perometer += dowork(cur.x, cur.y + 1, 2);
+                        perometer += dowork(cur.x - 1, cur.y, 3);
+                        perometer += dowork(cur.x + 1, cur.y, 4);
                         regions[currentRegion] = (regions[currentRegion].area + 1, regions[currentRegion].perimeter + perometer, 0);
                     }
 
@@ -69,8 +73,11 @@ void Run(string inputfile, bool isTest, long supposedanswer1 = 0, long supposeda
                     fence.Remove(cur);
                     var (x1, y1, d1) = cur;
                     while (fence.Contains((x1 + 1, y1, d1))) { fence.Remove((x1 + 1, y1, d1)); x1++; }
+                    (x1, y1, d1) = cur;
                     while (fence.Contains((x1 - 1, y1, d1))) { fence.Remove((x1 - 1, y1, d1)); x1--; }
+                    (x1, y1, d1) = cur;
                     while (fence.Contains((x1, y1 + 1, d1))) { fence.Remove((x1, y1 + 1, d1)); y1++; }
+                    (x1, y1, d1) = cur;
                     while (fence.Contains((x1, y1 - 1, d1))) { fence.Remove((x1, y1 - 1, d1)); y1--; }
 
                 }
