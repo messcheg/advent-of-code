@@ -3,7 +3,9 @@ using System.Diagnostics;
 
 Run(@"..\..\..\example0.txt", true, 140, 80);
 Run(@"..\..\..\example.txt", true, 1930, 1206);
-Run(@"..\..\..\example3.txt", true, 772, 436);
+Run(@"..\..\..\example3.txt", true, 0, 436);
+Run(@"..\..\..\example4.txt", true, 0, 368);
+Run(@"..\..\..\example2.txt", true, 204, 236);
 Run(@"..\..\..\example1.txt", false);
 //Run(@"E:\develop\advent-of-code-input\2024\day12.txt", false);
 
@@ -16,7 +18,7 @@ void Run(string inputfile, bool isTest, long supposedanswer1 = 0, long supposeda
     long answer2 = 0;
     var visited = new bool[S[0].Length, S.Count];
 
-    var work = new Queue<(int x, int y, int region)>();
+    var work = new Queue<(int x, int y)>();
     int currentRegion = 0;
     var regions = new List<(long area, long perimeter, long sides)>();
     for (int y = 0; y < S.Count; y++)
@@ -25,7 +27,7 @@ void Run(string inputfile, bool isTest, long supposedanswer1 = 0, long supposeda
         {
             if (!visited[x, y])
             {
-                work.Enqueue((x, y, currentRegion));
+                work.Enqueue((x, y));
                 var fence = new HashSet<(int x, int y, int direction)>();
                 char planttype = S[y][x];
                 regions.Add((0, 0, 0));
@@ -42,7 +44,7 @@ void Run(string inputfile, bool isTest, long supposedanswer1 = 0, long supposeda
                             {
                                 if (S[y1][x1] == planttype)
                                 {
-                                    if (!visited[x1, y1]) work.Enqueue((x1, y1, cur.region));
+                                    if (!visited[x1, y1]) work.Enqueue((x1, y1));
                                     return 0;
                                 }
 
@@ -55,7 +57,7 @@ void Run(string inputfile, bool isTest, long supposedanswer1 = 0, long supposeda
                         perometer += dowork(cur.x, cur.y + 1, 1);
                         perometer += dowork(cur.x - 1, cur.y, 2);
                         perometer += dowork(cur.x + 1, cur.y, 3);
-                        regions[cur.region] = (regions[cur.region].area + 1, regions[cur.region].perimeter + perometer, 0);
+                        regions[currentRegion] = (regions[currentRegion].area + 1, regions[currentRegion].perimeter + perometer, 0);
                     }
 
                 }
