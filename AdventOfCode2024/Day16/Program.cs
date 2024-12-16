@@ -17,14 +17,18 @@ void Run(string inputfile, bool isTest, long supposedanswer1 = 0, long supposeda
     int sy = 0;
     int ex = 0;
     int ey = 0;
-    var state = new Dictionary<(int x, int y, int direction), (bool visited, long cost, HashSet<(int x, int y)> seats, List<(int x, int y, int direction)> path)>();
-    var isWall = new bool[S[0].Length, S.Count];
+    var state = new Dictionary<(int x, int y, int direction), (long cost, HashSet<(int x, int y)> seats)>();
+    var visitedorwall = new bool[S[0].Length, S.Count, 4];
     for (int j = 0; j < S.Count; j++)
     {
         var line = S[j];
         for (int i = 0; i < line.Length; i++)
         {
-            isWall[i, j] = (line[i] == '#');
+            visitedorwall[i, j, 0] =
+                visitedorwall[i, j, 1] =
+                visitedorwall[i, j, 2] =
+                visitedorwall[i, j, 3] =
+                (line[i] == '#');
             if (line[i] == 'E') (ex, ey) = (i, j);
             if (line[i] == 'S') (sx, sy) = (i, j);
         }
@@ -34,15 +38,14 @@ void Run(string inputfile, bool isTest, long supposedanswer1 = 0, long supposeda
     var work = new PriorityQueue<(int x, int y, int direction), long>();
     bool ready = false;
     work.Enqueue((sx, sy, 1), 0);
-    state[(sx, sy, 1)] = (false, 0, new HashSet<(int x, int y)> { (sx, sy), (ex, ey) }, new List<(int x, int y, int direction)>());
+    state[(sx, sy, 1)] = (0, new HashSet<(int x, int y)> { (sx, sy), (ex, ey) });
 
     long best = 0;
     while (work.Count > 0 && !ready)
     {
         var cur = work.Dequeue();
         var w = state[cur];
-        w.visited = true;
-        state[cur] = w;
+        visitedorwall[cur.x, cur.y, cur.direction] = true;
         if ((cur.x, cur.y) == (ex, ey))
         {
             ready = true;
@@ -50,33 +53,27 @@ void Run(string inputfile, bool isTest, long supposedanswer1 = 0, long supposeda
             answer2 = w.seats.Count;
 
         }
-        else if (!isWall[cur.x, cur.y])
+        else
         {
             void addwork(int x, int y, int direction)
             {
-                bool existed = state.TryGetValue((x, y, direction), out var prev);
-                if (existed && prev.visited) return;
-                if (!isWall[x, y])
+                if (visitedorwall[x, y, direction]) return;
+                long cost = w.cost + 1;
+                if (direction != cur.direction)
                 {
-                    long cost = w.cost + 1;
-                    if (direction != cur.direction)
-                    {
-                        var d1LR = (direction == 1 || direction == 3);
-                        var d2LR = (cur.direction == 1 || cur.direction == 3);
+                    var d1LR = (direction == 1 || direction == 3);
+                    var d2LR = (cur.direction == 1 || cur.direction == 3);
 
-                        if (d1LR == d2LR) return;
-                        else cost += 1000;
-                    }
+                    if (d1LR == d2LR) return;
+                    else cost += 1000;
+                }
+                if (!state.TryGetValue((x, y, direction), out var prev) || cost <= prev.cost)
+                {
                     var h = w.seats.ToList();
                     h.Add((x, y));
                     if (cost == prev.cost) { h.AddRange(prev.seats); }
-                    if (!existed || cost <= prev.cost)
-                    {
-                        var l = w.path.ToList();
-                        l.Add((x, y, direction));
-                        state[(x, y, direction)] = (false, cost, h.ToHashSet(), l);
-                        work.Enqueue((x, y, direction), cost);
-                    }
+                    state[(x, y, direction)] = (cost, h.ToHashSet());
+                    if (cost != prev.cost) work.Enqueue((x, y, direction), cost);
                 }
             }
             addwork(cur.x, cur.y - 1, 0);
