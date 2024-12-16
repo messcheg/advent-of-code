@@ -5,11 +5,9 @@ Run(@"..\..\..\example.txt", true);
 Run(@"..\..\..\example1.txt", true);
 //Run(@"E:\develop\advent-of-code-input\2024\day17.txt", false);
 
-void Run(string inputfile, bool isTest)
+void Run(string inputfile, bool isTest, long supposedanswer1 = 0, long supposedanswer2 = 0)
 {
     Stopwatch stopwatch = Stopwatch.StartNew();
-    long supposedanswer1 = 0;
-    long supposedanswer2 = 0;
 
     var S = File.ReadAllLines(inputfile).ToList();
     long answer1 = 0;
