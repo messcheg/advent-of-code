@@ -2,7 +2,7 @@
 using System.Diagnostics;
 
 Run(@"..\..\..\example.txt", true, 7, 12, true);
-Run(@"..\..\..\example1.txt", false, 71, 1024, true);
+Run(@"..\..\..\example1.txt", false, 71, 1024, false);
 //Run(@"E:\develop\advent-of-code-input\2024\day18.txt", false);
 
 void Run(string inputfile, bool isTest, int size, int down, bool show)
@@ -19,15 +19,18 @@ void Run(string inputfile, bool isTest, int size, int down, bool show)
         var c = coordinates[i];
         state[c.x, c.y].useless = true;
     }
-    for (int j = 0; j < size; j++)
+    if (show)
     {
-        for (int i = 0; i < size; i++)
+        for (int j = 0; j < size; j++)
         {
-            if (state[i, j].useless) Console.Write('#');
-            else
-                Console.Write('.');
+            for (int i = 0; i < size; i++)
+            {
+                if (state[i, j].useless) Console.Write('#');
+                else
+                    Console.Write('.');
+            }
+            Console.WriteLine();
         }
-        Console.WriteLine();
     }
     var end = (size - 1, size - 1);
     for (int k = down - 1; k < coordinates.Length; k++)
