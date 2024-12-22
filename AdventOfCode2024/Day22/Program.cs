@@ -16,28 +16,30 @@ void Run(string inputfile, bool isTest, long supposedanswer1 = 0, long supposeda
     long answer1 = 0;
     long answer2 = 0;
 
-    var collectedSequences = new Dictionary<(int d1, int d2, int d3, int d4), long>();
+    var collectedSequences = new Dictionary<long, long>();
     for (int i = 0; i < S.Count; i++)
     {
-        var firstSequence = new HashSet<(int d1, int d2, int d3, int d4)>();
+        var firstSequence = new HashSet<long>();
         var secret = S[i];
         int previousprize = (int)(secret % 10);
-        var (d1, d2, d3, d4) = (0, 0, 0, 0);
+        long prevkey = 0;
         for (int j = 0; j < 2000; j++)
         {
             secret = NextSecret(secret);
             int currenprize = (int)(secret % 10);
-            d4 = currenprize - previousprize;
+            int d4 = currenprize - previousprize;
+            long key = (prevkey & 0x7FFF) << 5 + d4 + 10;
+
             if (j >= 3)
             {
-                if (!firstSequence.Contains((d1, d2, d3, d4)))
+                if (!firstSequence.Contains(key))
                 {
-                    firstSequence.Add((d1, d2, d3, d4));
-                    if (!collectedSequences.TryGetValue((d1, d2, d3, d4), out var totalprize)) totalprize = 0;
-                    collectedSequences[(d1, d2, d3, d4)] = totalprize + currenprize;
+                    firstSequence.Add(key);
+                    if (!collectedSequences.TryGetValue(key, out var totalprize)) totalprize = 0;
+                    collectedSequences[key] = totalprize + currenprize;
                 }
             }
-            (d1, d2, d3) = (d2, d3, d4);
+            prevkey = key;
             previousprize = currenprize;
         }
         answer1 += secret;
@@ -51,11 +53,11 @@ void Run(string inputfile, bool isTest, long supposedanswer1 = 0, long supposeda
 
 long NextSecret(long previousSecret)
 {
-    long result = (previousSecret * 64) ^ previousSecret;
+    long result = (previousSecret << 6) ^ previousSecret;
     result = result % prunevalue;
-    result = (result / 32) ^ result;
+    result = (result >> 5) ^ result;
     result = result % prunevalue;
-    result = (result * 2048) ^ result;
+    result = (result << 11) ^ result;
     result = result % prunevalue;
     return result;
 }
