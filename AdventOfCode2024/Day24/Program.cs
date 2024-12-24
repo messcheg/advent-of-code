@@ -16,6 +16,9 @@ void Run(string inputfile, bool isTest, long supposedanswer1 = 0, bool doPartII 
     int i = 0;
     var wires = new Dictionary<string, char>();
     var allwires = new HashSet<string>();
+    var alloutputs = new HashSet<string>();
+    var allinputs = new HashSet<string>();
+    var dependson = new Dictionary<string, HashSet<string>>();
     while (S[i] != "")
     {
         var s1 = S[i].Split(": ");
@@ -29,22 +32,295 @@ void Run(string inputfile, bool isTest, long supposedanswer1 = 0, bool doPartII 
     while (i < S.Count)
     {
         var s1 = S[i].Split(' ');
-        gates.Add(s1[4], (s1[1], s1[0], s1[2]));
+        var wire = s1[4];
+        var oper = s1[1];
+        var inp1 = s1[0];
+        var inp2 = s1[2];
+        gates.Add(wire, (oper, inp1, inp2));
         if (!wires.ContainsKey(s1[0])) wires.Add(s1[0], ' ');
         if (!wires.ContainsKey(s1[2])) wires.Add(s1[2], ' ');
         if (!wires.ContainsKey(s1[4])) wires.Add(s1[4], ' ');
         allwires.Add(s1[0]);
+        allinputs.Add(s1[0]);
         allwires.Add(s1[2]);
+        allinputs.Add(s1[2]);
         allwires.Add(s1[4]);
+        alloutputs.Add(s1[4]);
+        if (!dependson.TryGetValue(wire, out var depend)) depend = new HashSet<string>();
+        depend.Add(inp1);
+        depend.Add(inp2);
+        foreach (var h1 in dependson.Values)
+        {
+            if (h1.Contains(wire))
+            {
+                h1.Add(inp1);
+                h1.Add(inp2);
+            }
+        }
+
         i++;
     }
 
+    (answer1, var loop) = GetResult(wires, gates);
+
+    Aoc.w(1, answer1, supposedanswer1, isTest);
+
+
+    if (doPartII)
+    {
+        var emptyinput = allwires.Select(a => (a, a[0] == 'x' || a[0] == 'y' ? '0' : ' '));
+        var xlabels = new string[45];
+        var ylabels = new string[45];
+        var zlabels = new string[46];
+        var masks = new long[46];
+        var masks_one = new long[46];
+        var masks_two = new long[46];
+        long maskone = 1;
+        long masktwo = 1;
+        var allinouts = alloutputs.ToArray(); //allinputs.Intersect(alloutputs).ToArray();
+
+        long mask = 1;
+        for (int x = 0; x < 45; x++)
+        {
+            xlabels[x] = "x" + x.ToString("00");
+            ylabels[x] = "y" + x.ToString("00");
+        }
+        for (int z = 0; z < 46; z++)
+        {
+            zlabels[z] = "z" + z.ToString("00");
+            masks[z] = mask;
+            masks_one[z] = maskone;
+            masks_two[z] = masktwo;
+            mask = (mask << 1) | 1L;
+            masktwo = maskone | (maskone << 1);
+            maskone <<= 1;
+        }
+
+        var correct = 0;
+        var swapped = new HashSet<string>();
+        var dontTouchIfItWorks = new HashSet<string>();
+        var swaplevelcache = new int[8];
+        for (int z = 0; z < 46; z++)
+        {
+
+            bool ok = false;
+            int swaplevel = 0;
+            while (!ok && swaplevel <= 4)
+            {
+                if (swaplevel == 0)
+                {
+                    ok = TestBit(gates, emptyinput, xlabels, ylabels, masks, masks_one, z);
+                }
+                else
+                {
+                    string getWirename(int index) { return index == -1 ? zlabels[z] : allinouts[index]; }
+
+                    swaplevelcache[0] = allinouts.Contains(zlabels[z]) ? -1 : 0;
+                    var used = new HashSet<int>() { swaplevelcache[0] };
+                    InitCache(0, gates, zlabels, allinouts, swaplevelcache, z, swaplevel, used);
+
+                    while (swaplevelcache[0] < allinouts.Length - 1 && !ok)
+                    {
+                        ok = TestBit(gates, emptyinput, xlabels, ylabels, masks, masks_one, z);
+                        if (ok)
+                        {
+                            for (int k = 0; k < swaplevel << 1; k++)
+                            {
+                                swapped.Add(getWirename(swaplevelcache[k]));
+                            }
+                            break;
+                        }
+                        else
+                        {
+                            int idx = (swaplevel << 1) - 1;
+                            bool ready = false;
+                            while (!ready && idx > 0)
+                            {
+                                var l1 = getWirename(swaplevelcache[idx]);
+                                var l2 = getWirename(swaplevelcache[idx - 1]);
+                                used.Remove(swaplevelcache[idx]);
+                                used.Remove(swaplevelcache[idx - 1]);
+                                (gates[l1], gates[l2]) = (gates[l2], gates[l1]); // undo last swap
+                                swaplevelcache[idx]++;
+                                if (swaplevelcache[idx] > allinouts.Length - 1)
+                                {
+                                    swaplevelcache[idx - 1]++;
+                                    if (swaplevelcache[idx - 1] > allinouts.Length - 2)
+                                    { idx -= 2; break; }
+                                    swaplevelcache[idx] = swaplevelcache[idx - 1] + 1;
+
+                                }
+                                l1 = getWirename(swaplevelcache[idx]);
+                                l2 = getWirename(swaplevelcache[idx - 1]);
+                                (gates[l1], gates[l2]) = (gates[l2], gates[l1]); // new swap
+                                used.Add(swaplevelcache[idx]);
+                                used.Add(swaplevelcache[idx - 1]);
+                                ready = true;
+                            }
+                            if (!ready && idx > 0)
+                            {
+                                InitCache(0, gates, zlabels, allinouts, swaplevelcache, z, swaplevel, used);
+                            }
+                        }
+                    }
+                }
+                if (ok)
+                {
+                    correct++;
+                    var work = new Queue<string>();
+                    work.Enqueue(zlabels[z]);
+                    while (work.Count > 0)
+                    {
+                        var w = work.Dequeue();
+                        dontTouchIfItWorks.Add(w);
+                        if (gates.TryGetValue(w, out var gate))
+                        {
+                            work.Enqueue(gate.input1);
+                            work.Enqueue(gate.input2);
+                        }
+                    }
+                    allinouts = allinouts.Where(x => !dontTouchIfItWorks.Contains(x)).ToArray();
+                }
+                else swaplevel++;
+            }
+        }
+        string answer2 = string.Join(',', swapped.Order().ToArray());
+        string supposedanswer2 = string.Empty;
+
+        Aoc.w(2, answer2, supposedanswer2, isTest);
+    }
+    Console.WriteLine("Duration: " + stopwatch.ElapsedMilliseconds.ToString() + " miliseconds.");
+
+    static bool TestBit(Dictionary<string, (string operation, string input1, string input2)> gates, IEnumerable<(string a, char)> emptyinput, string[] xlabels, string[] ylabels, long[] masks, long[] masks_one, int z)
+    {
+        // test 1: add 0 + 0
+        var testwires = emptyinput.ToDictionary();
+        var (answer, loop) = GetResult(testwires, gates);
+
+        if ((answer & masks[z]) != 0) return false;
+
+        if (z < 45)
+        {
+            // test 2: add 1 + 1
+            testwires = emptyinput.ToDictionary();
+            testwires[xlabels[z]] = '1';
+            testwires[ylabels[z]] = '1';
+            (answer, loop) = GetResult(testwires, gates);
+            if ((answer & masks[z]) != 0 || loop) return false;
+
+            // test 3: add 1 + 0
+            testwires = emptyinput.ToDictionary();
+            testwires[xlabels[z]] = '1';
+            testwires[ylabels[z]] = '0';
+            (answer, loop) = GetResult(testwires, gates);
+            if ((answer & masks[z]) != masks_one[z] || loop) return false;
+
+            // test 4: add 1 + 1
+            testwires = emptyinput.ToDictionary();
+            testwires[xlabels[z]] = '0';
+            testwires[ylabels[z]] = '1';
+            (answer, loop) = GetResult(testwires, gates);
+            if ((answer & masks[z]) != masks_one[z] || loop) return false;
+        }
+        if (z > 0)
+        {
+            // test 5: add 0 + 0 + 1
+            testwires = emptyinput.ToDictionary();
+            testwires[xlabels[z - 1]] = '1';
+            testwires[ylabels[z - 1]] = '1';
+            (answer, loop) = GetResult(testwires, gates);
+            if ((answer & masks[z]) != masks_one[z] || loop) return false;
+
+            if (z < 45)
+            {
+                // test 6: add 1 + 1 + 1
+                testwires = emptyinput.ToDictionary();
+                testwires[xlabels[z - 1]] = '1';
+                testwires[ylabels[z - 1]] = '1';
+                testwires[xlabels[z]] = '1';
+                testwires[ylabels[z]] = '1';
+                (answer, loop) = GetResult(testwires, gates);
+                if ((answer & masks[z]) != masks_one[z] || loop) return false;
+
+                // test 7: add 1 + 0 + 1
+                testwires = emptyinput.ToDictionary();
+                testwires[xlabels[z - 1]] = '1';
+                testwires[ylabels[z - 1]] = '1';
+                testwires[xlabels[z]] = '0';
+                testwires[ylabels[z]] = '1';
+                (answer, loop) = GetResult(testwires, gates);
+                if ((answer & masks[z]) != 0 || loop) return false;
+
+                // test 8: add 1 + 1 + 1
+                testwires = emptyinput.ToDictionary();
+                testwires[xlabels[z - 1]] = '1';
+                testwires[ylabels[z - 1]] = '1';
+                testwires[xlabels[z]] = '0';
+                testwires[ylabels[z]] = '1';
+                (answer, loop) = GetResult(testwires, gates);
+                if ((answer & masks[z]) != 0 || loop) return false;
+            }
+        }
+
+        return true;
+    }
+
+    void InitCache(int start, Dictionary<string, (string operation, string input1, string input2)> gates, string[] zlabels, string[] allinouts, int[] swaplevelcache, int z, int swaplevel, HashSet<int> used)
+    {
+        for (int k = start + 1; k < swaplevel << 1; k += 2)
+        {
+            if (k > 2)
+            {
+                swaplevelcache[k - 1] = swaplevelcache[k - 3] + 1;
+                if (swaplevelcache[k - 1] == swaplevelcache[k - 2]) swaplevelcache[k - 1] = swaplevelcache[k - 2] + 1;
+                used.Add(swaplevelcache[k - 1]);
+            }
+            int next = swaplevelcache[k - 1] + 1;
+            bool independent = false;
+            var l1 = next > 0 ? allinouts[next - 1] : zlabels[z];
+            while (next < allinouts.Length && !independent)
+            {
+                if (used.Contains(next)) next++;
+                else
+                {
+                    var l2 = allinouts[next];
+                    independent = NoDependencies(l1, l2, gates);
+                    if (!independent) next++;
+                    else (gates[l1], gates[l2]) = (gates[l2], gates[l1]);
+                }
+            }
+            swaplevelcache[k] = next;
+            used.Add(swaplevelcache[k]);
+            used.Add(swaplevelcache[k - 1]);
+        }
+    }
+}
+
+bool NoDependencies(string l1, string l2, Dictionary<string, (string operation, string input1, string input2)> gates)
+{
+    if (!gates.TryGetValue(l1, out var h1)) return true;
+    if (!gates.TryGetValue(l2, out var h2)) return true;
+    if (h1.input1 == l2 || h1.input2 == l2) return false;
+    if (h2.input1 == l1 || h2.input2 == l1) return false;
+    return
+        NoDependencies(h1.input1, l2, gates) &&
+        NoDependencies(h1.input2, l2, gates) &&
+        NoDependencies(h2.input1, l1, gates) &&
+        NoDependencies(h2.input2, l1, gates);
+
+}
+
+static (long answer, bool loop) GetResult(Dictionary<string, char> wires, Dictionary<string, (string operation, string input1, string input2)> gates)
+{
     var undef = wires.Where(a => a.Value == ' ').Select(a => a.Key).ToList();
     bool allZs = false;
-    while (!allZs)
+    bool changed = true;
+
+    while (!allZs && changed)
     {
         var newUndef = new List<string>();
         allZs = true;
+        changed = false;
         foreach (var a in undef)
         {
             var gate = gates[a];
@@ -69,39 +345,18 @@ void Run(string inputfile, bool isTest, long supposedanswer1 = 0, bool doPartII 
                         if (v1 == '1' ^ v2 == '1') wires[a] = '1'; else wires[a] = '0';
                         break;
                 }
+                changed = true;
             }
         }
+        if (!allZs && !changed) return (-1, true);
+        undef = newUndef;
     }
-
+    long answer = 0;
     foreach (var z in wires.Where(a => a.Key[0] == 'z').OrderByDescending(a => a.Key))
     {
         //Console.WriteLine(z.Key + ':' + z.Value);
-        answer1 <<= 1;
-        if (z.Value == '1') answer1 |= 1;
+        answer <<= 1;
+        if (z.Value == '1') answer |= 1;
     }
-
-    /*
-    foreach (var z in wires.Where(a => a.Key[0] == 'z').OrderByDescending(a => a.Key))
-    {
-        string Determine(string wire)
-        {
-            if (gates.TryGetValue(wire, out var inputs))
-            {
-                var v1 = inputs.input1[0] == 'z' ? inputs.input1 : Determine(inputs.input1);
-                var v2 = inputs.input2[0] == 'z' ? inputs.input2 : Determine(inputs.input2);
-                return "[" + wire + ":( " + v1 + ' ' + inputs.operation + ' ' + v2 + ")]";
-            }
-            return wire;
-        }
-        Console.WriteLine(Determine(z.Key));
-    }
-    */
-
-    string answer2 = "";
-    string supposedanswer2 = string.Empty;
-
-    Aoc.w(1, answer1, supposedanswer1, isTest);
-    Aoc.w(2, answer2, supposedanswer2, isTest);
-    Console.WriteLine("Duration: " + stopwatch.ElapsedMilliseconds.ToString() + " miliseconds.");
+    return (answer, false);
 }
-
