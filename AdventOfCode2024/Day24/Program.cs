@@ -9,8 +9,6 @@ Run(@"..\..\..\input.txt", false, 0, true);
 void Run(string inputfile, bool isTest, long supposedanswer1 = 0, bool doPartII = false)
 {
     Stopwatch stopwatch = Stopwatch.StartNew();
-
-
     var S = File.ReadAllLines(inputfile).ToList();
     long answer1 = 0;
     int i = 0;
@@ -193,72 +191,57 @@ void Run(string inputfile, bool isTest, long supposedanswer1 = 0, bool doPartII 
 
     static bool TestBit(Dictionary<string, (string operation, string input1, string input2)> gates, IEnumerable<(string a, char)> emptyinput, string[] xlabels, string[] ylabels, long[] masks, long[] masks_one, int z)
     {
+        bool PerformTest(int z1, int zv, char xv, char yv, char cv)
+        {
+            var testwires = emptyinput.ToDictionary();
+            if (z1 < 45)
+            {
+                testwires[xlabels[z1]] = xv;
+                testwires[ylabels[z1]] = yv;
+            }
+            if (cv == '1' && z1 > 0)
+            {
+                var z0 = z1 - 1;
+                testwires[xlabels[z0]] = '1';
+                testwires[ylabels[z0]] = '1';
+            }
+            var (a, l) = GetResult(testwires, gates);
+            var checkval = zv == 1 ? masks_one[z] : 0;
+            return ((a & masks[z1]) == checkval && !l);
+        }
+
         // test 1: add 0 + 0
         var testwires = emptyinput.ToDictionary();
         var (answer, loop) = GetResult(testwires, gates);
-
         if ((answer & masks[z]) != 0) return false;
 
         if (z < 45)
         {
             // test 2: add 1 + 1
-            testwires = emptyinput.ToDictionary();
-            testwires[xlabels[z]] = '1';
-            testwires[ylabels[z]] = '1';
-            (answer, loop) = GetResult(testwires, gates);
-            if ((answer & masks[z]) != 0 || loop) return false;
+            if (!PerformTest(z, 0, '1', '1', '0')) return false;
 
             // test 3: add 1 + 0
-            testwires = emptyinput.ToDictionary();
-            testwires[xlabels[z]] = '1';
-            testwires[ylabels[z]] = '0';
-            (answer, loop) = GetResult(testwires, gates);
-            if ((answer & masks[z]) != masks_one[z] || loop) return false;
+            if (!PerformTest(z, 1, '1', '0', '0')) return false;
 
-            // test 4: add 1 + 1
-            testwires = emptyinput.ToDictionary();
-            testwires[xlabels[z]] = '0';
-            testwires[ylabels[z]] = '1';
-            (answer, loop) = GetResult(testwires, gates);
-            if ((answer & masks[z]) != masks_one[z] || loop) return false;
+            // test 4: add 0 + 1
+            if (!PerformTest(z, 1, '0', '1', '0')) return false;
+
         }
         if (z > 0)
         {
             // test 5: add 0 + 0 + 1
-            testwires = emptyinput.ToDictionary();
-            testwires[xlabels[z - 1]] = '1';
-            testwires[ylabels[z - 1]] = '1';
-            (answer, loop) = GetResult(testwires, gates);
-            if ((answer & masks[z]) != masks_one[z] || loop) return false;
+            if (!PerformTest(z, 1, '0', '0', '1')) return false;
 
             if (z < 45)
             {
                 // test 6: add 1 + 1 + 1
-                testwires = emptyinput.ToDictionary();
-                testwires[xlabels[z - 1]] = '1';
-                testwires[ylabels[z - 1]] = '1';
-                testwires[xlabels[z]] = '1';
-                testwires[ylabels[z]] = '1';
-                (answer, loop) = GetResult(testwires, gates);
-                if ((answer & masks[z]) != masks_one[z] || loop) return false;
+                if (!PerformTest(z, 1, '1', '1', '1')) return false;
 
                 // test 7: add 1 + 0 + 1
-                testwires = emptyinput.ToDictionary();
-                testwires[xlabels[z - 1]] = '1';
-                testwires[ylabels[z - 1]] = '1';
-                testwires[xlabels[z]] = '0';
-                testwires[ylabels[z]] = '1';
-                (answer, loop) = GetResult(testwires, gates);
-                if ((answer & masks[z]) != 0 || loop) return false;
+                if (!PerformTest(z, 0, '1', '0', '1')) return false;
 
-                // test 8: add 1 + 1 + 1
-                testwires = emptyinput.ToDictionary();
-                testwires[xlabels[z - 1]] = '1';
-                testwires[ylabels[z - 1]] = '1';
-                testwires[xlabels[z]] = '0';
-                testwires[ylabels[z]] = '1';
-                (answer, loop) = GetResult(testwires, gates);
-                if ((answer & masks[z]) != 0 || loop) return false;
+                // test 8: add 0 + 1 + 1
+                if (!PerformTest(z, 0, '0', '1', '1')) return false;
             }
         }
 
@@ -333,15 +316,15 @@ static (long answer, bool loop) GetResult(Dictionary<string, char> wires, Dictio
             }
             else
             {
-                switch (gate.operation)
+                switch (gate.operation[0])
                 {
-                    case "AND":
+                    case 'A':
                         if (v1 == '1' && v2 == '1') wires[a] = '1'; else wires[a] = '0';
                         break;
-                    case "OR":
+                    case 'O':
                         if (v1 == '1' || v2 == '1') wires[a] = '1'; else wires[a] = '0';
                         break;
-                    case "XOR":
+                    case 'X':
                         if (v1 == '1' ^ v2 == '1') wires[a] = '1'; else wires[a] = '0';
                         break;
                 }
