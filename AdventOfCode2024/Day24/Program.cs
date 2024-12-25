@@ -35,9 +35,9 @@ void Run(string inputfile, bool isTest, long supposedanswer1 = 0, bool doPartII 
         var inp1 = s1[0];
         var inp2 = s1[2];
         gates.Add(wire, (oper, inp1, inp2));
-        if (!wires.ContainsKey(s1[0])) wires.Add(s1[0], ' ');
-        if (!wires.ContainsKey(s1[2])) wires.Add(s1[2], ' ');
-        if (!wires.ContainsKey(s1[4])) wires.Add(s1[4], ' ');
+        //if (!wires.ContainsKey(s1[0])) wires.Add(s1[0], ' ');
+        //if (!wires.ContainsKey(s1[2])) wires.Add(s1[2], ' ');
+        //if (!wires.ContainsKey(s1[4])) wires.Add(s1[4], ' ');
         allwires.Add(s1[0]);
         allinputs.Add(s1[0]);
         allwires.Add(s1[2]);
@@ -58,15 +58,16 @@ void Run(string inputfile, bool isTest, long supposedanswer1 = 0, bool doPartII 
 
         i++;
     }
-
-    (answer1, var loop) = GetResult(wires, gates);
+    var emptyinput = wires.Select((a) => (a.Key, '0')).ToArray();
+    var allundef = allwires.Except(wires.Keys).ToList();
+    (answer1, var loop) = GetResult(wires, gates, allundef);
 
     Aoc.w(1, answer1, supposedanswer1, isTest);
 
 
     if (doPartII)
     {
-        var emptyinput = allwires.Select(a => (a, a[0] == 'x' || a[0] == 'y' ? '0' : ' '));
+        // var emptyinput = allwires.Select(a => (a, a[0] == 'x' || a[0] == 'y' ? '0' : ' '));
         var xlabels = new string[45];
         var ylabels = new string[45];
         var zlabels = new string[46];
@@ -107,7 +108,7 @@ void Run(string inputfile, bool isTest, long supposedanswer1 = 0, bool doPartII 
             {
                 if (swaplevel == 0)
                 {
-                    ok = TestBit(gates, emptyinput, xlabels, ylabels, masks, masks_one, z);
+                    ok = TestBit(gates, emptyinput, xlabels, ylabels, masks, masks_one, z, allundef);
                 }
                 else
                 {
@@ -119,7 +120,7 @@ void Run(string inputfile, bool isTest, long supposedanswer1 = 0, bool doPartII 
 
                     while (swaplevelcache[0] < allinouts.Length - 1 && !ok)
                     {
-                        ok = TestBit(gates, emptyinput, xlabels, ylabels, masks, masks_one, z);
+                        ok = TestBit(gates, emptyinput, xlabels, ylabels, masks, masks_one, z, allundef);
                         if (ok)
                         {
                             for (int k = 0; k < swaplevel << 1; k++)
@@ -189,7 +190,8 @@ void Run(string inputfile, bool isTest, long supposedanswer1 = 0, bool doPartII 
     }
     Console.WriteLine("Duration: " + stopwatch.ElapsedMilliseconds.ToString() + " miliseconds.");
 
-    static bool TestBit(Dictionary<string, (string operation, string input1, string input2)> gates, IEnumerable<(string a, char)> emptyinput, string[] xlabels, string[] ylabels, long[] masks, long[] masks_one, int z)
+    static bool TestBit(Dictionary<string, (string operation, string input1, string input2)> gates,
+        IEnumerable<(string a, char)> emptyinput, string[] xlabels, string[] ylabels, long[] masks, long[] masks_one, int z, List<string> allundef)
     {
         bool PerformTest(int z1, int zv, char xv, char yv, char cv)
         {
@@ -205,14 +207,14 @@ void Run(string inputfile, bool isTest, long supposedanswer1 = 0, bool doPartII 
                 testwires[xlabels[z0]] = '1';
                 testwires[ylabels[z0]] = '1';
             }
-            var (a, l) = GetResult(testwires, gates);
+            var (a, l) = GetResult(testwires, gates, allundef);
             var checkval = zv == 1 ? masks_one[z] : 0;
             return ((a & masks[z1]) == checkval && !l);
         }
 
         // test 1: add 0 + 0
         var testwires = emptyinput.ToDictionary();
-        var (answer, loop) = GetResult(testwires, gates);
+        var (answer, loop) = GetResult(testwires, gates, allundef);
         if ((answer & masks[z]) != 0) return false;
 
         if (z < 45)
@@ -293,9 +295,9 @@ bool NoDependencies(string l1, string l2, Dictionary<string, (string operation, 
 
 }
 
-static (long answer, bool loop) GetResult(Dictionary<string, char> wires, Dictionary<string, (string operation, string input1, string input2)> gates)
+static (long answer, bool loop) GetResult(Dictionary<string, char> wires, Dictionary<string, (string operation, string input1, string input2)> gates, List<string> allundef)
 {
-    var undef = wires.Where(a => a.Value == ' ').Select(a => a.Key).ToList();
+    var undef = allundef;
     bool allZs = false;
     bool changed = true;
 
@@ -307,9 +309,9 @@ static (long answer, bool loop) GetResult(Dictionary<string, char> wires, Dictio
         foreach (var a in undef)
         {
             var gate = gates[a];
-            var v1 = wires[gate.input1];
-            var v2 = wires[gate.input2];
-            if (v1 == ' ' || v2 == ' ')
+            var b1 = wires.TryGetValue(gate.input1, out var v1);
+            var b2 = wires.TryGetValue(gate.input2, out var v2);
+            if (!(b1 && b2))
             {
                 newUndef.Add(a);
                 if (a[0] == 'z') allZs = false;
