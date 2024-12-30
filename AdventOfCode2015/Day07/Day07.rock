@@ -41,19 +41,73 @@ put pieces at X3 into V2
 oh
 give back TOT
 
+doOr takes X and Y
+Let Z be 0
+let ind be 0
+until ind is 16
+let x1 be X at ind
+let y1 be Y at ind
+if x1 or y1 let Z at ind be 1
+ind is with 1
+oh
+give back Z
+
+doAnd takes X and Y
+Let Z be 0
+let ind be 0
+until ind is 16
+let x1 be X at ind
+let y1 be Y at ind
+if x1 and y1 let Z at ind be 1
+ind is with 1
+oh
+give back Z
+
+doLshift takes X and Y
+Let Z be 0
+let ind be 0
+until ind is 16
+let x1 be X at ind
+if x1 and ind >= Y let Z at ind - Y be 1
+ind is with 1
+oh
+give back Z
+
+doRshift takes X and Y
+Let Z be 0
+let ind be 0
+until ind is 16
+let x1 be X at ind
+if x1 and ind + Y < 16 let Z at ind + Y be 1
+ind is with 1
+oh
+give back Z
+
+Operator2 takes X and Y and OP
+shout OP
+if OP is "OR" put doOr taking X, Y into Z 
+if OP is "AND" put doAnd taking X, Y into Z
+if OP is "LSHIFT" put doLShift taking X, Y into Z
+if OP is "RSHIFT" put doRShift taking X, Y into Z
+shout X + Y
+give back Z
+
 Resolve wants K
 if IsNumber taking K Give Back GetValue taking K
 Put Finder taking K into Ind
 If R4 at Ind give back R3 at Ind
 Put R2 at Ind into Instr
 cut instr into parts with " "
+shout Ind
+shout parts
 if parts at 2 ain't misterious (3 long)
 put parts at 0 in P1
 put parts at 2 in P2
 put parts at 1 in OP1
 put Resolve taking P1 into V1
-put Resolve taking P1 into V2
-put V1 with V2 in V3 (change it to the right instructions)
+put Resolve taking P2 into V2
+put Operator2 taking V1, V2, OP1 in V3 
+shout V3
 R4 at Ind = true
 Let R3 at Ind be V3
 give back V3
@@ -88,5 +142,3 @@ shout R1
 shout R2
 shout R3
 shout R4
-
-	
