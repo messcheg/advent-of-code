@@ -68,22 +68,6 @@ DOB is with DOB
 oh
 give back Z
 
-
-do_Or takes X and Y
-ZOR = 0
-dob = 1
-SHOUT zor
-let indOr be 0
-until indOr is 16
-let x1 be X at indOr
-let y1 be Y at indOr
-b1 = x1 or y1
-if b1 ZOR is ZOR with DOB
-indOr is with 1
-DOB is with DOB
-Oh
-give back ZOR
-
 doRshift takes X and Y
 Let Z be 0
 dob = 1
@@ -121,12 +105,10 @@ oh
 give back Z
 
 Operator1 takes X and OP
-shout OP
 if OP is "NOT" put doNot taking X into Z 
 give back Z
 
 Operator2 takes X and Y and OP
-shout OP
 if OP is "OR" put doOr taking X, Y into Z 
 if OP is "AND" put doAnd taking X, Y into Z
 if OP is "LSHIFT" put doLShift taking X, Y into Z
@@ -149,16 +131,13 @@ give back 0
 
 Resolve1 wants K
 Rock work with K
-shout work
 While work ain't nothing
   shout work
-  Roll work into k1
+  pop work into k1
   Put Finder taking k1 into Idx1
   If not R4 at Idx1
-     shout "splitting"
      Put R2 at Idx1 into Instr1
      cut Instr1 into parts with " "
-     shout parts
      if parts at 2 ain't misterious (3 long)
 	    put parts at 0 in P1
         put parts at 2 in P2
@@ -169,17 +148,15 @@ While work ain't nothing
 			V1 = ResolveValue taking P1
 			V2 = ResolveValue taking P2
 			put Operator2 taking V1, V2, OP1 into V3
-            shout P1 + ":" + V1 + " " + OP1 + " " + P2 + ":" + V2 + " = " + V3 
 			R4 at Idx1 = true
 			R3 at Idx1 = V3	
        else 
-           if not HV1 Rock work with P1 
-           if not HV2 Rock work with P2
-           Rock work with k1
+           push k1 into work
+           if not HV1 push P1 into work 
+           if not HV2 push P2 into work
         oh
 	 else
         if parts at 1 ain't misterious (2 long)
-	        shout "operator1"
             put parts at 0 in OP1
 			put parts at 1 in P1
 			HV1 = HasValue taking P1 
@@ -189,9 +166,8 @@ While work ain't nothing
 				R4 at Idx1 = true
 				R3 at Idx1 = V3	
 			else 
-                Rock work with P1, k1
-                shout "resolve p1 k1"
-                shout work
+                push k1 into work
+                push P1 into work
             oh    
 	 else
 	    	put parts at 0 in P1
@@ -200,12 +176,11 @@ While work ain't nothing
 				V3 = ResolveValue taking P1
 				R4 at Idx1 = true
 				R3 at Idx1 = V3	
-			else Rock work with P1, k1
-
-    oh
-    shout "next"
-oooh 
-shout "ready"
+			else 
+               push k1 into work
+               push P1 into work
+                
+oooooh 
 Put Finder taking K into Idx2
 give back R3 at Idx2
 baby
@@ -221,17 +196,7 @@ listen to L
 
 
 shout Resolve1 taking "a"
-shout Resolve1 taking "d"
-shout Resolve1 taking "e"
-shout Resolve1 taking "f"
-shout Resolve1 taking "g"
-shout Resolve1 taking "h"
-shout Resolve1 taking "i"
-shout Resolve1 taking "b"
 shout R1
 shout R2
 shout R3
 shout R4
-
-shout do_Or taking 123, 456
-shout do_Or taking 123, 456
