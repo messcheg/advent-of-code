@@ -132,7 +132,6 @@ give back 0
 Resolve1 wants K
 Rock work with K
 While work ain't nothing
-  shout work
   pop work into k1
   Put Finder taking k1 into Idx1
   If not R4 at Idx1
@@ -194,9 +193,28 @@ Rock R4 with false
 call Splitter with L
 listen to L
 
-
-shout Resolve1 taking "a"
+let answer1 be Resolve1 taking "a" 
+shout answer1
 shout R1
 shout R2
 shout R3
 shout R4
+
+ctr = 0
+while ctr ain't R1
+  if R1 at ctr is "b" 
+     R3 at ctr = answer1
+     R4 at ctr = true
+  else
+     R3 at ctr = 0
+     R4 at ctr = false
+  baby  
+  ctr is with 1
+baby
+shout R1
+shout R2
+shout R3
+shout R4
+
+let answer2 be Resolve1 taking "a" 
+shout answer2
