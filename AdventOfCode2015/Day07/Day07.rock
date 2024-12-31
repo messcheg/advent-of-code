@@ -40,47 +40,89 @@ build X3 up
 put pieces at X3 into V2
 oh
 give back TOT
-
-doOr takes X and Y
-Let Z be 0
-let ind be 0
-until ind is 16
-let x1 be X at ind
-let y1 be Y at ind
-if x1 or y1 let Z at ind be 1
-ind is with 1
-oh
-give back Z
+OH
 
 doAnd takes X and Y
 Let Z be 0
+dob = 1
 let ind be 0
 until ind is 16
 let x1 be X at ind
 let y1 be Y at ind
-if x1 and y1 let Z at ind be 1
+if x1 and y1 let Z be Z with dob
 ind is with 1
+DOB is with DOB
+oh
+give back Z
+
+doOr takes X and Y
+Let Z be 0
+dob = 1
+let ind be 0
+until ind is 16
+let x1 be X at ind
+let y1 be Y at ind
+if x1 or y1 let Z be Z with dob
+ind is with 1
+DOB is with DOB
+oh
+give back Z
+
+
+do_Or takes X and Y
+ZOR = 0
+dob = 1
+SHOUT zor
+let indOr be 0
+until indOr is 16
+let x1 be X at indOr
+let y1 be Y at indOr
+b1 = x1 or y1
+if b1 ZOR is ZOR with DOB
+indOr is with 1
+DOB is with DOB
+Oh
+give back ZOR
+
+doRshift takes X and Y
+Let Z be 0
+dob = 1
+let ind be Y
+until ind is 16
+let x1 be X at ind
+if x1  let Z be Z with DOB
+ind is with 1
+DOB is with DOB
 oh
 give back Z
 
 doLshift takes X and Y
 Let Z be 0
 let ind be 0
+let dob be 1
 until ind is 16
-let x1 be X at ind
-if x1 and ind >= Y let Z at ind - Y be 1
+if ind >= Y let x1 be X at ind - Y else x1 = false
+if x1 let Z be Z with dob
 ind is with 1
+dob is with dob
 oh
 give back Z
 
-doRshift takes X and Y
+doNot takes X
 Let Z be 0
 let ind be 0
+let dob be 1
 until ind is 16
 let x1 be X at ind
-if x1 and ind + Y < 16 let Z at ind + Y be 1
+if not x1 let Z be with dob
 ind is with 1
+dob is with dob
 oh
+give back Z
+
+Operator1 takes X and OP
+shout OP
+if OP is "NOT" put doNot taking X into Z 
 give back Z
 
 Operator2 takes X and Y and OP
@@ -89,44 +131,84 @@ if OP is "OR" put doOr taking X, Y into Z
 if OP is "AND" put doAnd taking X, Y into Z
 if OP is "LSHIFT" put doLShift taking X, Y into Z
 if OP is "RSHIFT" put doRShift taking X, Y into Z
-shout X + Y
 give back Z
 
-Resolve wants K
-if IsNumber taking K Give Back GetValue taking K
-Put Finder taking K into Ind
-If R4 at Ind give back R3 at Ind
-Put R2 at Ind into Instr
-cut instr into parts with " "
-shout Ind
-shout parts
-if parts at 2 ain't misterious (3 long)
-put parts at 0 in P1
-put parts at 2 in P2
-put parts at 1 in OP1
-put Resolve taking P1 into V1
-put Resolve taking P2 into V2
-put Operator2 taking V1, V2, OP1 in V3 
-shout V3
-R4 at Ind = true
-Let R3 at Ind be V3
-give back V3
-oh
-if parts at 1 ain't misterious (2 long)
-put parts at 0 in OP1
-put parts at 1 in P1
-put Resolve taking P1 into V1
-put V1 in V3 (change it to the right instructions)
-R4 at Ind = true
-Let R3 at Ind be V3
-give back V3
-oh
-put parts at 0 in P1
-put Resolve taking P1 in V3
-R4 at Ind = true
-Let R3 at Ind be V3
-give back V3
-oh
+HasValue wants K2
+if IsNumber taking K2 give back true
+Put Finder taking K2 into Idx2
+If R4 at Idx2 give back true
+give back false
+baby
+
+ResolveValue wants K3
+if IsNumber taking K3 give back GetValue taking K3
+Put Finder taking K3 into Idx3
+If R4 at Idx3 give back R3 at Idx3
+give back 0
+
+
+Resolve1 wants K
+Rock work with K
+shout work
+While work ain't nothing
+  shout work
+  Roll work into k1
+  Put Finder taking k1 into Idx1
+  If not R4 at Idx1
+     shout "splitting"
+     Put R2 at Idx1 into Instr1
+     cut Instr1 into parts with " "
+     shout parts
+     if parts at 2 ain't misterious (3 long)
+	    put parts at 0 in P1
+        put parts at 2 in P2
+        put parts at 1 in OP1
+		HV1 = HasValue taking P1 
+		HV2 = HasValue taking P2
+        if HV1 and HV2
+			V1 = ResolveValue taking P1
+			V2 = ResolveValue taking P2
+			put Operator2 taking V1, V2, OP1 into V3
+            shout P1 + ":" + V1 + " " + OP1 + " " + P2 + ":" + V2 + " = " + V3 
+			R4 at Idx1 = true
+			R3 at Idx1 = V3	
+       else 
+           if not HV1 Rock work with P1 
+           if not HV2 Rock work with P2
+           Rock work with k1
+        oh
+	 else
+        if parts at 1 ain't misterious (2 long)
+	        shout "operator1"
+            put parts at 0 in OP1
+			put parts at 1 in P1
+			HV1 = HasValue taking P1 
+			if HV1
+				V1 = ResolveValue taking P1
+				V3 = Operator1 taking V1, OP1
+				R4 at Idx1 = true
+				R3 at Idx1 = V3	
+			else 
+                Rock work with P1, k1
+                shout "resolve p1 k1"
+                shout work
+            oh    
+	 else
+	    	put parts at 0 in P1
+			HV1 = HasValue taking P1 
+			if HV1
+				V3 = ResolveValue taking P1
+				R4 at Idx1 = true
+				R3 at Idx1 = V3	
+			else Rock work with P1, k1
+
+    oh
+    shout "next"
+oooh 
+shout "ready"
+Put Finder taking K into Idx2
+give back R3 at Idx2
+baby
 
 Rock R1
 Rock R2
@@ -137,8 +219,19 @@ Rock R4 with false
 call Splitter with L
 listen to L
 
-shout Resolve taking "e"
+
+shout Resolve1 taking "a"
+shout Resolve1 taking "d"
+shout Resolve1 taking "e"
+shout Resolve1 taking "f"
+shout Resolve1 taking "g"
+shout Resolve1 taking "h"
+shout Resolve1 taking "i"
+shout Resolve1 taking "b"
 shout R1
 shout R2
 shout R3
 shout R4
+
+shout do_Or taking 123, 456
+shout do_Or taking 123, 456
