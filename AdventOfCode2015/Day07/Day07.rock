@@ -19,7 +19,7 @@ Rock SQL into my operators
 oh
 
 Wiring takes effort
-Santa is inevetable
+Santa is inglorious
 Put my gates at Santa into the task
 while the task ain't misterious and the task ain't effort
 build Santa up
@@ -40,7 +40,7 @@ while the box ain't misterious
 if the box is smaller than a ray or the box is bigger than the room give back lies
 build the code up
 put pieces at the code into the box
-oh
+baby
 the truth is right
 give it back
 
@@ -141,105 +141,114 @@ if the script is "RSHIFT" put TheRightNightShift taking a candy, a carrot into a
 if the script is "NOT" put TheNotBot taking a candy into a song 
 give back a song
 
-HasValue wants K2
-if Robert taking K2 give back true
-Put Wiring taking K2 into Idx2
-If R4 at Idx2 give back true
-give back false
+Bobby wants a sign
+if Robert taking a sign give back ok
+Put Wiring taking a sign into the school
+If the hacks at the school give back right
+give back wrong
 baby
 
-ResolveValue wants K3
-if Robert taking K3 give back TheCartoon taking K3
-Put Wiring taking K3 into Idx3
-If R4 at Idx3 give back R3 at Idx3
-give back 0
+Tables wants a sign
+if Robert taking a sign give back TheCartoon taking a sign
+Put Wiring taking a sign into the night
+If the hacks at the night give back the cash at the night
+The whole is bankrupted
+give it back
 
-Resolve1 wants K
-Rock work with K
+TheMagicWiringSet wants PlayingMusic
+Rock work with PlayingMusic
 While work ain't nothing
-  pop work into k1
-  Put Wiring taking k1 into Idx1
-  If not R4 at Idx1
-     Put my operators at Idx1 into Instr1
-     cut Instr1 into parts with " "
-     if parts at 2 ain't misterious (3 long)
-	    put parts at 0 in P1
-        put parts at 2 in P2
-        put parts at 1 in OP1
-		HV1 = HasValue taking P1 
-		HV2 = HasValue taking P2
-        if HV1 and HV2
-			V1 = ResolveValue taking P1
-			V2 = ResolveValue taking P2
-			put TheDirector taking V1, V2, OP1 into V3
-			R4 at Idx1 = true
-			R3 at Idx1 = V3	
-       else 
-           push k1 into work
-           if not HV1 push P1 into work 
-           if not HV2 push P2 into work
-        oh
-	 else
-        if parts at 1 ain't misterious (2 long)
-            put parts at 0 in OP1
-			put parts at 1 in P1
-			HV1 = HasValue taking P1 
-			if HV1
-				V1 = ResolveValue taking P1
-				V3 = TheDirector taking V1, V1, OP1
-				R4 at Idx1 = true
-				R3 at Idx1 = V3	
+Pop work into the instructions
+Put Wiring taking the instructions into a booklet
+When not the hacks at a booklet
+Put my operators at a booklet into an instruction
+The space is bad oh
+The world is too
+Cast the space
+Knock the world down
+Let Eric be the world
+Knock Eric down
+Let the AOC be Eric
+Knock the AOC down
+Cut an instruction into parts with the space
+When parts at the world ain't misterious
+Put parts at the AOC in a giftbox
+Put parts at the world in a package
+Put parts at Eric in a task
+Let the pleasure be Bobby taking a giftbox 
+Let the fun be Bobby taking a package
+If the pleasure and the fun
+Put Tables taking a giftbox into custody
+Put Tables taking a package into protection
+Put TheDirector taking custody, protection, a task into value
+The hacks at a booklet are right
+Put value into the cash at a booklet	
+Otherwise 
+Push the instructions into work
+When not the pleasure push a giftbox into work 
+If not the fun push a package into work
+yeah
+Else
+When parts at Eric ain't misterious
+Put parts at the AOC in a task
+Put parts at Eric in a giftbox
+Let the pleasure be Bobby taking a giftbox 
+When the pleasure is right
+Put Tables taking a giftbox into custody
+Let value be TheDirector taking custody, custody, a task
+The hacks at a booklet are true
+Put value into the cash at a booklet	
+Otherwise 
+Push the instructions into work
+Push a giftbox into work
+baby    
+Else
+Put parts at the AOC in a giftbox
+Let the pleasure be Bobby taking a giftbox 
+if the pleasure is ok
+Put Tables taking a giftbox into value
+				the hacks at a booklet = true
+				the cash at a booklet = value	
 			else 
-                push k1 into work
-                push P1 into work
-            oh    
-	 else
-	    	put parts at 0 in P1
-			HV1 = HasValue taking P1 
-			if HV1
-				V3 = ResolveValue taking P1
-				R4 at Idx1 = true
-				R3 at Idx1 = V3	
-			else 
-               push k1 into work
-               push P1 into work
+               push the instructions into work
+               push a giftbox into work
                 
 oooooh 
-Put Wiring taking K into Idx2
-give back R3 at Idx2
+Put Wiring taking PlayingMusic into the school
+give back the cash at the school
 baby
 
 Rock my gates
 Rock my operators
-listen to L
-until L is silent
-Rock R3 with 0
-Rock R4 with false
-call LitteleBobby with L
-listen to L
+listen to the music
+until the music is silent
+Rock the cash with 0
+Rock the hacks with lies
+call LitteleBobby with the music
+listen to the music
 
-let answer1 be Resolve1 taking "a" 
+let answer1 be TheMagicWiringSet taking "a" 
 shout answer1
 shout my gates
 shout my operators
-shout R3
-shout R4
+shout the cash
+shout the hacks
 
 ctr = 0
 while ctr ain't my gates
   if my gates at ctr is "b" 
-     R3 at ctr = answer1
-     R4 at ctr = true
+     the cash at ctr = answer1
+     the hacks at ctr = true
   else
-     R3 at ctr = 0
-     R4 at ctr = false
+     the cash at ctr = 0
+     the hacks at ctr = false
   baby  
   ctr is with 1
 baby
 shout my gates
 shout my operators
-shout R3
-shout R4
+shout the cash
+shout the hacks
 
-let answer2 be Resolve1 taking "a" 
+let answer2 be TheMagicWiringSet taking "a" 
 shout answer2
