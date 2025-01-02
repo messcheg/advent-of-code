@@ -1,5 +1,11 @@
-(This song solves https://adventofcode.com/2015/day/7)
-(You can try it on https://codewithrockstar.com/online)
+(This song solves https://adventofcode.com/2015/day/7
+ You can try it on https://codewithrockstar.com/online
+ 
+ The song could be about Santa giving a wiring set to
+ little Bobby Tables expoiting the errors in the set.
+ 
+ https://imgs.xkcd.com/comics/exploits_of_a_mom.png)
+
 LitteleBobby wants a wiringset
 The wires are too bad
 Knock the wires down
@@ -17,6 +23,22 @@ Roll injection into C
 Rock C into my gates
 Rock SQL into my operators
 oh
+
+(refrain/chorus)
+TheAndBand takes a candy and a carrot
+The song is tremendous
+The text is algortihmic
+A time is inevitable
+The end is a finish
+Let the lyrics be the text
+until a time is the end
+let fun be a candy at a time
+let health be a carrot at a time
+if fun and health let the song be the song with the text
+A time is with the lyrics
+The text is with the text
+oh
+give back the song
 
 Wiring takes effort
 Santa is inglorious
@@ -44,39 +66,8 @@ baby
 the truth is right
 give it back
 
-TheCartoon wants fun
-The character is pictionary
-if not Robert taking fun give back the character 
-cut fun into pieces
-The storyline is abnormally
-put pieces at the character into the canvas
-while the canvas ain't misterious
-Cast the canvas
-Humor is a workaround
-A joke is very accepted
-Let the storyline be the storyline times humor with the canvas without a joke
-build the character up
-put pieces at the character into the canvas
-oh
-give back the storyline
-OH
-
-TheAndBand takes a candy and a carrot
-The song is tremendous
-The text is algortihmic
-A time is inevitable
-The end is a finish
-Let the lyrics be the text
-until a time is the end
-let fun be a candy at a time
-let health be a carrot at a time
-if fun and health let the song be the song with the text
-A time is with the lyrics
-The text is with the text
-oh
-give back the song
-
-TheOrChorus takes a candy and a carrot
+(refrain/chorus)
+TheOrChoir takes a candy and a carrot
 The song is tremendous
 The text is algortihmic
 A time is inevitable
@@ -91,34 +82,7 @@ The text is with the text
 oh
 give back the song
 
-TheRightNightShift takes a candy and a carrot
-The song is tremendous
-The text is algortihmic
-Let a time be a carrot
-The end is a finish
-Let the lyrics be the text
-until a time is the end
-let fun be a candy at a time
-if fun let the song be the song with the text
-A time is with the lyrics
-The text is with the text
-oh
-give back the song
-
-TheLeftDayShift takes a candy and a carrot
-The song is tremendous
-The text is algortihmic
-A time is inevitable
-The end is a finish
-Let the lyrics be the text
-until a time is the end
-if a carrot is as weak as a time let fun be a candy at a time without a carrot else fun is wrong
-if fun let the song be the song with the text
-A time is with the lyrics
-The text is with the text
-oh
-give back the song
-
+(refrain/chorus)
 TheNotBot takes a candy
 The song is tremendous
 The text is algortihmic
@@ -133,27 +97,82 @@ The text is with the text
 oh
 give back the song
 
-TheDirector takes a candy and a carrot and the script
-if the script is "OR" put TheOrChorus taking a candy, a carrot into a song 
-if the script is "AND" put TheAndBand taking a candy, a carrot into a song
-if the script is "LSHIFT" put TheLeftDayShift taking a candy, a carrot into a song
-if the script is "RSHIFT" put TheRightNightShift taking a candy, a carrot into a song
-if the script is "NOT" put TheNotBot taking a candy into a song 
-give back a song
+TheCartoon wants fun
+The character is pictionary
+if not Robert taking fun give back the character 
+cut fun into pieces
+The storyline is abnormally
+Put pieces at the character into the canvas
+While the canvas ain't misterious
+Cast the canvas
+Humor is a workaround
+A joke is very accepted
+Let the storyline be the storyline times humor with the canvas without a joke
+Build the character up
+Put pieces at the character into the canvas
+Oh
+Give back the storyline
+OH
 
-Bobby wants a sign
-if Robert taking a sign give back ok
+(refrain/chorus)
+TheRightNightShift takes a candy and a carrot
+The song is tremendous
+The text is algortihmic
+Let a time be a carrot
+The end is a finish
+Let the lyrics be the text
+until a time is the end
+let fun be a candy at a time
+if fun let the song be the song with the text
+A time is with the lyrics
+The text is with the text
+oh
+give back the song
+
+Randall wants a sign
+If Robert taking a sign give back ok
 Put Wiring taking a sign into the school
 If the hacks at the school give back right
-give back wrong
-baby
+Give back wrong
+Baby
 
-Tables wants a sign
-if Robert taking a sign give back TheCartoon taking a sign
+Munroe wants a sign
+If Robert taking a sign give back TheCartoon taking a sign
 Put Wiring taking a sign into the night
 If the hacks at the night give back the cash at the night
 The whole is bankrupted
-give it back
+Give it back
+
+(refrain/chorus)
+TheLeftDayShift takes a candy and a carrot
+The song is tremendous
+The text is algortihmic
+A time is inevitable
+The end is a finish
+Let the lyrics be the text
+Until a time is the end
+If a carrot is as weak as a time let fun be a candy at a time without a carrot else fun is wrong
+If fun let the song be the song with the text
+A time is with the lyrics
+The text is with the text
+Oh
+Give back the song
+
+TheDirector takes a candy and a carrot and the script
+X is cartoon absurdity
+K is lining shape
+C is Randall Munroe
+D is exploits of 
+A mom is sarcasm webcomic
+The front is commencing
+Let the note be the script at the front 
+Cast the note
+If the note is X put TheOrChoir taking a candy, a carrot into a song 
+If the note is K put TheAndBand taking a candy, a carrot into a song
+If the note is C put TheLeftDayShift taking a candy, a carrot into a song
+If the note is D put TheRightNightShift taking a candy, a carrot into a song
+If the note is a mom put TheNotBot taking a candy into a song 
+Give back a song
 
 TheMagicWiringSet wants PlayingMusic
 Rock work with PlayingMusic
@@ -175,11 +194,11 @@ When parts at the world ain't misterious
 Put parts at the AOC in a giftbox
 Put parts at the world in a package
 Put parts at Eric in a task
-Let the pleasure be Bobby taking a giftbox 
-Let the fun be Bobby taking a package
+Let the pleasure be Randall taking a giftbox 
+Let the fun be Randall taking a package
 If the pleasure and the fun
-Put Tables taking a giftbox into custody
-Put Tables taking a package into protection
+Put Munroe taking a giftbox into custody
+Put Munroe taking a package into protection
 Put TheDirector taking custody, protection, a task into value
 The hacks at a booklet are right
 Put value into the cash at a booklet	
@@ -187,68 +206,66 @@ Otherwise
 Push the instructions into work
 When not the pleasure push a giftbox into work 
 If not the fun push a package into work
-yeah
+Yeah
 Else
 When parts at Eric ain't misterious
 Put parts at the AOC in a task
 Put parts at Eric in a giftbox
-Let the pleasure be Bobby taking a giftbox 
+Let the pleasure be Randall taking a giftbox 
 When the pleasure is right
-Put Tables taking a giftbox into custody
+Put Munroe taking a giftbox into custody
 Let value be TheDirector taking custody, custody, a task
 The hacks at a booklet are true
 Put value into the cash at a booklet	
 Otherwise 
 Push the instructions into work
 Push a giftbox into work
-baby    
+Baby    
 Else
 Put parts at the AOC in a giftbox
-Let the pleasure be Bobby taking a giftbox 
-if the pleasure is ok
-Put Tables taking a giftbox into value
-				the hacks at a booklet = true
-				the cash at a booklet = value	
-			else 
-               push the instructions into work
-               push a giftbox into work
+Let the pleasure be Randall taking a giftbox 
+When the pleasure is ok
+Put Munroe taking a giftbox into value
+The hacks at a booklet are ok
+Put value into the cash at a booklet
+Otherwise 
+Push the instructions into work
+Push a giftbox into work
                 
-oooooh 
+Oooooh 
 Put Wiring taking PlayingMusic into the school
-give back the cash at the school
-baby
+Give back the cash at the school
+Yeah
 
 Rock my gates
 Rock my operators
-listen to the music
-until the music is silent
-Rock the cash with 0
+Listen to the music
+Until the music is silent
+The money is hollowed
+Rock the cash with the money
 Rock the hacks with lies
-call LitteleBobby with the music
-listen to the music
+Call LitteleBobby with the music
+Listen to the music
 
-let answer1 be TheMagicWiringSet taking "a" 
-shout answer1
-shout my gates
-shout my operators
-shout the cash
-shout the hacks
+The elf says Let me give you the first answer:
+Put TheMagicWiringSet taking "a" into the answer
+Let the elf be with the answer 
+Shout her
 
-ctr = 0
-while ctr ain't my gates
-  if my gates at ctr is "b" 
-     the cash at ctr = answer1
-     the hacks at ctr = true
-  else
-     the cash at ctr = 0
-     the hacks at ctr = false
-  baby  
-  ctr is with 1
-baby
-shout my gates
-shout my operators
-shout the cash
-shout the hacks
+The gate is impregnate
+While the gate ain't my gates
+When my gates at the gate is "b" 
+Let the cash at the gate be the answer  
+The hacks at the gate are right
+Otherwise
+The cash at the gate is diminished
+The hacks at the gate are impressive
+Baby  
+A smile is outstanding
+The gate is with a smile
+Baby
 
-let answer2 be TheMagicWiringSet taking "a" 
-shout answer2
+The elf says Let me give you the second answer:
+Put TheMagicWiringSet taking "a" into the answer
+Let the elf be with the answer 
+Whisper her
