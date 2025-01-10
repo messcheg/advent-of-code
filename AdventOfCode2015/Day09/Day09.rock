@@ -1,0 +1,104 @@
+(
+   This song solves https://adventofcode.com/2015/day/9
+   You can run this song on: https://codewithrockstar.com/online
+)
+SantasJobs are lifestyles
+BringingPresents takes Miles
+Burn Miles
+Let the goal be SantasJobs
+Let the whole be the goal
+  ka = "0"
+  cast ka
+  while the whole isn't Miles
+    n1 = Miles at the whole
+    the goal = 10 * the goal + n1 - ka
+    build the whole up
+  yeah
+  give back the goal
+
+
+rock distances
+rock destinations
+rock cities
+rock seen
+numcities = 0
+listen to directions
+while directions ain't silent 
+   cut directions into pieces with " "
+   P1 = pieces at 0
+   P2 = pieces at 2
+   D1 = pieces at 4
+   P1P2 = P1 with "-" with P2
+   P2P1 = P2 with "-" with P1
+   distances at P1P2 = BringingPresents taking D1
+   distances at P2P1 = BringingPresents taking D1
+   DS1 = destinations at P1
+   DS2 = destinations at P2
+   if DS1 is mysterious destinations at P1 = P2 else  destinations at P1 = DS1 + "-" + P2 
+   if DS2 is mysterious destinations at P2 = P1 else  destinations at P2 = DS2 + "-" + P1 
+   if not seen at P1 
+     seen at P1 = true
+     rock P1 into cities
+     build numcities up
+   oh
+   if not seen at P2
+     seen at P2 = true
+     rock P2 into cities
+     build numcities up
+   oh
+   listen to directions
+yeah
+
+getbestpath takes startcity
+shortest = 0
+longest = 0
+push 0 into sizes
+push startcity into work
+while work is not nobody
+   pop work into current
+   pop sizes into currentdistance
+   split current into prevpath with "-"
+   if numcities = prevpath 
+        if shortest is 0 or shortest >  currentdistance shortest = currentdistance
+        if longest < currentdistance longest = currentdistance
+   yeah
+   first = prevpath at 0
+   nextcity = destinations at first
+   split nextcity into netxtcities with "-"
+   ctr1 = 0
+   while ctr1 ain't netxtcities
+      city = netxtcities at ctr1
+      found = false
+      ctr2 = 0
+      while ctr2 ain't prevpath
+         check = prevpath at ctr2 
+         if check is city found = true
+         build ctr2 up
+      yeah
+      if not found
+         push city + "-" + current into work
+         search =  city + "-" + first
+         dist = distances at search
+         newsize = currentdistance + dist
+         push newsize into sizes
+      yeah
+      build ctr1 up
+   yeah
+yeah
+rock shortest into res
+rock longest into res
+give back res
+
+shortall = 0
+longall = 0
+ctr3 = 0
+while ctr3 ain't cities
+   my city = cities at ctr3
+   result = getbestpath taking my city
+   if shortall is 0 or shortall > result at 0 shortall = result at 0
+   if longall < result at 1 longall = result at 1
+   build ctr3 up
+yeah
+
+shout shortall
+shout longall
