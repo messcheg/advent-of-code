@@ -2,102 +2,114 @@
    This song solves https://adventofcode.com/2015/day/9
    You can run this song on: https://codewithrockstar.com/online
 )
+
 SantasJobs are lifestyles
 BringingPresents takes Miles
 Burn Miles
+The role is free onestops
 Let the goal be SantasJobs
 Let the whole be the goal
-  ka = "0"
-  cast ka
-  while the whole isn't Miles
-    n1 = Miles at the whole
-    the goal = 10 * the goal + n1 - ka
-    build the whole up
-  yeah
-  give back the goal
+While the whole ain't Miles
+Put Miles at the whole into tiles
+Let the goal be 10 times the goal with tiles without the role
+Build the whole up
+Yeah
+Put the goal into the track
+Give it back 
 
+Step One is up
+Step Two is up
+Step Three is up
+Knock Step One down, down
+Build Step Three up, up
 
 rock distances
 rock destinations
 rock cities
 rock seen
-numcities = 0
+Let Visit Cities be SantasJobs
 listen to directions
 while directions ain't silent 
-   cut directions into pieces with " "
-   P1 = pieces at 0
-   P2 = pieces at 2
-   D1 = pieces at 4
-   P1P2 = P1 with "-" with P2
-   P2P1 = P2 with "-" with P1
-   distances at P1P2 = BringingPresents taking D1
-   distances at P2P1 = BringingPresents taking D1
-   DS1 = destinations at P1
-   DS2 = destinations at P2
-   if DS1 is mysterious destinations at P1 = P2 else  destinations at P1 = DS1 + "-" + P2 
-   if DS2 is mysterious destinations at P2 = P1 else  destinations at P2 = DS2 + "-" + P1 
-   if not seen at P1 
-     seen at P1 = true
-     rock P1 into cities
-     build numcities up
-   oh
-   if not seen at P2
-     seen at P2 = true
-     rock P2 into cities
-     build numcities up
-   oh
-   listen to directions
+The space is bad luck
+Knock the space down, down
+Burn the space
+Cut directions into pieces with the space
+A sleigh is fast glide
+Burn a sleigh
+Let First City be pieces at Step One
+Let Second City be pieces at Step Two
+Let the distance be pieces at Step Three
+let First Trip be First City with a sleigh with Second City
+let Second Trip be Second City with a sleigh with First City
+let distances at First Trip be BringingPresents taking The distance
+let distances at Second Trip be BringingPresents taking The distance
+let Near By be destinations at First City
+let Far Away be destinations at Second City
+if Near By is mysterious let destinations at First City be Second City else let destinations at First City be Near By with a sleigh with Second City 
+if Far Away is mysterious let destinations at Second City be First City else let destinations at Second City be Far Away with a sleigh with First City 
+if not seen at First City 
+seen at First City is true
+rock First City into cities
+build Visit Cities up
+oh
+if not seen at Second City
+seen at Second City is true
+rock Second City into cities
+build Visit Cities up
+oh
+listen to directions
 yeah
 
-getbestpath takes startcity
-shortest = 0
-longest = 0
+getbestpath takes Star City
+Let the shortest be Step One
+let the longest be the shortest
 push 0 into sizes
-push startcity into work
+push Star City into work
 while work is not nobody
-   pop work into current
-   pop sizes into currentdistance
-   split current into prevpath with "-"
-   if numcities = prevpath 
-        if shortest is 0 or shortest >  currentdistance shortest = currentdistance
-        if longest < currentdistance longest = currentdistance
-   yeah
-   first = prevpath at 0
-   nextcity = destinations at first
-   split nextcity into netxtcities with "-"
-   ctr1 = 0
-   while ctr1 ain't netxtcities
-      city = netxtcities at ctr1
-      found = false
-      ctr2 = 0
-      while ctr2 ain't prevpath
-         check = prevpath at ctr2 
-         if check is city found = true
-         build ctr2 up
-      yeah
-      if not found
-         push city + "-" + current into work
-         search =  city + "-" + first
-         dist = distances at search
-         newsize = currentdistance + dist
-         push newsize into sizes
-      yeah
-      build ctr1 up
-   yeah
+pop work into current
+pop sizes into currentdistance
+split current into the journey with a sleigh
+if Visit Cities = the journey 
+if the shortest is 0 or the shortest >  currentdistance the shortest = currentdistance
+if the longest < currentdistance the longest = currentdistance
 yeah
-rock shortest into res
-rock longest into res
+let first be the journey at Step One
+let nextcity be destinations at first
+split nextcity into netxtcities with a sleigh
+let the GPS be Step One
+while the GPS ain't netxtcities
+let city be netxtcities at the GPS
+found is false
+let the navigation be Step One
+while the navigation ain't the journey
+let check be the journey at the navigation 
+if check is city found is true
+build the navigation up
+yeah
+if not found
+push city with a sleigh with current into work
+let search be city with a sleigh with first
+let dist be distances at search
+let newsize be currentdistance with dist
+push newsize into sizes
+yeah
+build the GPS up
+yeah, baby
+rock the shortest into res
+rock the longest into res
 give back res
 
-shortall = 0
-longall = 0
-ctr3 = 0
-while ctr3 ain't cities
-   my city = cities at ctr3
-   result = getbestpath taking my city
-   if shortall is 0 or shortall > result at 0 shortall = result at 0
-   if longall < result at 1 longall = result at 1
-   build ctr3 up
+let shortall be Step One
+let longall be shortall
+let visitall be shortall with longall
+while visitall ain't cities
+let my city be cities at visitall
+let result be getbestpath taking my city
+if shortall is SantasJobs or shortall is stronger than result at Step One let shortall be result at Step One
+Let the hill be Step One
+build the hill up
+if longall is weaker than result at the hill let longall be result at the hill
+build visitall up
 yeah
 
 shout shortall
