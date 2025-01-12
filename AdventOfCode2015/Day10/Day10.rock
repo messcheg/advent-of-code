@@ -1,0 +1,43 @@
+
+Listen to the game
+numoffset = 48
+ctr1 = 0
+split the game into the joy
+rock the numbers
+while ctr1 < the joy
+  the num = the joy at ctr1
+  cast the num
+  the num is without numoffset 
+  rock the num into the numbers
+  build ctr1 up
+yeah
+
+shout the numbers
+shout the joy
+ctr1 = 0
+while ctr1 < 40
+   the newnumbers = misterious
+   rock the newnumbers
+   ctr2 = 0
+   curnum = 0
+   curctr = 0
+   while ctr2 < the numbers
+      if curnum is the numbers at ctr2
+            build curctr up
+      otherwise
+         if curctr > 0 
+             rock curctr into the newnumbers
+             rock curnum into the newnumbers
+         yeah
+         curnum = the numbers at ctr2
+         curctr = 1
+      yeah
+      build ctr2 up
+   yeah
+   rock curctr into the newnumbers
+   rock curnum into the newnumbers
+   the numbers = the newnumbers
+   temp = 0
+   shout temp with the newnumbers
+   build ctr1 up
+yeah
