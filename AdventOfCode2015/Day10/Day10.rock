@@ -41,3 +41,53 @@ while ctr1 < 40
    shout temp with the newnumbers
    build ctr1 up
 yeah
+
+(new implementation)
+Listen to the game
+the game = the game times -1
+split the game into the same
+
+level = 0
+finishedlevelsuntil = 0
+maxlevel = 50
+ready = false
+rock workset with the same
+rock lencnt with level with the same
+while finishedlevelsuntil ain't maxlevel
+    cur = workset at level
+    if cur ain't 0
+       num = cur at 0
+       ctr = 0
+       while ctr ain't cur and cur at ctr is num 
+          build ctr up
+       yeah
+       if ctr is 3 or ctr ain't cur or level is finishedlevelsuntil
+          newlen = lencnt at level + 1 
+          if newlen is misterious newlen = 2 else build newlen up, up
+          lencnt at level + 1 = newlen
+          num1 = ctr with 48
+          cast num1
+          while ctr > 0
+             roll cur
+             knock ctr down
+          yeah
+          if level < maxlevel - 1
+             build level up
+             cur = workset at level
+             rock cur with num, num1
+             workset at level = cur
+          yeah
+       else
+         knock level down
+       yeah
+    else
+      if finishedlevelsuntil < level
+         knock level down
+      else
+         build level up
+         build finishedlevelsuntil up
+      yeah
+    yeah
+yeah
+
+shout lencnt
