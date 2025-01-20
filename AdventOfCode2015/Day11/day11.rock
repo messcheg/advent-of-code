@@ -1,0 +1,87 @@
+listen to Previous Password
+firstone = "i"
+secondone = "l"
+noone = "o"
+cast firstone
+cast secondone
+cast noone
+startletter = "a"
+endletter = "z"
+cast startletter
+cast endletter
+
+PasswordCheck takes the password
+hasincrement = false
+firstdouble = false
+seconddouble = false
+firstdchar = "0"
+count = 0
+previous = "0"
+while count ain't the password
+   current = the password at count
+   if current is firstone or current is secondone or current is noone 
+      return false
+   yeah
+   if count > 0
+      if current is previous
+        if not firstdouble      
+           firstdouble = true
+           firstdchar = current
+        else
+           if firstdchar isn't current seconddouble = true 
+        yeah   
+      else
+         if count > 1
+            the frst = the password at count - 2
+            if the frst with 2 is current and previous with 1 is current
+                hasincrement = true 
+            yeah
+         yeah
+      yeah
+   yeah
+   previous = current
+   build count up
+yeah
+give firstdouble and seconddouble and hasincrement
+
+cut Previous Password into letters
+rock numbers
+while letters ain't silent
+   roll letters into nextletter
+   cast nextletter
+   rock nextletter into numbers
+yeah
+
+increment takes numbers
+let length be 0 with numbers
+ready = false
+counter = length - 1
+while not ready and counter >= 0
+   currentnumber = numbers at counter
+   if currentnumber < endletter
+      numbers at counter = currentnumber with 1
+      ready = true
+   else
+      numbers at counter = startletter
+      counter = counter without 1
+   yeah
+yeah
+give back numbers
+
+totalcnt = 0
+while totalcnt < 2
+   the truth is false
+   while not the truth
+      numbers = increment taking numbers
+      the truth = PasswordCheck taking numbers
+   yeah
+   rock answer
+   while numbers ain't silent
+      roll numbers into nextnumber
+      cast nextnumber
+      rock nextnumber into answer
+   yeah
+   join answer
+   shout answer
+   build totalcnt up
+yeah
