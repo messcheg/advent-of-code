@@ -62,8 +62,6 @@ give back numbers
 
 totalcnt = 0
 while totalcnt < 2
-   answer = ""
-   rock answer
    cut Previous Password into letters
    rock numbers
    while letters ain't silent
@@ -76,12 +74,12 @@ while totalcnt < 2
       numbers = increment taking numbers
       the truth = PasswordCheck taking numbers
    yeah
+   answer = ""
    while numbers ain't silent
       roll numbers into nextnumber
       cast nextnumber
       rock nextnumber into answer
    yeah
-   join answer
    shout answer
    Previous Password = answer
    build totalcnt up
