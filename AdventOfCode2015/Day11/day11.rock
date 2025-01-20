@@ -44,14 +44,6 @@ while count ain't the password
 yeah
 give firstdouble and seconddouble and hasincrement
 
-cut Previous Password into letters
-rock numbers
-while letters ain't silent
-   roll letters into nextletter
-   cast nextletter
-   rock nextletter into numbers
-yeah
-
 increment takes numbers
 let length be 0 with numbers
 ready = false
@@ -70,12 +62,20 @@ give back numbers
 
 totalcnt = 0
 while totalcnt < 2
+   answer = ""
+   rock answer
+   cut Previous Password into letters
+   rock numbers
+   while letters ain't silent
+      roll letters into nextletter
+      cast nextletter
+      rock nextletter into numbers
+   yeah
    the truth is false
    while not the truth
       numbers = increment taking numbers
       the truth = PasswordCheck taking numbers
    yeah
-   rock answer
    while numbers ain't silent
       roll numbers into nextnumber
       cast nextnumber
@@ -83,5 +83,6 @@ while totalcnt < 2
    yeah
    join answer
    shout answer
+   Previous Password = answer
    build totalcnt up
 yeah
