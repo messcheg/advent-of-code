@@ -295,6 +295,47 @@ bool NoDependencies(string l1, string l2, Dictionary<string, (string operation, 
 
 }
 
+static (long answer, bool loop) GetResult1(Dictionary<string, char> wires, Dictionary<string, (string operation, string input1, string input2)> gates, List<string> allundef)
+{
+
+    // determine order
+    var work = new Queue<string>();
+    var orderedwork = new List<string>();
+    var seen = new HashSet<string>();
+    foreach (var z in wires.Where(a => a.Key[0] == 'z').OrderByDescending(a => a.Key)) work.Enqueue(z.Key);
+    while (work.Count > 0)
+    {
+        var w = work.Dequeue();
+        if (!seen.Contains(w))
+        {
+            orderedwork.Add(w);
+            if (gates.TryGetValue(w, out var g))
+            {
+                work.Enqueue(g.input1);
+                work.Enqueue(g.input2);
+            }
+        }
+    }
+    foreach (var wz in orderedwork.Reverse<string>())
+    {
+        if (gates.TryGetValue(wz, out var g))
+        {
+            var v1 = wires[g.input1] == '1';
+            var v2 = wires[g.input2] == '1';
+            var o = g.operation[0];
+            var b = (o == 'O') ? v1 || v2 : (o == 'A') ? v1 && v2 : v1 ^ v2;
+            wires[wz] = b ? '1' : '0';
+        }
+    }
+    long answer = 0;
+    foreach (var z in wires.Where(a => a.Key[0] == 'z').OrderByDescending(a => a.Key))
+    {
+        //Console.WriteLine(z.Key + ':' + z.Value);
+        answer <<= 1;
+        if (z.Value == '1') answer |= 1;
+    }
+    return (answer, false);
+}
 static (long answer, bool loop) GetResult(Dictionary<string, char> wires, Dictionary<string, (string operation, string input1, string input2)> gates, List<string> allundef)
 {
     var undef = allundef;
