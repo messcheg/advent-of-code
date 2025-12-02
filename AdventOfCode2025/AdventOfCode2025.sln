@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36221.1 d17.14
+VisualStudioVersion = 17.14.36221.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Day01", "Day01\Day01.csproj", "{64E44301-B44D-462C-B0B3-992BACA534F4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AocHelper", "AocHelper\AocHelper.csproj", "{FEA50C87-23D5-A98D-D1EC-8E5991DBE5D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Day02", "Day02\Day02.csproj", "{2B72BA0A-7A7B-40AA-BB92-1F9A6A87B87F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{FEA50C87-23D5-A98D-D1EC-8E5991DBE5D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FEA50C87-23D5-A98D-D1EC-8E5991DBE5D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FEA50C87-23D5-A98D-D1EC-8E5991DBE5D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B72BA0A-7A7B-40AA-BB92-1F9A6A87B87F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B72BA0A-7A7B-40AA-BB92-1F9A6A87B87F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B72BA0A-7A7B-40AA-BB92-1F9A6A87B87F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B72BA0A-7A7B-40AA-BB92-1F9A6A87B87F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
