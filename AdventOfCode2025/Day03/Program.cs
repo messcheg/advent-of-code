@@ -13,8 +13,6 @@ void Run(string inputfile, bool isTest)
     BigInteger supposedanswer2 = 3121910778619;
 
     var S = File.ReadAllLines(inputfile).ToList();
-    var A = new List<long>();
-    var B = new List<long>();
     BigInteger answer1 = 0;
     BigInteger answer2 = 0;
 

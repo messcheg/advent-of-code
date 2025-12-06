@@ -11,8 +11,6 @@ void Run(string inputfile, bool isTest)
     long supposedanswer2 = 6;
 
     var S = File.ReadAllLines(inputfile).Select(s => new { d = s[0], num = long.Parse(s[1..]) }).ToList();
-    var A = new List<long>();
-    var B = new List<long>();
     long answer1 = 0;
     long answer2 = 0;
 

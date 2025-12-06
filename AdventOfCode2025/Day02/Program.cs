@@ -11,8 +11,6 @@ void Run(string inputfile, bool isTest)
     long supposedanswer2 = 4174379265;
 
     var S = File.ReadAllText(inputfile).Split(',').ToList();
-    var A = new List<long>();
-    var B = new List<long>();
     long answer1 = 0;
     long answer2 = 0;
 
