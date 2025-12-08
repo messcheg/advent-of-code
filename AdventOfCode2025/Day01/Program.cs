@@ -14,8 +14,6 @@ void Run(string inputfile, bool isTest)
     long answer1 = 0;
     long answer2 = 0;
 
-    answer1 = 0;
-    answer2 = 0;
     long p = 50;
 
     foreach (var s in S)
