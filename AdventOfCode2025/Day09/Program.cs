@@ -17,22 +17,22 @@ void Run(string inputfile, bool isTest)
 
 
     var lines = new List<(long x1, long y1, long x2, long y2)>();
-    var byX = new SortedList<long, SortedList<long,(long X, long Y)>>();
-    var byY = new SortedList<long, SortedList<long,(long X, long Y)>>();
+    var byX = new SortedList<long, SortedList<long, (long X, long Y)>>();
+    var byY = new SortedList<long, SortedList<long, (long X, long Y)>>();
     foreach (var pos in S)
     {
         SortedList<long, (long X, long Y)> sameX;
         if (!byX.TryGetValue(pos.X, out sameX)) byX[pos.X] = sameX = new SortedList<long, (long X, long Y)>();
-        sameX.Add(pos.Y,pos);
+        sameX.Add(pos.Y, pos);
 
         SortedList<long, (long X, long Y)> sameY;
         if (!byY.TryGetValue(pos.Y, out sameY)) byY[pos.Y] = sameY = new SortedList<long, (long X, long Y)>();
-        sameY.Add(pos.X,pos);
+        sameY.Add(pos.X, pos);
     }
-    
+
     for (int i = 0; i < S.Count - 1; i++)
     {
-        for (int j = S.Count - 1 ; j > i; j--)
+        for (int j = S.Count - 1; j > i; j--)
         {
             var c1 = S[i];
             var c2 = S[j];
@@ -46,21 +46,6 @@ void Run(string inputfile, bool isTest)
                 {
                     var border = new List<(long x1, long x2, int dir)>();
 
-                    foreach (var kv in byX.Where(a => a.Key <= x))
-                    {
-                        var lxy = kv.Value.Keys;
-                        for (int p = 0; p < lxy.Count; p += 2)
-                        {
-                            if (lxy[p] <= y && lxy[p+1] >= y)
-                            {
-                                if (kv.Key == x) return true; // point is on the line
-                                int d = 0;
-                                if (lxy[p] == y) d = 1;
-                                if (lxy[p + 1] == y) d = 2;
-                                border.Add((kv.Key, kv.Key, d));
-                            }
-                        }
-                    }
                     var ly = byY[y].Keys;
 
                     for (int p = 0; p < ly.Count; p += 2)
@@ -71,6 +56,23 @@ void Run(string inputfile, bool isTest)
                             border.Add((ly[p], ly[p + 1], 0));
                         }
                     }
+
+                    foreach (var kv in byX.Where(a => a.Key <= x))
+                    {
+                        var lxy = kv.Value.Keys;
+                        for (int p = 0; p < lxy.Count; p += 2)
+                        {
+                            if (lxy[p] <= y && lxy[p + 1] >= y)
+                            {
+                                if (kv.Key == x) return true; // point is on the line
+                                int d = 0;
+                                if (lxy[p] == y) d = 1;
+                                if (lxy[p + 1] == y) d = 2;
+                                border.Add((kv.Key, kv.Key, d));
+                            }
+                        }
+                    }
+                   
                     var sb = border.OrderBy(a => a.x1).ThenBy(a => a.x2).ToArray();
                     bool inside = false;
                     bool wasinside = false;
@@ -122,8 +124,6 @@ void Run(string inputfile, bool isTest)
 
                     // select all vertical  lines between x1 an x2
                     var xline = byX.Where(a => a.Key > x1 && a.Key < x2).Select(a => a.Value.Keys).ToArray();
-                    // select all horontal lines between y1 and y2
-                    var yline = byY.Where(a => a.Key > y1 && a.Key < y2).Select(a => a.Value.Keys).ToArray();
 
                     bool Crosseslines(long a1, long a2, IList<long>[] vv)
                     {
@@ -136,7 +136,12 @@ void Run(string inputfile, bool isTest)
                         return false;
                     }
 
-                    if (!Crosseslines(y1, y2, xline) && !Crosseslines(x1, x2, yline)) answer2 = a;
+                    if (!Crosseslines(y1, y2, xline)) 
+                    {
+                        // select all horontal lines between y1 and y2
+                        var yline = byY.Where(a => a.Key > y1 && a.Key < y2).Select(a => a.Value.Keys).ToArray();
+                        if (!Crosseslines(x1, x2, yline)) answer2 = a;
+                    }
                 }
             }
         }
