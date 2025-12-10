@@ -18,7 +18,7 @@ void Run(string inputfile, bool isTest, int limit = 10)
 
     double CalcMinDistance(int a, int b)
     {
-        return Math.Sqrt((S[a].X - S[b].X) * (S[a].X - S[b].X) + (S[a].Y - S[b].Y) * (S[a].Y - S[b].Y) + (S[a].Z - S[b].Z) * (S[a].Z - S[b].Z));
+        return Math.Sqrt(Math.Pow(S[a].X - S[b].X, 2) + Math.Pow(S[a].Y - S[b].Y,2) + Math.Pow(S[a].Z - S[b].Z,2));
     }
 
     for (int i = 0; i < S.Count - 1; i++)
@@ -84,8 +84,6 @@ void Run(string inputfile, bool isTest, int limit = 10)
             break;
         }
     }
-
-
 
     Aoc.w(1, answer1, supposedanswer1, isTest);
     Aoc.w(2, answer2, supposedanswer2, isTest);
