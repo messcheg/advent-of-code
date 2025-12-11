@@ -24,7 +24,7 @@ void Run(string inputfile, bool isTest)
         var target = s1[0].Select(a => a == '#').ToArray();
         var s2 = s1[1].Split(") {");
         var buttons = s2[0].Split(") (").Select(a => a.Split(',').Select(int.Parse).ToArray()).ToArray();
-        var jolatge = s2[1].Split(',').Select(long.Parse).ToArray();
+        var joltage = s2[1].Split(',').Select(long.Parse).ToArray();
 
         var but_switch = new List<long>(buttons.Length);
 
@@ -60,22 +60,28 @@ void Run(string inputfile, bool isTest)
             }
         }
 
-        /*
-        var startj = new long[jolatge.Length];
-        var totaljoltage = jolatge.Sum();
-        var visited1 = new HashSet<string>();
-        var work1 = new PriorityQueue<(long[] state, long steps), long>();
+        
+        var startj = new long[joltage.Length];
+        var startb = new long[buttons.Length];
+        var totaljoltage = joltage.Sum();
+        var visited1 = new HashSet<long>();
+        var work1 = new PriorityQueue<(long[] state, long[] buttonstate, long steps), long>();
         var maxsteps = totaljoltage;
-        work1.Enqueue((startj, 0), 0);
+        var maxbutpress = new long[buttons.Length];
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            maxbutpress[i] = buttons[i].Select(b => joltage[b]).Min();
+        }
+        work1.Enqueue((startj, startb, 0), 0);
         while (work1.Count > 0)
         {
             var cur = work1.Dequeue();
             if (cur.steps < maxsteps)
             {
                 bool targetreached = true;
-                for (int i = 0; i < jolatge.Length; i++)
+                for (int i = 0; i < joltage.Length; i++)
                 {
-                    if (jolatge[i] != cur.state[i])
+                    if (joltage[i] != cur.state[i])
                     {
                         targetreached = false;
                         break;
@@ -86,26 +92,37 @@ void Run(string inputfile, bool isTest)
                     maxsteps = cur.steps;
                 }
 
-                var newsteps = cur.steps + 1;
-                foreach (var but in buttons)
+                for (int bi = 0; bi < buttons.Length; bi++)
                 {
-                    var newstate = cur.state.ToArray();
-                    foreach (var b in but) newstate[b] += 1;
-                    bool toobig = false;
-                    for (int i = 0; i < jolatge.Length; i++)
-                    {
-                        if (jolatge[i] < newstate[i])
+                    if (cur.buttonstate[bi] == maxbutpress[bi]) continue;
+                    var but = buttons[bi];
+                        var newstate = cur.state.ToArray();
+                        foreach (var b in but) newstate[b] += 1;
+                        bool toobig = false;
+                        for (int i = 0; i < joltage.Length; i++)
                         {
-                            toobig = true;
-                            break;
+                            if (joltage[i] < newstate[i])
+                            {
+                                toobig = true;
+                                break;
+                            }
                         }
-                    }
                     if (!toobig)
                     {
-                        var newkey = String.Join(',', newstate.Select(a => a.ToString()).ToArray());
+                        var newsteps = cur.steps + 1;
+                        long newkey = newstate[0];
+                        long close = 0;
+                        for (int i = 1; i < joltage.Length; i++)
+                        {
+                            newkey = newkey * (joltage[i] + 1) + newstate[i];
+                            close += (joltage[i] - newstate[i]) * (joltage[i] - newstate[i]);
+                        }
+
                         if (!visited1.Contains(newkey))
                         {
-                            work1.Enqueue((newstate, newsteps), newsteps + totaljoltage - newstate.Sum());
+                            var newbuttonstate = cur.buttonstate.ToArray();
+                            newbuttonstate[bi] += 1;
+                            work1.Enqueue((newstate, newbuttonstate, newsteps), newsteps + close);
                             visited1.Add(newkey);
                         }
                     }
@@ -113,21 +130,19 @@ void Run(string inputfile, bool isTest)
             }
         }
         answer2 += maxsteps;
-        */
+        
 
-        // niewe ding: opties creeren voor elke kolom,
-        // allemaal sorteren op hoeveelheid werk
-        // van weinig naar veel de opties combineren
+        /*
         var emptyComby = new HashSet<int>();
         var buttonusedbefore = new bool[buttons.Length];
         var maxbutpress = new long[buttons.Length];
         for (int i = 0; i < buttons.Length; i++)
         {
-            maxbutpress[i] = buttons[i].Select(b => jolatge[b]).Min();
+            maxbutpress[i] = buttons[i].Select(b => joltage[b]).Min();
         }
         var byButtonAndValue = new Dictionary<(int button, long value), HashSet<int>>();
         var options = new List<long[]>();
-        for (int j = 0; j < jolatge.Length; j++)
+        for (int j = 0; j < joltage.Length; j++)
         {
             //var joptions = new Dictionary<string, (long cost, long[] press)>();
             var joptions = new List<long[]>();
@@ -155,13 +170,13 @@ void Run(string inputfile, bool isTest)
                     bool possible = blimit == limit;
                     if (possible)
                     {
-                        var resultjolt = new long[jolatge.Length];
+                        var resultjolt = new long[joltage.Length];
                         for (int bc = 0; bc < buttons.Length; bc++)
                         {
                             foreach (var jc in buttons[bc])
                             {
                                 resultjolt[jc] += press[bc];
-                                if (resultjolt[jc] > jolatge[jc])
+                                if (resultjolt[jc] > joltage[jc])
                                 {
                                     possible = false;
                                     break;
@@ -256,12 +271,13 @@ void Run(string inputfile, bool isTest)
                 }
             }
 
-            CreateCombies(jolatge[j], new long[buttons.Length], buts1.ToArray());
+            CreateCombies(joltage[j], new long[buttons.Length], buts1.ToArray());
             options = joptions;
             buttonusedbefore = buttonused;
             byButtonAndValue = newByButtonAndValue;
         }
         answer2 += options.Min(a => a.Sum());
+        */
     }
 
     
